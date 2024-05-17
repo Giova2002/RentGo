@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se i
 import { StyleSheet, View } from 'react-native';
 
 
+
 const Tab = createBottomTabNavigator();
 const screenOptions = {
   tabBarShowLabel:false,
