@@ -1,9 +1,9 @@
-import { View, Text, SafeAreaView , StyleSheet, Image} from 'react-native'
+import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView} from 'react-native'
 import img from '../assets/Img/carro1.png'
 import React from 'react'
 import img1 from '../assets/Img/carro2.png'
 import img2 from '../assets/Img/carro3.png'
-
+import img3 from '../assets/Img/hyundai-santa-fe.png'
 
 
 
@@ -19,8 +19,10 @@ export default function Cars() {
 
         <View style={styles.listSeccion}>
           {/* <Text style={styles.headText}> Most Wanted</Text> */}
-          <View style={styles.elementPallet}> 
+          <ScrollView style={styles.elementPallet}> 
+          {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
             <View style={styles.element}>
+              {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
                 <View style={styles.infoArea}>
                   <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
                   <Text style={styles.infoSub}>Carro Automático</Text>
@@ -61,19 +63,31 @@ export default function Cars() {
             </View>
             <View style={styles.element}>
                 <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
+                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
                   <Text style={styles.infoSub}>Carro Automático</Text>
                   <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>50$/day</Text>
+                    <Text style={styles.listAmount}>60$/day</Text>
                   </Text>
                   
                 </View>
                 <View style={styles.imageArea}>
-                  <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
+                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
                 </View>
             </View>
-            
-          </View>
+            <View style={styles.element}>
+                <View style={styles.infoArea}>
+                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
+                  <Text style={styles.infoSub}>Carro Automático</Text>
+                  <Text style={styles.infoPrice}>
+                    <Text style={styles.listAmount}>60$/day</Text>
+                  </Text>
+                  
+                </View>
+                <View style={styles.imageArea}>
+                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
+                </View>
+            </View>
+          </ScrollView>
         </View>
     </SafeAreaView>
     
@@ -143,6 +157,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     fontFamily:"SF",
+    numberOfLines: 1,
+    width: 150, // Ajusta el width según lo que necesites
+    overflow: 'hidden', // Esto evitará que el texto se desborde
+    whiteSpace: 'nowrap', // Esto evitará que el texto se divida en varias líneas
+    textOverflow: 'ellipsis', // Esto mostrará puntos suspensivos (...) si el texto se recorta
+    
+    
   },
   
   infoSub:{
@@ -171,8 +192,11 @@ const styles = StyleSheet.create({
   },
 
   vehicleImage:{
+    objectFit:20,
   
     width: 180,
     height: 100,
   },
+
+  
 })
