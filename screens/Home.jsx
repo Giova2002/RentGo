@@ -4,7 +4,7 @@ import Header from '../header/Header'
 
 export default function Home() {
   return (
-    <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <View>
        <Header />
       <Text>Home</Text>
     </View>

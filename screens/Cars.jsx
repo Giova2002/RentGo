@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView} from 'react-native'
 import img from '../assets/Img/carro1.png'
+import Header from '../header/Header'
 import React from 'react'
 import img1 from '../assets/Img/carro2.png'
 import img2 from '../assets/Img/carro3.png'
@@ -9,17 +10,19 @@ import img3 from '../assets/Img/hyundai-santa-fe.png'
 
 
 
+
 export default function Cars() {
   return (
-    <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-
-        <View style={styles.textall}>
-        <Text style={styles.textall}>All Cars</Text>
-        </View>
+  
+// style={{flex: 1, alignItems: "center", justifyContent: "center"}}
+    <View> 
+      
+        <Header style={styles.header}/>
 
         <View style={styles.listSeccion}>
-          {/* <Text style={styles.headText}> Most Wanted</Text> */}
-          <ScrollView style={styles.elementPallet}> 
+          <Text style={styles.headText}> Todos los Carros</Text>
+
+          <ScrollView contentContainerStyle={styles.elementPallet}> 
           {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
             <View style={styles.element}>
               {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
@@ -87,9 +90,12 @@ export default function Cars() {
                   <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
                 </View>
             </View>
+           
+            
+
           </ScrollView>
         </View>
-    </SafeAreaView>
+    </View>
     
   )
 }
@@ -117,24 +123,45 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   listSeccion:{
-    position: 'absolute',
-    marginTop: 15,
+    flexDirection: 'column',
+    // justifyContent: 'center',
+    // position: 'absolute',
+    // marginTop: 10,
+    alignItems: 'center',
+    // flexGrow: 1,
+    height: 500, // cambio el largo de toda la seccion
+  
   },
   headText:{
-    position: 'absolute',
+    // position: 'absolute',
     fontFamily:"SF",
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10
+    marginTop: 10,
+    padding:0,
+    right: 100,
+    fontWeight: "bold",
+    color: '#000000',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0.5,
   },
 
   elementPallet:{
-    position: 'center',
-    top: 70,
+    // position: 'center',
+    // justifyContent: 'center',
+    // top: 4,
     // letf: 400,
     fontFamily:"SF",
     width: 340,
-    height: 500,
+    // height: 2000,
+    flexDirection: 'column',
+    flexGrow: 1,
+    // alignItems: 'center',
+    // paddingTop: 30, // Ajusta el espaciado superior si es necesario
+    // paddingBottom: 30,
+    
+    
   },
 
   element:{
@@ -148,6 +175,7 @@ const styles = StyleSheet.create({
   infoArea:{
   
     fontFamily:"SF",
+    flexDirection: 'column',
     flex: 1,
   },
 
@@ -167,7 +195,7 @@ const styles = StyleSheet.create({
   },
   
   infoSub:{
-    top: 12,
+    top: 14,
     color: '#77828B',
     fontSize: 9,
     fontFamily:"SF",
@@ -193,10 +221,10 @@ const styles = StyleSheet.create({
 
   vehicleImage:{
     objectFit:20,
-  
     width: 180,
     height: 100,
   },
+
 
   
 })
