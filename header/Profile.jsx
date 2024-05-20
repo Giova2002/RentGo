@@ -15,9 +15,6 @@ export default function Profile() {
     
     const styles = StyleSheet.create({
       container: {
-        position: 'absolute',
-        top: 68,
-        right: 30,
         width: 60,  
         height: 60, 
         borderRadius: 30,

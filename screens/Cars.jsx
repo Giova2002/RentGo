@@ -7,7 +7,6 @@ export default function Cars() {
   return (
     <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
       <Header />
-       <Profile />
       <Text>Cars</Text>
     </View>
   )

@@ -1,16 +1,24 @@
 import { View, Text, StyleSheet,Image } from 'react-native'
 import React from 'react'
+import Profile from './Profile';
 
 
 const Header = () => {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Your Location</Text>
-        <Text style={styles.location}>Caracas, Venezuela</Text>
-        {/* tiene que cambiar a la ubicacion personal del usuario */}
+    
+        <View style={styles.locationContainer}>
         <Image style={styles.imageContainer}
         source={require('../assets/gps.png')} 
       />
+      <View style={styles.locationDetails}>
+        <Text style={styles.title}>Your Location</Text>
+        <Text style={styles.location}>Caracas, Venezuela</Text>
+        </View>
+        </View>
+        {/* tiene que cambiar a la ubicacion personal del usuario */}
+ 
+      <Profile/>
          
       </View>
     );
@@ -19,17 +27,24 @@ const Header = () => {
   const styles = StyleSheet.create({
     container: {
       width: '100%',
-      height: 40,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start'
+      height: 110,
+      flexDirection:"row",
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal:20,
+      marginTop:25,
       
+    },
+    locationContainer:{
+      flexDirection:"row",
+      alignItems:"center",
+
+
     },
     title: {
       color: '#000000',
       fontSize: 14,
       fontFamily:"SF",
-      top: -370,
-      left: 100,
       color:"#748289"
       
     },
@@ -37,17 +52,16 @@ const Header = () => {
         color: '#748289',
         fontSize: 19,
         fontFamily:"SF",
-        top: -365,
-        left: 100,
         color:"#000000"
       },
   imageContainer: {
     width: 28,
     height: 29,
-    position: 'absolute', 
-    top: -370, 
-    left: 30,
+    marginRight:30,
+
+
   },
+
       
     
   });

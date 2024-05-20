@@ -5,10 +5,9 @@ import Profile from '../header/Profile'
 
 export default function Likes() {
   return (
-    <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-      <Text>Likes</Text>
+    <View style={{flex: 1, alignItems: "center"}}>
       <Header />
-       <Profile />
+       <Text>Likes</Text>
     </View>
   )
 }
