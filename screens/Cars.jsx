@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView} from 'react-native'
+import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
 import img from '../assets/Img/carro1.png'
 import Header from '../header/Header'
 import React from 'react'
@@ -6,12 +6,14 @@ import img1 from '../assets/Img/carro2.png'
 import img2 from '../assets/Img/carro3.png'
 import img3 from '../assets/Img/hyundai-santa-fe.png'
 
+// import navegation from '../screens/InfoScreen.jsx';
 
 
 
 
 
-export default function Cars() {
+
+export default function Cars({navegation}) {
   return (
   
 // style={{flex: 1, alignItems: "center", justifyContent: "center"}}
@@ -23,21 +25,24 @@ export default function Cars() {
           <Text style={styles.headText}> Todos los Carros</Text>
 
           <ScrollView contentContainerStyle={styles.elementPallet}> 
+          <TouchableOpacity onPress={() => navegation}>
           {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
-            <View style={styles.element}>
-              {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
-                  <Text style={styles.infoSub}>Carro Automático</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>50$/day</Text>
-                  </Text>
+              <View style={styles.element}>
+                {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
+                    <View style={styles.infoArea}>
+                      <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
+                      <Text style={styles.infoSub}>Carro Automático</Text>
+                      <Text style={styles.infoPrice}>
+                        <Text style={styles.listAmount}>50$/day</Text>
+                      </Text>
+                      
+                    </View>
+                    <View style={styles.imageArea}>
+                      <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
+                    </View>
                   
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
+              </View>
+            </TouchableOpacity>
             <View style={styles.element}>
                 <View style={styles.infoArea}>
                   <Text style={styles.infoTittle}>Mitsubishi Lancer 2006</Text>
