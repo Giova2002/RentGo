@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet,Image,Dimensions } from 'react-native';
+import { View, TextInput, StyleSheet,Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-
 
 const SearchBar = ({ onSubmit }) => {
   const [term, setTerm] = useState('');
@@ -48,9 +45,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     margin: 10,
-    width:windowWidth*0.68,
-    height:windowHeight*0.07,
-    
+    width:292,
+    height:64
   },
   input: {
     flex: 1,
@@ -58,26 +54,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   image:{
-    width:windowWidth*0.068,
-    height:windowHeight*0.028,
+    width:26,
+    height:26,
 
   },
   filters:{
-    width:windowWidth*0.17,
-    height:windowHeight*0.07,
+    width:65,
+    height:64,
     backgroundColor:"#EBAD36",
     borderRadius:9,
     alignItems:"center",
-    justifyContent:"center",
-
+    justifyContent:"center"
 
   },
   imageFilter:{
-    width:windowWidth*0.08,
-    height:windowHeight*0.04,
-    
-    
-    
+    width:30,
+    height:30,
   }
 
 });
