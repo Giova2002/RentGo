@@ -5,13 +5,11 @@ import React from 'react'
 import img1 from '../assets/Img/carro2.png'
 import img2 from '../assets/Img/carro3.png'
 import img3 from '../assets/Img/hyundai-santa-fe.png'
+import SearchBar from '../search/SearchBar.jsx'
+
+
 
 // import navegation from '../screens/InfoScreen.jsx';
-
-
-
-
-
 
 export default function Cars({navegation}) {
   return (
@@ -19,7 +17,9 @@ export default function Cars({navegation}) {
 // style={{flex: 1, alignItems: "center", justifyContent: "center"}}
     <View> 
       
-        <Header style={styles.header}/>
+        <Header/>
+        <Text style={styles.tittle} >Renta Un Carro</Text>
+        <SearchBar/>
 
         <View style={styles.listSeccion}>
           <Text style={styles.headText}> Todos los Carros</Text>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     // marginTop: 10,
     alignItems: 'center',
     // flexGrow: 1,
-    height: 500, // cambio el largo de toda la seccion
+    height: 450, // cambio el largo de toda la seccion
   
   },
   headText:{
@@ -229,6 +229,19 @@ const styles = StyleSheet.create({
     width: 180,
     height: 100,
   },
+
+  tittle:{
+    fontFamily:"SF",
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#000000',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0.1,
+    paddingLeft: 28,
+    
+
+  }
 
 
   
