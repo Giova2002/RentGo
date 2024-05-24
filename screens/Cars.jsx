@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
       // marginTop: 10,
       alignItems: 'center',
       // flexGrow: 1,
-      height: windowHeight * 0.46, // cambio el largo de toda la seccion
+      height: windowHeight * 0.57, // cambio el largo de toda la seccion
     
     },
     headText:{
