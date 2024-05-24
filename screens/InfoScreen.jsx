@@ -1,13 +1,26 @@
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+// import img1 from '../assets/Img/arrow.png'
+
+const back = require("../assets/Img/arrow.png");
 
 
-export default function InfoScreen() {
+export default function InfoScreen({navigation}) {
 return (
 <SafeAreaView style={styles.safeArea}>
 <View style={styles.container}>
 <View style={styles.headerSection}>
-<Text style={styles.HeaderText}>Detalles</Text>
+    <View>
+    <Text style={styles.HeaderText}>Detalles</Text>
+    <TouchableOpacity
+    onPress={() => navigation.goBack()}
+    activeOpacity={0.9}>
+    <Image  source={back} resizeMode="contain" style={styles.arrow} />
+    </TouchableOpacity>
+    
+    
+    </View>
+
 </View>
 <View style={styles.imageSection}>
 <View style={{ width: 350, height: 200}}>
@@ -76,8 +89,9 @@ width: 25,
 },
 HeaderText: {
 fontSize: 20,
-marginLeft: 120,
-marginTop: 10,
+marginLeft: 130,
+top: 21,
+// marginTop: 4,
 fontWeight: "500",
 },
 faceIconStyle: {
@@ -167,4 +181,9 @@ height: 150,
 alignSelf: "center",
 marginTop:15,
 },
+
+arrow:{
+
+}
 });
+

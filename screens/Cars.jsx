@@ -26,9 +26,11 @@ export default function Cars({navigation}) {
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
           <TouchableOpacity 
+          style={styles.element}
+          
           onPress={() => navigation.navigate('Info')}>
           {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
-              <View style={styles.element}>
+              {/* <View style={styles.element}> */}
                 {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
                     <View style={styles.infoArea}>
                       <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
@@ -42,7 +44,7 @@ export default function Cars({navigation}) {
                       <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
                     </View>
                   
-              </View>
+              {/* </View> */}
             </TouchableOpacity>
             <View style={styles.element}>
                 <View style={styles.infoArea}>
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
       // marginTop: 10,
       alignItems: 'center',
       // flexGrow: 1,
-      height: windowHeight * 0.53, // cambio el largo de toda la seccion
+      height: windowHeight * 0.46, // cambio el largo de toda la seccion
     
     },
     headText:{

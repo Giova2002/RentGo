@@ -26,7 +26,10 @@ const screenOptions = {
 
 function Car() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    screenOptions={{
+      headerShown: false
+    }}>
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
     </Stack.Navigator>
