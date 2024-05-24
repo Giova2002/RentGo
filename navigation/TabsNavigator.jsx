@@ -2,11 +2,12 @@ import React from 'react';
 import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, View } from 'react-native';
-
-
+import InfoScreen from '../screens/InfoScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 const screenOptions = {
   tabBarShowLabel:false,
   headerShown: false,
@@ -21,6 +22,15 @@ const screenOptions = {
     borderRadius: 15
   }
 
+}
+
+function Car() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Cars" component={Cars} />
+      <Stack.Screen name="Info" component={InfoScreen} />
+    </Stack.Navigator>
+  )
 }
 
 export default TabsNavigator = props =>{
@@ -67,7 +77,7 @@ export default TabsNavigator = props =>{
         />
         <Tab.Screen
          name='Cars' 
-         component={Cars}
+         component={Car}
          options={{
           tabBarIcon: ({focused})=>{
             return(

@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'r
 import React from 'react'
 
 
-export default function MyCarsOnRent() {
+export default function InfoScreen() {
 return (
 <SafeAreaView style={styles.safeArea}>
 <View style={styles.container}>
@@ -12,7 +12,7 @@ return (
 <View style={styles.imageSection}>
 <View style={{ width: 350, height: 200}}>
 <Image
-source={require('../assets/bmw.png')}
+source={require('../assets/Img/carro1.png')}
 style={styles.image}
 />
 </View>
