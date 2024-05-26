@@ -5,7 +5,7 @@ import React from 'react'
 const back = require("../assets/Img/arrow.png");
 
 
-export default function InfoScreen({navigation}) {
+export default function InfoScreen({ navigation, img }) {
 return (
 <SafeAreaView style={styles.safeArea}>
 <View style={styles.container}>
@@ -23,12 +23,12 @@ return (
 
 </View>
 <View style={styles.imageSection}>
-<View style={{ width: 350, height: 200}}>
-<Image
-source={require('../assets/Img/carro1.png')}
-style={styles.image}
-/>
-</View>
+    <View style={{ width: 350, height: 200}}>
+        <Image
+        source={require('../assets/Img/carro1.png')}
+        style={styles.image}
+        />
+    </View>
 </View>
 <View style={styles.headSection}>
 <View style={styles.topTextArea}>

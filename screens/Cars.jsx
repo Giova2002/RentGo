@@ -9,6 +9,7 @@ import img2 from '../assets/Img/carro3.png'
 import img3 from '../assets/Img/hyundai-santa-fe.png'
 import SearchBar from '../search/SearchBar.jsx'
 import info from '../screens/InfoScreen.jsx'
+import Card from '../components/Card.jsx';
 // import navegation from '../screens/InfoScreen.jsx';
 
 export default function Cars({navigation}) {
@@ -25,81 +26,33 @@ export default function Cars({navigation}) {
           <Text style={styles.headText}> Todos los Carros</Text>
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
-          <TouchableOpacity 
-          style={styles.element}
-          
-          onPress={() => navigation.navigate('Info')}>
-          {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
-              {/* <View style={styles.element}> */}
-                {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
-                    <View style={styles.infoArea}>
-                      <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
-                      <Text style={styles.infoSub}>Carro Automático</Text>
-                      <Text style={styles.infoPrice}>
-                        <Text style={styles.listAmount}>50$/day</Text>
-                      </Text>
-                      
-                    </View>
-                    <View style={styles.imageArea}>
-                      <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
-                    </View>
-                  
-              {/* </View> */}
-            </TouchableOpacity>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Mitsubishi Lancer 2006</Text>
-                  <Text style={styles.infoSub}>Carro Sincrónico</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>30$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img1} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Toyota Fortuner 2008</Text>
-                  <Text style={styles.infoSub}>Carro Sincrónico</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>70$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img2} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
-                  <Text style={styles.infoSub}>Carro Automático</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>60$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
-                  <Text style={styles.infoSub}>Carro Automático</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>60$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-           
+
+            <Card navigation={navigation} img={img} title={'Toyota Corolla 2006'} price={'50$/day'} infoSub={'Carro Automático'}/>
+            <Card navigation={navigation} img={img1} title={'Mitsubishi Lancer 2006'} price={'30$/day'} infoSub={'Carro Sincrónico'}/>          
+            <Card navigation={navigation} img={img2} title={'Toyota Fortuner 2008'} price={'70$/day'} infoSub={'Carro Sincrónico'}/>            
+            <Card navigation={navigation} img={img3} title={'Hyndai 2006'} price={'60$/day'} infoSub={'Carro Automático'}/>
+
+            {/*<TouchableOpacity 
+            style={styles.element}
             
+            onPress={() => navigation.navigate('Info')}>*/}
+            {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
+                {/* <View style={styles.element}> */}
+                  {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
+                      {/*<View style={styles.infoArea}>
+                        <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
+                        <Text style={styles.infoSub}>Carro Automático</Text>
+                        <Text style={styles.infoPrice}>
+                          <Text style={styles.listAmount}>50$/day</Text>
+                        </Text>
+                        
+                      </View>
+                      <View style={styles.imageArea}>
+                        <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
+                      </View>
+                    
+                
+            </TouchableOpacity>*/}                        
 
           </ScrollView>
         </View>
@@ -138,7 +91,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       // flexGrow: 1,
       height: windowHeight * 0.57, // cambio el largo de toda la seccion
-    
+
     },
     headText:{
       // position: 'absolute',
@@ -168,9 +121,8 @@ const styles = StyleSheet.create({
       flexGrow: 1,
       // alignItems: 'center',
       // paddingTop: 30, // Ajusta el espaciado superior si es necesario
-      // paddingBottom: 30,
-      
-      
+      // paddingBottom: 30,      
+      paddingBottom: 40,
     },
   
     element:{
