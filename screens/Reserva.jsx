@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable } from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows } from '@fortawesome/free-solid-svg-icons'
 
 
-export default Reserva = () => {
+export default Reserva = ({navigation}) => {
 
   const [capturedImage, setCapturedImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -39,10 +39,20 @@ export default Reserva = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
+      
+      <View style={styles.arrow}>
+        <TouchableOpacity          
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.9}>
+          <Image  source={require("../assets/Img/arrow.png")} resizeMode="contain" style={{height:30}}/>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.header}>        
         <Image source={require('../assets/fortuner.png')} style={styles.image} />
       </View>
-      <View style={styles.details}>
+      
+      <View style={styles.details}>        
         <Text style={styles.label}>Reservar</Text>
 
         <TextInput style={styles.input} placeholder="Nombre Completo" />
@@ -93,7 +103,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center', 
-    marginTop: 40,
+    marginTop: 10,
   },
   image: {
     width: '65%',
@@ -152,4 +162,9 @@ const styles = StyleSheet.create({
     height: 85,
     alignSelf: 'center',
   },
+  arrow: {
+    top: 50,
+    left: 20,
+    position: 'fixed',
+  }
 });

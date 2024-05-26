@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se i
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, View } from 'react-native';
 import InfoScreen from '../screens/InfoScreen';
+import Reserva from '../screens/Reserva';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,6 +33,7 @@ function Car() {
     }}>
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
+      <Stack.Screen name="Reserva" component={Reserva} />
     </Stack.Navigator>
   )
 }

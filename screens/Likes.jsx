@@ -8,7 +8,7 @@ export default function Likes() {
   return (
     <View style={{flex: 1, alignItems: "center"}}>
       <Header />
-       <Text>Likes</Text>
+      <Text>Likes</Text>
     </View>
   )
 }

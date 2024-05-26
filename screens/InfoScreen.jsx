@@ -59,7 +59,7 @@ Detalles: Ninguno
 </Text>
 </View>
 </View>
-<TouchableOpacity style={styles.rentButton}>
+<TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva')}>
 <Text style={styles.rentButtonText}>Reservar</Text>
 </TouchableOpacity>
 </View>
