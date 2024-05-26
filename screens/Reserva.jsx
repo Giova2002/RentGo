@@ -1,9 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable } from 'react-native';
+import * as ImagePicker from 'react-native-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows } from '@fortawesome/free-solid-svg-icons'
 
+
 export default Reserva = () => {
+
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openCamera = async () => {
+    const result = await ImagePicker.launchCamera();
+    setCapturedImage(result?.assets[0]?.uri);
+  }
+
+  const handleImagePick = async () => {
+    let result = await ImagePicker.launchImageLibrary({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true
+    });
+  
+    if (!result.cancelled) {
+      const image = result.uri;
+      setSelectedImage(image);
+    }
+  };
+  
+
+  const handleTakePhoto = async () => {
+    let result = await ImagePicker.launchCamera();
+  
+    if (!result.cancelled) {
+      const image = result.uri;
+      setCapturedImage(image);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -15,15 +48,18 @@ export default Reserva = () => {
         <TextInput style={styles.input} placeholder="Nombre Completo" />
         <TextInput style={styles.input} placeholder="Cédula Identidad" />
 
-        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={() => handleAttachId()}>
+        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={openCamera}>
             <Text style={{ color: '#000000', fontSize: 16}}>Anexar Cédula</Text>
         </Pressable>
+        {capturedImage && <Image source={{ uri: capturedImage }} />}
 
-        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={() => handleAttachLicense()}>
+
+        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakePhoto}>
             <Text style={{ color: '#000000', fontSize: 16}}>Anexar Licencia</Text>
         </Pressable>
+        {selectedImage && <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />}
         
-        <Text style={[{marginTop: 20}, styles.label]}>Método de Pago</Text>
+        <Text style={[{marginTop: 20}, styles.label]}>Método de Pago</Text> 
 
         <View style={styles.containerPago}>
             <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.pagosButton,]}>
@@ -56,7 +92,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   header: {
-    alignItems: 'center',
+    alignItems: 'center', 
     marginTop: 40,
   },
   image: {
