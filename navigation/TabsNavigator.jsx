@@ -1,5 +1,5 @@
 import React from 'react';
-import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
+import {Home,Likes,Cars,MyCarsOnRent,AddCar,Login} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { StyleSheet, View } from 'react-native';

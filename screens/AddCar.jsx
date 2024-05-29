@@ -4,7 +4,7 @@ import React from 'react'
 export default function AddCar() {
   return (
     <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-      <Text>AddCar</Text>
+      <Text>Les toca</Text>
     </View>
   )
 }
