@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Image, Dimensions, TouchableOpacity, Text, Modal, Animated, Easing, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Svg, { Rect } from 'react-native-svg';
+import { useFonts } from "expo-font";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -110,7 +111,7 @@ onSubmit(term);
             <ScrollView horizontal={false} showsVerticalScrollIndicator={false} >
               <View style={{ marginTop: 10, maxWidth:'100%' }} >
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Cantidad de Asientos</Text>
+                  <Text style={[styles.title]}>Cantidad de Asientos</Text>
                   <View style={styles.counterContainer}>
                     <TouchableOpacity onPress={decrementSeatCount} style={styles.counterButton}>
                       <Text style={styles.counterButtonText}>-</Text>
@@ -123,7 +124,7 @@ onSubmit(term);
                 </View>
                 
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Precio</Text>
+                  <Text style={[styles.title]}>Precio</Text>
                 </View>
                 {/* Gráfico de barras estático */}
                 <View style={styles.chartPriceContainer}>
@@ -166,7 +167,7 @@ onSubmit(term);
                 
                 {/* <TouchableOpacity onPress={() => console.log("Marca")} style={styles.option}> */}
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Marca</Text>
+                  <Text style={[styles.title]}>Marca</Text>
                   </View>
                 {/* </TouchableOpacity> */}
                 <View style={styles.brandContainer}>
@@ -175,7 +176,7 @@ onSubmit(term);
                       key={index}
                       style={[
                         styles.brandItem,
-                        selectedBrands.includes(brand) && { backgroundColor: '#EBAD36' }
+                        selectedBrands.includes(brand) && { backgroundColor: '#EBAD36' } 
                       ]}
                       onPress={() => toggleBrandSelection(brand)}
                     >
@@ -186,7 +187,7 @@ onSubmit(term);
                 
                 {/* <TouchableOpacity onPress={() => console.log("Tipo")} style={styles.option}> */}
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Tipo</Text>
+                  <Text style={[styles.title]}>Tipo</Text>
                   </View>
                 {/* </TouchableOpacity> */}
 
@@ -237,11 +238,13 @@ const styles = StyleSheet.create({
     margin: 10,
     width: windowWidth * 0.68,
     height: windowHeight * 0.07,
+    fontFamily:"Raleway_700Bold"
   },
   input: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 18,
+    fontSize: 15,
+    fontFamily:"Raleway_700Bold"
   },
   image: {
     width: windowWidth * 0.068,
@@ -276,9 +279,10 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   title: {
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold",
     fontSize: 18,
     marginBottom: 10,
+    
   },
   option: {
     paddingVertical: windowHeight*0.02,
@@ -286,10 +290,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     
+    
   },
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   counterButton: {
     width: windowWidth * 0.07,
@@ -299,22 +305,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     marginHorizontal: 5,
+
   },
   counterButtonText: {
     fontSize: 20,
     color: '#000000',
+    fontFamily:"Raleway_700Bold"
   },
   counterText: {
-    fontSize: 18,
+    fontSize: 17,
+    fontFamily:"Raleway_700Bold"
   },
   chartContainer: {
     alignItems: 'center', 
-    marginBottom: 10
+    marginBottom: 10,
+    
   },
   chartPriceContainer: {
     flexDirection: 'column', 
     alignItems: 'center',
     marginBottom: 10,
+    
   },
   priceRangeContainer: {
     flexDirection: 'row',
@@ -332,6 +343,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 5,
     paddingHorizontal: 5,
+    fontFamily:"Raleway_700Bold"
   },
   closeButton: {
     position: 'absolute',
@@ -339,6 +351,7 @@ const styles = StyleSheet.create({
     left: 20,
   },
   closeButtonText: {
+    fontFamily:"Raleway_700Bold",
     fontSize: 18,
     color: '#000000',
   },
@@ -365,7 +378,7 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold",
     color: '#000000',
   },
   typeContainer: {
@@ -380,10 +393,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 5,
+    
   },
   typeButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold"
   },
 });
 
