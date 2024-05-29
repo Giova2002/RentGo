@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Image, Dimensions, TouchableOpacity, Text, Modal, Animated, Easing, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Svg, { Rect } from 'react-native-svg';
+import { useFonts } from "expo-font";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -14,14 +15,15 @@ const SearchBar = ({ onSubmit }) => {
   const [selectedBrands, setSelectedBrands] = useState([]); 
   const [automaticSelected, setAutomaticSelected] = useState(false); 
   const [manualSelected, setManualSelected] = useState(false); 
+  const [selectedLocations, setSelectedLocations] = useState([]); 
 
   const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
 
-const handleSubmit = () => {
-if (term.trim() !== '') {
-onSubmit(term);
-}
-};
+  const handleSubmit = () => {
+    if (term.trim() !== '') {
+      onSubmit(term);
+    }
+  };
 
   const incrementSeatCount = () => {
     if (seatCount < 9) {
@@ -62,6 +64,14 @@ onSubmit(term);
     }
   };
 
+  const toggleLocationSelection = (location) => {
+    if (selectedLocations.includes(location)) {
+      setSelectedLocations(selectedLocations.filter(selectedLocation => selectedLocation !== location));
+    } else {
+      setSelectedLocations([...selectedLocations, location]);
+    }
+  };
+
   const handleAutomaticPress = () => {
     setAutomaticSelected(true);
     setManualSelected(false);
@@ -79,6 +89,7 @@ onSubmit(term);
   const barData = Array.from({ length: numberOfBars }, (_, index) => minValue + ((maxValue - minValue) / numberOfBars) * index);
 
   const brands = ['Toyota', 'Chevrolet', 'Kia', 'Hyundai', 'Ford', 'Mitsubishi'];
+  const locations = ['Caracas', 'Maracay', 'Barquisimeto', 'Guarenas', 'Porlamar'];
 
   return (
     <View style={styles.container}>
@@ -110,7 +121,7 @@ onSubmit(term);
             <ScrollView horizontal={false} showsVerticalScrollIndicator={false} >
               <View style={{ marginTop: 10, maxWidth:'100%' }} >
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Cantidad de Asientos</Text>
+                  <Text style={[styles.title]}>Cantidad de Asientos</Text>
                   <View style={styles.counterContainer}>
                     <TouchableOpacity onPress={decrementSeatCount} style={styles.counterButton}>
                       <Text style={styles.counterButtonText}>-</Text>
@@ -123,9 +134,9 @@ onSubmit(term);
                 </View>
                 
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Precio</Text>
+                  <Text style={[styles.title]}>Precio</Text>
                 </View>
-                {/* Gráfico de barras estático */}
+               
                 <View style={styles.chartPriceContainer}>
                   <View style={styles.chartContainer}>
                     <Svg height="100" width={windowWidth * 0.8}>
@@ -166,8 +177,8 @@ onSubmit(term);
                 
                 {/* <TouchableOpacity onPress={() => console.log("Marca")} style={styles.option}> */}
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Marca</Text>
-                  </View>
+                  <Text style={[styles.title]}>Marca</Text>
+                </View>
                 {/* </TouchableOpacity> */}
                 <View style={styles.brandContainer}>
                   {brands.map((brand, index) => (
@@ -175,24 +186,42 @@ onSubmit(term);
                       key={index}
                       style={[
                         styles.brandItem,
-                        selectedBrands.includes(brand) && { backgroundColor: '#EBAD36' }
+                        selectedBrands.includes(brand) && { backgroundColor: '#EBAD36' } 
                       ]}
                       onPress={() => toggleBrandSelection(brand)}
                     >
                       <Text style={styles.brandText}>{brand}</Text>
-                      </TouchableOpacity>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.option}>
+                  <Text style={[styles.title]}>Ubicación</Text>
+                </View>
+                <View style={styles.locationContainer}>
+                  {locations.map((location, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.locationItem,
+                        selectedLocations.includes(location) && { backgroundColor: '#EBAD36' } 
+                      ]}
+                      onPress={() => toggleLocationSelection(location)}
+                    >
+                      <Text style={styles.locationText}>{location}</Text>
+                    </TouchableOpacity>
                   ))}
                 </View>
                 
+                
+                
                 {/* <TouchableOpacity onPress={() => console.log("Tipo")} style={styles.option}> */}
                 <View style={styles.option}>
-                  <Text style={[styles.title, styles.boldText]}>Tipo</Text>
-                  </View>
+                  <Text style={[styles.title]}>Tipo</Text>
+                </View>
                 {/* </TouchableOpacity> */}
 
                 <View style={styles.typeContainer}>
                   <TouchableOpacity 
-
                     style={[
                       styles.typeButton, 
                       automaticSelected && { backgroundColor: '#EBAD36' } 
@@ -212,6 +241,11 @@ onSubmit(term);
                   </TouchableOpacity>
                 </View>
 
+                
+                
+                <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
+                  <Text style={styles.searchButtonText}>Buscar</Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
           </Animated.View>
@@ -237,11 +271,13 @@ const styles = StyleSheet.create({
     margin: 10,
     width: windowWidth * 0.68,
     height: windowHeight * 0.07,
+    fontFamily:"Raleway_700Bold"
   },
   input: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 18,
+    fontSize: 15,
+    fontFamily:"Raleway_700Bold"
   },
   image: {
     width: windowWidth * 0.068,
@@ -276,9 +312,10 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   title: {
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold",
     fontSize: 18,
     marginBottom: 10,
+    
   },
   option: {
     paddingVertical: windowHeight*0.02,
@@ -286,10 +323,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     
+    
   },
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   counterButton: {
     width: windowWidth * 0.07,
@@ -299,22 +338,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     marginHorizontal: 5,
+
   },
   counterButtonText: {
     fontSize: 20,
     color: '#000000',
+    fontFamily:"Raleway_700Bold"
   },
   counterText: {
-    fontSize: 18,
+    fontSize: 17,
+    fontFamily:"Raleway_700Bold"
   },
   chartContainer: {
     alignItems: 'center', 
-    marginBottom: 10
+    marginBottom: 10,
+    
   },
   chartPriceContainer: {
     flexDirection: 'column', 
     alignItems: 'center',
     marginBottom: 10,
+    
   },
   priceRangeContainer: {
     flexDirection: 'row',
@@ -332,6 +376,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 5,
     paddingHorizontal: 5,
+    fontFamily:"Raleway_700Bold"
   },
   closeButton: {
     position: 'absolute',
@@ -339,6 +384,7 @@ const styles = StyleSheet.create({
     left: 20,
   },
   closeButtonText: {
+    fontFamily:"Raleway_700Bold",
     fontSize: 18,
     color: '#000000',
   },
@@ -365,7 +411,7 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold",
     color: '#000000',
   },
   typeContainer: {
@@ -380,10 +426,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 5,
+    
   },
   typeButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:"Raleway_700Bold"
+  },
+  locationContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  locationItem: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '48%',
+    alignItems: 'center',
+  },
+  locationText: {
+    fontSize: 16,
+    fontFamily:"Raleway_700Bold",
+    color: '#000000',
+  },
+  searchButton: {
+    backgroundColor: '#1C252E',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 5,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  searchButtonText: {
+    fontSize: 16,
+    fontFamily:"Raleway_700Bold",
+    color: '#FFFFFF',
   },
 });
 
