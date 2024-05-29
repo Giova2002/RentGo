@@ -15,6 +15,7 @@ const SearchBar = ({ onSubmit }) => {
   const [selectedBrands, setSelectedBrands] = useState([]); 
   const [automaticSelected, setAutomaticSelected] = useState(false); 
   const [manualSelected, setManualSelected] = useState(false); 
+  const [selectedLocations, setSelectedLocations] = useState([]); 
 
   const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
 
@@ -63,6 +64,14 @@ const SearchBar = ({ onSubmit }) => {
     }
   };
 
+  const toggleLocationSelection = (location) => {
+    if (selectedLocations.includes(location)) {
+      setSelectedLocations(selectedLocations.filter(selectedLocation => selectedLocation !== location));
+    } else {
+      setSelectedLocations([...selectedLocations, location]);
+    }
+  };
+
   const handleAutomaticPress = () => {
     setAutomaticSelected(true);
     setManualSelected(false);
@@ -80,6 +89,7 @@ const SearchBar = ({ onSubmit }) => {
   const barData = Array.from({ length: numberOfBars }, (_, index) => minValue + ((maxValue - minValue) / numberOfBars) * index);
 
   const brands = ['Toyota', 'Chevrolet', 'Kia', 'Hyundai', 'Ford', 'Mitsubishi'];
+  const locations = ['Caracas', 'Maracay', 'Barquisimeto', 'Guarenas', 'Porlamar'];
 
   return (
     <View style={styles.container}>
@@ -126,7 +136,7 @@ const SearchBar = ({ onSubmit }) => {
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Precio</Text>
                 </View>
-                {/* Gráfico de barras estático */}
+               
                 <View style={styles.chartPriceContainer}>
                   <View style={styles.chartContainer}>
                     <Svg height="100" width={windowWidth * 0.8}>
@@ -181,9 +191,28 @@ const SearchBar = ({ onSubmit }) => {
                       onPress={() => toggleBrandSelection(brand)}
                     >
                       <Text style={styles.brandText}>{brand}</Text>
-                      </TouchableOpacity>
+                    </TouchableOpacity>
                   ))}
                 </View>
+                <View style={styles.option}>
+                  <Text style={[styles.title]}>Ubicación</Text>
+                </View>
+                <View style={styles.locationContainer}>
+                  {locations.map((location, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.locationItem,
+                        selectedLocations.includes(location) && { backgroundColor: '#EBAD36' } 
+                      ]}
+                      onPress={() => toggleLocationSelection(location)}
+                    >
+                      <Text style={styles.locationText}>{location}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                
+                
                 
                 {/* <TouchableOpacity onPress={() => console.log("Tipo")} style={styles.option}> */}
                 <View style={styles.option}>
@@ -211,8 +240,9 @@ const SearchBar = ({ onSubmit }) => {
                     <Text style={styles.typeButtonText}>Carro Sincrónico</Text>
                   </TouchableOpacity>
                 </View>
+
                 
-                {/* Añadimos el botón de "Buscar" */}
+                
                 <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
                   <Text style={styles.searchButtonText}>Buscar</Text>
                 </TouchableOpacity>
@@ -401,6 +431,26 @@ const styles = StyleSheet.create({
   typeButtonText: {
     fontSize: 16,
     fontFamily:"Raleway_700Bold"
+  },
+  locationContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  locationItem: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '48%',
+    alignItems: 'center',
+  },
+  locationText: {
+    fontSize: 16,
+    fontFamily:"Raleway_700Bold",
+    color: '#000000',
   },
   searchButton: {
     backgroundColor: '#1C252E',
