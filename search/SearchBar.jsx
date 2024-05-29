@@ -17,11 +17,11 @@ const SearchBar = ({ onSubmit }) => {
 
   const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
 
-  const handleSubmit = () => {
-    if (term.trim() !== '') {
-      onSubmit(term);
-    }
-  };
+const handleSubmit = () => {
+if (term.trim() !== '') {
+onSubmit(term);
+}
+};
 
   const incrementSeatCount = () => {
     if (seatCount < 9) {

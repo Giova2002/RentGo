@@ -7,6 +7,7 @@ import {useFonts} from 'expo-font';
 
 
 
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     SF: require("./assets/fonts/SF_Pro_Rounded_Regular.ttf"),
@@ -15,9 +16,11 @@ export default function App() {
   })
   return (
     <NavigationContainer>
+    
  
 
-<TabsNavigator/>
+      <TabsNavigator/>
+
 
     </NavigationContainer>
   );
