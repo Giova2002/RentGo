@@ -29,7 +29,7 @@ export default function Home() {
       <SearchBar />
       <View></View>
       <View style={styles.blueContainer}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.yellowRectangleContainer}>
           <View style={styles.yellowRectangle}></View>
         </View>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     position: "absolute",
-    bottom: 95,
+    bottom: windowWidth*0.18,
     paddingBottom: 10,
     flexDirection: "column",
     padding: 15,
@@ -144,6 +144,8 @@ const styles = StyleSheet.create({
   recommendationsContainer: {
     flexDirection: "column",
     marginTop: 30,
+    
+    paddingBottom:60
   },
   recommendationsCollection: {
     flexDirection: "row",

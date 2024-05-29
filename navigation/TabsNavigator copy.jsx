@@ -2,10 +2,8 @@ import React from 'react';
 import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 
 const Tab = createBottomTabNavigator();
