@@ -1,68 +1,115 @@
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import React ,{useEffect, useState } from 'react'
+import { firebase } from "../firebase/firebaseConfig"
+import { FlatList } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // import img1 from '../assets/Img/arrow.png'
+
 
 const back = require("../assets/Img/arrow.png");
 
 
 export default function InfoScreen({navigation}) {
+
+const [loading, setLoading] = useState(true); // Set loading to true on component mount
+const [auto, setAuto] = useState([]); // Initial empty array of users
+const autoRef = firebase.firestore().collection('auto')
+
+useEffect( () => {
+// const subscriber = firestore()
+autoRef
+.onSnapshot(querySnapshot => {
+const auto = [];
+querySnapshot.forEach((documentSnapshot) => {
+auto.push({
+...documentSnapshot.data(),
+key: documentSnapshot.id
+
+});
+});
+setAuto(auto);
+// setLoading(false);
+});
+// Unsubscribe from events when no longer in use
+// return () => subscriber();
+}, []);
+
+// if (loading) {
+// return <ActivityIndicator />;
+// }
 return (
+
 <SafeAreaView style={styles.safeArea}>
+<GestureHandlerRootView style={{ flex: 1 }}>
 <View style={styles.container}>
 <View style={styles.headerSection}>
-    <View>
-    <Text style={styles.HeaderText}>Detalles</Text>
-    <TouchableOpacity
-    onPress={() => navigation.goBack()}
-    activeOpacity={0.9}>
-    <Image  source={back} resizeMode="contain" style={styles.arrow} />
-    </TouchableOpacity>
-    
-    
-    </View>
+<View>
+<Text style={styles.HeaderText}>Detalles</Text>
+<TouchableOpacity
+onPress={() => navigation.goBack()}
+activeOpacity={0.9}>
+<Image source={back} resizeMode="contain" style={styles.arrow} />
+</TouchableOpacity>
+</View>
 
 </View>
+<FlatList
+data={auto}
+renderItem={({ item }) => (
+<View>
 <View style={styles.imageSection}>
-<View style={{ width: 350, height: 200}}>
+<View style={{ width: 350, height: 200 }}>
 <Image
-source={require('../assets/Img/carro1.png')}
+source={require('../assets/Img/carro1.png')} //falta cambiar
 style={styles.image}
 />
 </View>
 </View>
 <View style={styles.headSection}>
 <View style={styles.topTextArea}>
-<Text style={styles.makemodelText}>
-BMW X4 2024
-</Text>
+<View>
+<Text style={styles.makemodelText}>{item.modelo}</Text>
+</View>
+<View>
 <Text style={styles.price}>
-<Text style={styles.amount}>$150/día</Text>
+<Text style={styles.amount}>{item.precio}</Text>
 </Text>
+</View>
 </View>
 <Text style={styles.typetranText}>
-SUV Automático
+{item.tipo}
 </Text>
 </View>
-<Text style={styles.descriptionText}>El BMW X4 es un SUV, del segmento C, fabricado por BMW desde 2014. El BMW X4 se caracteriza por ser un modelo que comparte plataforma, habitáculo, tecnología y motorizaciones con el BMW X3, pero que ofrece una visión más deportiva y dinámica. </Text>
+<View>
+<Text style={styles.descriptionText}>
+{item.descripcion}
+</Text>
 <View style={styles.propertiesArea}>
 <View style={styles.level}>
 <Text style={styles.propertyText}>
-Marca: BMW{'\n'}
-Litros Gasolina: 40 litros{'\n'}
-Nro. Asientos: 5 {'\n'}
-Nro. Puertas: 4 {'\n'}
-Bluetooth: Sí {'\n'}
-Maleta: Sí {'\n'}
-Ubicación: Caracas {'\n'}
-Detalles: Ninguno
-
+Marca: {item.marca}{'\n'}
+Litros Gasolina: {item.litros_gas} Litros{'\n'}
+Nro. Asientos: {item.cant_asientos} {'\n'}
+Nro. Puertas: {item.nro_puertas} {'\n'}
+Bluetooth: {item.bluetooth} {'\n'}
+Maleta: {item.maleta} {'\n'}
+Ubicación: {item.ubicacion} {'\n'}
+Detalles: {item.detalles}
 </Text>
 </View>
 </View>
-<TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva')}>
+</View>
+<TouchableOpacity style={styles.rentButton}>
 <Text style={styles.rentButtonText}>Reservar</Text>
 </TouchableOpacity>
 </View>
+)}
+/>
+
+
+
+</View>
+</GestureHandlerRootView>
 </SafeAreaView>
 )
 }
@@ -186,4 +233,3 @@ arrow:{
 
 }
 });
-
