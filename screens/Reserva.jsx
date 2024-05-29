@@ -38,8 +38,10 @@ export default Reserva = ({navigation}) => {
   };
 
   return (
+
+    
     <ScrollView style={styles.container}>
-      
+
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
@@ -47,6 +49,8 @@ export default Reserva = ({navigation}) => {
           <Image  source={require("../assets/Img/arrow.png")} resizeMode="contain" style={{height:30}}/>
         </TouchableOpacity>
       </View>
+
+
 
       <View style={styles.header}>        
         <Image source={require('../assets/fortuner.png')} style={styles.image} />
