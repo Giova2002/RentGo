@@ -27,10 +27,10 @@ export default function Cars({navigation}) {
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
 
-            <Card navigation={navigation} img={img} title={'Toyota Corolla 2006'} price={'50$/day'} infoSub={'Carro Automático'}/>
-            <Card navigation={navigation} img={img1} title={'Mitsubishi Lancer 2006'} price={'30$/day'} infoSub={'Carro Sincrónico'}/>          
-            <Card navigation={navigation} img={img2} title={'Toyota Fortuner 2008'} price={'70$/day'} infoSub={'Carro Sincrónico'}/>            
-            <Card navigation={navigation} img={img3} title={'Hyndai 2006'} price={'60$/day'} infoSub={'Carro Automático'}/>
+            <Card navigation={navigation} image={img} title={'Toyota Corolla 2006'} price={'50$/day'} infoSub={'Carro Automático'}/>
+            <Card navigation={navigation} image={img1} title={'Mitsubishi Lancer 2006'} price={'30$/day'} infoSub={'Carro Sincrónico'}/>          
+            <Card navigation={navigation} image={img2} title={'Toyota Fortuner 2008'} price={'70$/day'} infoSub={'Carro Sincrónico'}/>            
+            <Card navigation={navigation} image={img3} title={'Hyndai 2006'} price={'60$/day'} infoSub={'Carro Automático'}/>
 
             {/*<TouchableOpacity 
             style={styles.element}

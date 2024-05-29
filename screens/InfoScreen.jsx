@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useEffect, useState } from 'react'
 // import img1 from '../assets/Img/arrow.png'
-
 const back = require("../assets/Img/arrow.png");
+const fortuner = require("../assets/fortuner.png");
 
+export default function InfoScreen({ navigation, image }) {
 
-export default function InfoScreen({ navigation, img }) {
+    console.log(image)
+    
 return (
 <SafeAreaView style={styles.safeArea}>
 <View style={styles.container}>
@@ -25,7 +28,7 @@ return (
 <View style={styles.imageSection}>
     <View style={{ width: 350, height: 200}}>
         <Image
-        source={require('../assets/Img/carro1.png')}
+        source={fortuner}
         style={styles.image}
         />
     </View>

@@ -2,10 +2,19 @@ import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpac
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-export default Card = ({ navigation, img, title, price, infoSub }) => {
+export default Card = ({ navigation, image, title, price, infoSub }) => {
+    const data = {
+        image: image,
+        title: title,
+        price: price,
+        infoSub: infoSub,
+    }
+
+    console.log(image)
+
     return(
         
-        <TouchableOpacity style={styles.element} onPress={() => navigation.navigate('Info', { img: img })}>
+        <TouchableOpacity style={styles.element} onPress={() => navigation.navigate('Info', { image })}>
           {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
               {/* <View style={styles.element}> */}
                 {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
@@ -19,7 +28,7 @@ export default Card = ({ navigation, img, title, price, infoSub }) => {
             </View>
 
             <View style={styles.imageArea}>
-                <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
+                <Image source={image} resizeMode='fill' style={styles.vehicleImage}/>
             </View>
                                 
         </TouchableOpacity>

@@ -1,42 +1,63 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity } from 'react-native';
-import * as ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows } from '@fortawesome/free-solid-svg-icons'
+import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 
 export default Reserva = ({navigation}) => {
 
-  const [capturedImage, setCapturedImage] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [IdImg, setIdImg] = useState(null);
+  const [LicenseImg, setLicenseImg] = useState(null);
 
-  const openCamera = async () => {
-    const result = await ImagePicker.launchCamera();
-    setCapturedImage(result?.assets[0]?.uri);
-  }
 
   const handleImagePick = async () => {
-    let result = await ImagePicker.launchImageLibrary({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true
+      allowsEditing: true,
     });
   
-    if (!result.cancelled) {
-      const image = result.uri;
-      setSelectedImage(image);
+    if (!result.canceled) {     
+      const image = result.assets[0].uri;
+      return image;
     }
   };
   
 
-  const handleTakePhoto = async () => {
-    let result = await ImagePicker.launchCamera();
+  const handleTakeIdPhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      }
+    );
   
-    if (!result.cancelled) {
-      const image = result.uri;
-      setCapturedImage(image);
+    if (!result.canceled) {
+      const image = result.assets[0].uri;
+      setIdImg(image);
+    }
+  };
+  const handleTakeLicenseImg = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      }
+    );
+  
+    if (!result.canceled) {
+      const image = result.assets[0].uri;
+      setLicenseImg(image);
     }
   };
 
+  const handlePickIdImg = async () => {
+    let result = await handleImagePick();    
+    setIdImg(result);
+  }  
+  const handlePickLicenseImg = async () => {
+    let result = await handleImagePick();
+    setLicenseImg(result);
+  }  
+ 
   return (
     <ScrollView style={styles.container}>
       
@@ -58,18 +79,49 @@ export default Reserva = ({navigation}) => {
         <TextInput style={styles.input} placeholder="Nombre Completo" />
         <TextInput style={styles.input} placeholder="Cédula Identidad" />
 
-        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={openCamera}>
-            <Text style={{ color: '#000000', fontSize: 16}}>Anexar Cédula</Text>
-        </Pressable>
-        {capturedImage && <Image source={{ uri: capturedImage }} />}
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical:10}}>
+          <View style={styles.anexarCont}>
+            
+            <Text style={{fontSize:16}}>Anexar Cédula</Text>        
 
+            <View style={{flexDirection:'row'}}>
+              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
+                <FontAwesomeIcon icon={faCamera} size={25} />
+              </Pressable>
 
-        <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakePhoto}>
-            <Text style={{ color: '#000000', fontSize: 16}}>Anexar Licencia</Text>
-        </Pressable>
-        {selectedImage && <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />}
+              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickIdImg}>
+                <FontAwesomeIcon icon={faUpload} size={25} />
+              </Pressable>          
+            </View>          
+
+          </View>       
+
+          {IdImg && <View style={styles.idContainer}><Image source={{ uri: IdImg }} style={styles.IdImage} /></View>} 
+
+        </View>               
         
-        <Text style={[{marginTop: 20}, styles.label]}>Método de Pago</Text> 
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10}}>
+          <View style={styles.anexarCont}>
+            
+            <Text style={{fontSize:16}}>Anexar Licencia</Text>        
+
+            <View style={{flexDirection:'row'}}>
+              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
+                <FontAwesomeIcon icon={faCamera} size={25} />
+              </Pressable>
+
+              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickLicenseImg}>
+                <FontAwesomeIcon icon={faUpload} size={25} />
+              </Pressable>          
+            </View>          
+
+          </View>         
+          
+          {LicenseImg && <View style={styles.idContainer}><Image source={{ uri: LicenseImg }} style={styles.IdImage} /></View>}
+
+        </View>              
+        
+        <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 
         <View style={styles.containerPago}>
             <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.pagosButton,]}>
@@ -135,10 +187,9 @@ const styles = StyleSheet.create({
   anexar: {
     padding: 15,
     borderRadius: 10,
-    marginVertical: 10,
     alignItems: 'center',
-    width: '70%',
-    alignSelf: 'center',
+    width: 60,
+    marginHorizontal: 5,
   },
   submitButton: {
     padding: 15,
@@ -165,6 +216,23 @@ const styles = StyleSheet.create({
   arrow: {
     top: 50,
     left: 20,
-    position: 'fixed',
+    position: 'fixed',  
+  },
+  IdImage: {
+    width: 300,
+    height: 200,
+    alignSelf: 'center',    
+    objectFit: 'contain',
+  },
+  idContainer: {
+    borderRadius: 10,
+    backgroundColor: '#D7D6D6',   
+    marginTop: 20,     
+    marginBottom: 10,
+  },
+  anexarCont: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',          
   }
 });
