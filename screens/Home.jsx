@@ -134,9 +134,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subtitle: {
+    fontFamily:"Raleway_700Bold",
     color: "#FDFDFD",
     fontSize: 25,
-    fontFamily:"Raleway_700Bold",
+    
   },
   recommendationsContainer: {
     flexDirection: "column",

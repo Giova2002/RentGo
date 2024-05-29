@@ -18,11 +18,11 @@ const SearchBar = ({ onSubmit }) => {
 
   const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
 
-const handleSubmit = () => {
-if (term.trim() !== '') {
-onSubmit(term);
-}
-};
+  const handleSubmit = () => {
+    if (term.trim() !== '') {
+      onSubmit(term);
+    }
+  };
 
   const incrementSeatCount = () => {
     if (seatCount < 9) {
@@ -168,7 +168,7 @@ onSubmit(term);
                 {/* <TouchableOpacity onPress={() => console.log("Marca")} style={styles.option}> */}
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Marca</Text>
-                  </View>
+                </View>
                 {/* </TouchableOpacity> */}
                 <View style={styles.brandContainer}>
                   {brands.map((brand, index) => (
@@ -188,12 +188,11 @@ onSubmit(term);
                 {/* <TouchableOpacity onPress={() => console.log("Tipo")} style={styles.option}> */}
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Tipo</Text>
-                  </View>
+                </View>
                 {/* </TouchableOpacity> */}
 
                 <View style={styles.typeContainer}>
                   <TouchableOpacity 
-
                     style={[
                       styles.typeButton, 
                       automaticSelected && { backgroundColor: '#EBAD36' } 
@@ -212,7 +211,11 @@ onSubmit(term);
                     <Text style={styles.typeButtonText}>Carro Sincrónico</Text>
                   </TouchableOpacity>
                 </View>
-
+                
+                {/* Añadimos el botón de "Buscar" */}
+                <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
+                  <Text style={styles.searchButtonText}>Buscar</Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
           </Animated.View>
@@ -398,6 +401,19 @@ const styles = StyleSheet.create({
   typeButtonText: {
     fontSize: 16,
     fontFamily:"Raleway_700Bold"
+  },
+  searchButton: {
+    backgroundColor: '#1C252E',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 5,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  searchButtonText: {
+    fontSize: 16,
+    fontFamily:"Raleway_700Bold",
+    color: '#FFFFFF',
   },
 });
 
