@@ -1,28 +1,36 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  Image,
-} from "react-native";
-import React from "react";
-import Header from "../header/Header";
-import SearchBar from "../search/SearchBar";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { firebase } from '../firebase/firebaseConfig'; 
+import Header from '../header/Header';
+import SearchBar from '../search/SearchBar';
+
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Home() {
-
-
   const marcas = Array.from({ length: 3 });
+  const [recommendedCars, setRecommendedCars] = useState([]);
+
+  useEffect(() => {
+    const fetchRecommendedCars = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection('auto').where('recomendado', '==', true).get();
+        const recommendedCarsData = snapshot.docs.map(doc => doc.data());
+        setRecommendedCars(recommendedCarsData);
+      } catch (error) {
+        console.error('Error fetching recommended cars:', error);
+      }
+    };
+
+    fetchRecommendedCars();
+  }, []);
+
   return (
     <View style={styles.home}>
       <Header />
       <Text style={styles.title}>Busca Tu Coche de Ensueño Para Conducir</Text>
       <SearchBar />
-      <View></View>
       <View style={styles.blueContainer}>
       <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.yellowRectangleContainer}>
@@ -39,42 +47,41 @@ export default function Home() {
         </View>
         <View style={styles.recommendationsContainer}>
           <Text style={styles.subtitle}>Recomendaciones</Text>
-          <View style={styles.recommendationsCollection}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.scrollContainer}
-            >
-              {Array.from({ length: 6 }, (_, index) => (
-                <View key={index} style={styles.carInfo}>
-                  <View style={styles.carRecommendationContainer}>
-                    <Image
-                      style={styles.imageContainer}
-                      source={require("../assets/Toyota-Car.png")}
-                    />
-                    <Text style={styles.carName}>Toyota Corolla 2016</Text>
-                    <Text style={styles.price}>80$/day</Text>
-                  </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContainer}
+          >
+            {recommendedCars.map((car, index) => (
+              <View key={index} style={styles.carInfo}>
+                <View style={styles.carRecommendationContainer}>
+                  <Image
+                    style={styles.imageContainer}
+                    source={{uri: car.imagenURL}}
+                  />
+                  <Text style={styles.carName}>{car.modelo}</Text>
+                  <Text style={styles.price}>{car.precio}$/día</Text>
                 </View>
-              ))}
-            </ScrollView>
-          </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
         </ScrollView>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   home: {
-    width: windowWidth,
-    height: windowHeight,
+    flex: 1,
+    backgroundColor: '#fff', 
   },
   title: {
     fontSize: 25,
     width: "70%",
     paddingLeft: 20,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold"
   },
   topBrandsContainer: {
     flexDirection: "column",
@@ -82,8 +89,6 @@ const styles = StyleSheet.create({
   },
   yellowRectangleContainer: {
     width: windowWidth,
-    position: "absolute",
-    top: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -97,13 +102,10 @@ const styles = StyleSheet.create({
   },
   blueContainer: {
     backgroundColor: "#1C252E",
-    width: windowWidth,
-    height: windowHeight * 0.55,
+    height: windowHeight * 0.6,
     borderRadius: 35,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    position: "absolute",
-    bottom: windowWidth*0.18,
     paddingBottom: 10,
     flexDirection: "column",
     padding: 15,
@@ -114,18 +116,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   scrollContainer: {
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // paddingVertical: 20,
-  },
-
-  marcasRow: {
-    // flexDirection: 'row',
-    // justifyContent: 'space-around',
-    // width: '100%',
-    // paddingHorizontal: 10,
-    // marginTop: 70,
+    paddingHorizontal: 10, 
   },
   brandsContainer: {
     width: 115,
@@ -134,67 +125,44 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subtitle: {
-    fontFamily:"Raleway_700Bold",
+    fontFamily: "Raleway_700Bold",
     color: "#FDFDFD",
     fontSize: 25,
-    
   },
   recommendationsContainer: {
-    flexDirection: "column",
     marginTop: 30,
-    
-    paddingBottom:60
-  },
-  recommendationsCollection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
   },
   carRecommendationContainer: {
     backgroundColor: "#2F3942",
     borderRadius: 10,
-    display:'flex',
-    position:'relative',
-    width:'100%',
-    height:126,
-    paddingHorizontal:10
-  
+    width: 182,
+    height: 126,
+    paddingHorizontal: 10,
+    marginRight: 10, 
+    
   },
   carInfo: {
-    marginRight: 35,
-    width: 182,
-    display:'flex',
-    height:'auto',
+    display: 'flex',
+    height: 'auto',
     overflow: 'hidden',
-    paddingTop: 50, 
-    
-  
-
- 
+    paddingTop: 50,
   },
   imageContainer: {
     height: 100,
-    width:'auto',
+    width: 'auto',
     objectFit: "contain",
-    marginTop:-50,
-
-
+    marginTop: -50,
   },
-  carName:{
-    fontSize:16,
-    color:"#FDFDFD",
-    marginBottom:6,
-    marginTop:10,
-    fontFamily:"Raleway_700Bold"
-    
-
+  carName: {
+    fontSize: 16,
+    color: "#FDFDFD",
+    marginBottom: 6,
+    marginTop: 10,
+    fontFamily: "Raleway_700Bold"
   },
-  price:{
-    color:"#EBAD36",
-    fontSize:14,
-    fontFamily:"Raleway_700Bold"
-
-
-
+  price: {
+    color: "#EBAD36",
+    fontSize: 14,
+    fontFamily: "Raleway_700Bold"
   }
 });

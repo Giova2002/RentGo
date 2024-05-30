@@ -15,6 +15,7 @@ import SearchBar from '../search/SearchBar.jsx'
 import info from '../screens/InfoScreen.jsx'
 // import navegation from '../screens/InfoScreen.jsx';
 
+
 export default function Cars({navigation}) {
 
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
