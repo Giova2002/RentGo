@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions} from 'react-native'
+import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator} from 'react-native'
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import {useEffect, useState } from 'react'
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     headText:{
       // position: 'absolute',
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
       fontSize: 20,
       fontWeight: 'bold',
       marginTop: 10,
@@ -132,9 +132,9 @@ const styles = StyleSheet.create({
       right: 100,
       fontWeight: "bold",
       color: '#000000',
-      textShadowColor: 'rgba(0, 0, 0, 0.5)',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 0.5,
+      // textShadowColor: 'rgba(0, 0, 0, 0.5)',
+      // textShadowOffset: { width: 1, height: 1 },
+      // textShadowRadius: 0.5,
     },
   
     elementPallet:{
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
       // justifyContent: 'center',
       // top: 4,
       // letf: 400,
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       // width: 340,
       width: windowWidth * 0.85,
       // height: 2000,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
       color: '#FDFDFD',
       fontSize: 14,
       fontWeight: 'bold',
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       numberOfLines: 1,
       // width: 150, // Ajusta el width según lo que necesites
       width: windowWidth * 0.85,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
       top: 14,
       color: '#77828B',
       fontSize: 9,
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       fontWeight: 'bold',
     },
   
@@ -198,20 +198,19 @@ const styles = StyleSheet.create({
       flex: 1,
       color: '#EBAD36',
       fontSize: 14,
-      fontFamily:"SF",
-      fontWeight: 'bold',
+      fontFamily:"Raleway_700Bold",
       position: "absolute",
       bottom: 0,
       
     },
   
     listAmount:{
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
     },
   
     imageArea:{
       left:15,
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
     },
   
     vehicleImage:{
@@ -223,13 +222,13 @@ const styles = StyleSheet.create({
     },
   
     tittle:{
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
       fontSize: 25,
       fontWeight: 'bold',
       color: '#000000',
-      textShadowColor: 'rgba(0, 0, 0, 0.5)',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 0.11,
+      // textShadowColor: 'rgba(0, 0, 0, 0.5)',
+      // textShadowOffset: { width: 1, height: 1 },
+      // textShadowRadius: 0.11,
       paddingLeft: 28,
       
   

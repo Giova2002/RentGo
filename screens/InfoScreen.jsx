@@ -14,12 +14,17 @@ export default function InfoScreen({ route, navigation }) {
 
   useEffect(() => {
     const fetchCar = async () => {
-      const carDoc = await autoRef.doc(carId).get();
-      if (carDoc.exists) {
-        setCar(carDoc.data());
+      try {
+        const carDoc = await autoRef.doc(carId).get();
+        if (carDoc.exists) {
+          setCar(carDoc.data());
+        } else {
+          console.error("Car not found!");
+        }
+      } catch (error) {
+        console.error("Error fetching car data:", error);
+      } finally {
         setLoading(false);
-      } else {
-        console.error("Car not found!");
       }
     };
 
@@ -27,11 +32,17 @@ export default function InfoScreen({ route, navigation }) {
   }, [carId]);
 
   if (loading) {
-    return <ActivityIndicator />;
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#EBAD36" />
+        <Text style={styles.cargando}>Cargando</Text>
+      </View>
+    );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
+        
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.headerSection}>
@@ -81,6 +92,7 @@ export default function InfoScreen({ route, navigation }) {
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity>
         </View>
+        
       </GestureHandlerRootView>
     </SafeAreaView>
   );
@@ -111,6 +123,7 @@ const styles = StyleSheet.create({
     marginLeft: 130,
     top: 21,
     fontWeight: "500",
+    fontFamily: 'Raleway_700Bold'
   },
   faceIconStyle: {
     width: 30,
@@ -133,13 +146,17 @@ const styles = StyleSheet.create({
   makemodelText: {
     fontSize: 20,
     fontWeight: "500",
+    fontFamily: 'Raleway_700Bold'
+    
   },
   price: {
     fontWeight: "400",
+    fontFamily: 'Raleway_700Bold'
   },
   amount: {
     fontWeight: "bold",
     color: "#EBAD36",
+    fontFamily: 'Raleway_700Bold'
   },
   typetranText: {
     marginTop: 1,
@@ -154,16 +171,19 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: "#696969",
     fontWeight: "500",
+    fontFamily: 'Raleway_400Regular'
   },
   propertiesText: {
     marginTop: 20,
     fontSize: 19,
     fontWeight: "500",
+    fontFamily: 'Raleway_400Regular'
   },
   propertiesArea: {
     marginTop: 20,
     flexDirection: "row",
     justifyContent: "flex-start",
+
   },
   level: {
     marginRight: 30,
@@ -171,10 +191,12 @@ const styles = StyleSheet.create({
   propertyText: {
     fontSize: 12,
     color: "#696969",
+    fontFamily: 'Raleway_400Regular'
   },
   valueText: {
     fontSize: 12,
     color: "black",
+    fontFamily: 'Raleway_400Regular'
   },
   rentButton: {
     marginTop: 5,
@@ -189,6 +211,7 @@ const styles = StyleSheet.create({
   rentButtonText: {
     color: "black",
     fontWeight: "500",
+    fontFamily: 'Raleway_700Bold'
   },
   image: {
     width: 300,
@@ -197,6 +220,17 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   arrow: {},
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center'},
+
+    cargando:{
+        alignSelf: "center",
+        color: 'black',
+        fontSize: '15',
+        fontFamily: 'Raleway_700Bold'
+
+    }
 });
 
 

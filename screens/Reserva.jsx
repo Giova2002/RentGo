@@ -1,14 +1,53 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 
-export default Reserva = ({navigation}) => {
+import { firebase } from "../firebase/firebaseConfig"
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+const back = require("../assets/Img/arrow.png");
+
+
+export default Reserva = ({route, navigation}) => {
 
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
+
+  // const { carId } = route.params;
+  // const [loading, setLoading] = useState(true);
+  // const [car, setCar] = useState(null);
+  // const autoRef = firebase.firestore().collection('auto');
+
+  // useEffect(() => {
+  //   const fetchCar = async () => {
+  //     try {
+  //       const carDoc = await autoRef.doc(carId).get();
+  //       if (carDoc.exists) {
+  //         setCar(carDoc.data());
+  //       } else {
+  //         console.error("Car not found!");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching car data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchCar();
+  // }, [carId]);
+
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loaderContainer}>
+  //       <ActivityIndicator size="large" color="#EBAD36" />
+  //       <Text style={styles.cargando}>Cargando</Text>
+  //     </View>
+  //   );
+  // }
+
 
 
   const handleImagePick = async () => {
@@ -61,20 +100,20 @@ export default Reserva = ({navigation}) => {
   return (
 
     
+    
     <ScrollView style={styles.container}>
-
+      <GestureHandlerRootView>
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
           activeOpacity={0.9}>
-          <Image  source={require("../assets/Img/arrow.png")} resizeMode="contain" style={{height:30}}/>
+          <Image  source={back} resizeMode="contain" style={{height:30}}/>
         </TouchableOpacity>
       </View>
 
-
-
       <View style={styles.header}>        
-        <Image source={require('../assets/fortuner.png')} style={styles.image} />
+        <Image source={back} style={styles.image} />
+        {/* {uri: car.imagenURL} */}
       </View>
       
       <View style={styles.details}>        
@@ -147,8 +186,10 @@ export default Reserva = ({navigation}) => {
         <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]}>
             <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
         </Pressable>
-
+      
       </View>
+      
+      </GestureHandlerRootView>
     </ScrollView>
   );
 };
