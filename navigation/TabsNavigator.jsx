@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se i
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import InfoScreen from '../screens/InfoScreen';
-import Reserva from '../screens/Reserva';
+import Reservas from '../screens/Reserva';
 
 
 const windowWidth = Dimensions.get("window").width;
@@ -37,7 +37,7 @@ function Car() {
     }}>
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
-      <Stack.Screen name="Reserva" component={Reserva} />
+      <Stack.Screen name="Reserva" component={Reservas} />
     </Stack.Navigator>
   )
 }

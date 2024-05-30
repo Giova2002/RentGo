@@ -4,6 +4,7 @@ import { firebase } from "../firebase/firebaseConfig"
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const back = require("../assets/Img/arrow.png");
+const fortuner = require("../assets/fortuner.png");
 
 export default function InfoScreen({ route, navigation }) {
   const { carId } = route.params;
@@ -43,7 +44,7 @@ export default function InfoScreen({ route, navigation }) {
           </View>
           <View style={styles.imageSection}>
             <View style={{ width: 350, height: 200 }}>
-              <Image source={require('../assets/Img/carro1.png')} style={styles.image} />
+              <Image source={{uri: car.imagenURL}} style={styles.image} />
             </View>
           </View>
           <View style={styles.headSection}>

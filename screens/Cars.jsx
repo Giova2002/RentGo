@@ -8,12 +8,17 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import img from '../assets/Img/carro1.png'
 import Header from '../header/Header'
 import React from 'react'
-import img1 from '../assets/Img/carro2.png'
+import img1 from '../assets/Img/carro2.png' //https://i.pinimg.com/originals/45/68/7a/45687a213158cccef7ecdc75005cfdd6.png //'../assets/Img/carro2.png' 
 import img2 from '../assets/Img/carro3.png'
 import img3 from '../assets/Img/hyundai-santa-fe.png'
 import SearchBar from '../search/SearchBar.jsx'
 import info from '../screens/InfoScreen.jsx'
+import Card from '../components/Card.jsx';
+
+const img4 = 'https://i.pinimg.com/originals/45/68/7a/45687a213158cccef7ecdc75005cfdd6.png '
 // import navegation from '../screens/InfoScreen.jsx';
+
+import Cards from '../components/Card.jsx'
 
 export default function Cars({navigation}) {
 
@@ -57,17 +62,15 @@ export default function Cars({navigation}) {
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
 
+          {/* <Card/> */}
+
          <FlatList 
          data={auto}
          renderItem={({ item }) => (
 
           <TouchableOpacity 
           style={styles.element}
-          //{cardId: item.key}
           onPress={() => navigation.navigate('Info', {carId: item.key } ) }>
-          {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
-              {/* <View style={styles.element}> */}
-                {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
                     <View style={styles.infoArea}>
                       <Text style={styles.infoTittle}>{item.modelo}</Text>
                       <Text style={styles.infoSub}>{item.tipo}</Text>
@@ -77,10 +80,9 @@ export default function Cars({navigation}) {
                       
                     </View>
                     <View style={styles.imageArea}>
-                      <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
+                      
+                      <Image source={{uri: item.imagenURL}} resizeMode='fill' style={styles.vehicleImage}/>
                     </View>
-                  
-              {/* </View> */}
             </TouchableOpacity>
          )}/>
 
@@ -94,12 +96,7 @@ export default function Cars({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    // container: {
-    //   flex: 1,
-    //   backgroundColor: 'pink',
-    //   alignItems: 'center',
-    //   justifyContent: 'center',
-    // },
+   
     textall:{
       flex:1,
       position: 'absolute',
@@ -123,7 +120,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       // flexGrow: 1,
       height: windowHeight * 0.57, // cambio el largo de toda la seccion
-    
+
     },
     headText:{
       // position: 'absolute',
@@ -153,9 +150,8 @@ const styles = StyleSheet.create({
       flexGrow: 1,
       // alignItems: 'center',
       // paddingTop: 30, // Ajusta el espaciado superior si es necesario
-      // paddingBottom: 30,
-      
-      
+      // paddingBottom: 30,      
+      paddingBottom: 40,
     },
   
     element:{
