@@ -1,6 +1,10 @@
 import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions} from 'react-native'
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+import {useEffect, useState } from 'react'
+import { firebase } from "../firebase/firebaseConfig"
+import { FlatList } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import img from '../assets/Img/carro1.png'
 import Header from '../header/Header'
 import React from 'react'
@@ -12,10 +16,37 @@ import info from '../screens/InfoScreen.jsx'
 // import navegation from '../screens/InfoScreen.jsx';
 
 export default function Cars({navigation}) {
-  return (
+
+  const [loading, setLoading] = useState(true); // Set loading to true on component mount
+  const [auto, setAuto] = useState([]); // Initial empty array of users
+  const autoRef = firebase.firestore().collection('auto')
+
+  useEffect( () => {
+
+    autoRef
+    .onSnapshot(querySnapshot => {
+    const auto = [];
+    
+    querySnapshot.forEach((documentSnapshot) => {
+    auto.push({
+    ...documentSnapshot.data(),
+    key: documentSnapshot.id
+    
+
+    });
+  });
   
-// style={{flex: 1, alignItems: "center", justifyContent: "center"}}
-    <View> 
+    setAuto(auto);
+
+  });
+
+  }, []);
+
+  return (
+    
+    
+
+    <GestureHandlerRootView> 
       
         <Header/>
         <Text style={styles.tittle} >Renta Un Carro</Text>
@@ -25,18 +56,23 @@ export default function Cars({navigation}) {
           <Text style={styles.headText}> Todos los Carros</Text>
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
+
+         <FlatList 
+         data={auto}
+         renderItem={({ item }) => (
+
           <TouchableOpacity 
           style={styles.element}
-          
-          onPress={() => navigation.navigate('Info')}>
+          //{cardId: item.key}
+          onPress={() => navigation.navigate('Info', {carId: item.key } ) }>
           {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
               {/* <View style={styles.element}> */}
                 {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
                     <View style={styles.infoArea}>
-                      <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
-                      <Text style={styles.infoSub}>Carro Automático</Text>
+                      <Text style={styles.infoTittle}>{item.modelo}</Text>
+                      <Text style={styles.infoSub}>{item.tipo}</Text>
                       <Text style={styles.infoPrice}>
-                        <Text style={styles.listAmount}>50$/day</Text>
+                        <Text style={styles.listAmount}>{item.precio}$/dia</Text>
                       </Text>
                       
                     </View>
@@ -46,64 +82,13 @@ export default function Cars({navigation}) {
                   
               {/* </View> */}
             </TouchableOpacity>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Mitsubishi Lancer 2006</Text>
-                  <Text style={styles.infoSub}>Carro Sincrónico</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>30$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img1} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Toyota Fortuner 2008</Text>
-                  <Text style={styles.infoSub}>Carro Sincrónico</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>70$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img2} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
-                  <Text style={styles.infoSub}>Carro Automático</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>60$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-            <View style={styles.element}>
-                <View style={styles.infoArea}>
-                  <Text style={styles.infoTittle}>Hyndai 2006</Text>
-                  <Text style={styles.infoSub}>Carro Automático</Text>
-                  <Text style={styles.infoPrice}>
-                    <Text style={styles.listAmount}>60$/day</Text>
-                  </Text>
-                  
-                </View>
-                <View style={styles.imageArea}>
-                  <Image source={img3} resizeMode='fill' style={styles.vehicleImage}/>
-                </View>
-            </View>
-           
-            
+         )}/>
 
           </ScrollView>
         </View>
-    </View>
+      
+        
+    </GestureHandlerRootView>
     
   )
 }
