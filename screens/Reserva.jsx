@@ -12,41 +12,47 @@ const back = require("../assets/Img/arrow.png");
 
 export default Reserva = ({route, navigation}) => {
 
+
+  
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
+  
 
-  // const { carId } = route.params;
-  // const [loading, setLoading] = useState(true);
-  // const [car, setCar] = useState(null);
-  // const autoRef = firebase.firestore().collection('auto');
+  const { carId } = route.params;
+  const [loading, setLoading] = useState(true);
+  const [car, setCar] = useState(null);
+  const autoRef = firebase.firestore().collection('auto');
 
-  // useEffect(() => {
-  //   const fetchCar = async () => {
-  //     try {
-  //       const carDoc = await autoRef.doc(carId).get();
-  //       if (carDoc.exists) {
-  //         setCar(carDoc.data());
-  //       } else {
-  //         console.error("Car not found!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching car data:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCar = async () => {
+      try {
+        const carDoc = await autoRef.doc(carId).get();
+        if (carDoc.exists) {
+          setCar(carDoc.data());
+        } else {
+          console.error("Car not found!");
+        }
+      } catch (error) {
+        console.error("Error fetching car data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchCar();
-  // }, [carId]);
+    fetchCar();
+  }, [carId]);
 
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loaderContainer}>
-  //       <ActivityIndicator size="large" color="#EBAD36" />
-  //       <Text style={styles.cargando}>Cargando</Text>
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#EBAD36" />
+        <Text style={styles.cargando}>Cargando</Text>
+      </View>
+    );
+  }
+
+  console.log("carId:", carId); 
+
 
 
 
@@ -112,7 +118,7 @@ export default Reserva = ({route, navigation}) => {
       </View>
 
       <View style={styles.header}>        
-        <Image source={back} style={styles.image} />
+        <Image source={{uri: car.imagenURL}} style={styles.image} />
         {/* {uri: car.imagenURL} */}
       </View>
       
@@ -279,5 +285,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',          
-  }
+  },
+
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center'},
+
+    cargando:{
+        alignSelf: "center",
+        color: 'black',
+        fontSize: '15',
+        fontFamily: 'Raleway_700Bold'
+
+    }
 });

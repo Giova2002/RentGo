@@ -40,6 +40,8 @@ export default function InfoScreen({ route, navigation }) {
     );
   }
 
+  
+
   return (
     <SafeAreaView style={styles.safeArea}>
         
@@ -88,7 +90,7 @@ export default function InfoScreen({ route, navigation }) {
               </View>
             </View>
           </View>
-          <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva')}>
+          <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva', { carId })}>
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity>
         </View>
