@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import CalendarComponent from '../components/CalendarComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,6 +10,7 @@ export default Reserva = ({navigation}) => {
 
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
 
 
   const handleImagePick = async () => {
@@ -121,6 +123,10 @@ export default Reserva = ({navigation}) => {
 
         </View>              
         
+        <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
+
+        <CalendarComponent />
+
         <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 
         <View style={styles.containerPago}>
@@ -234,5 +240,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',          
-  }
+  },
 });
