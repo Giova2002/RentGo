@@ -2,9 +2,12 @@ import { text } from '@fortawesome/fontawesome-svg-core';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Calendar, DateObject } from 'react-native-calendars';
+import calendarioEsp from './LocaleConfig';
 
 const CalendarComponent = () => {
-  
+    
+    calendarioEsp();    
+
   const [selectedRange, setSelectedRange] = useState({
     startDate: '',
     endDate: '',
