@@ -8,18 +8,13 @@ import {
 } from "react-native";
 import React from "react";
 import Header from "../header/Header";
-import Profile from "../header/Profile";
-import { useFonts } from "expo-font";
 import SearchBar from "../search/SearchBar";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Home() {
-  const [fontsLoaded] = useFonts({
-    SF: require("../assets/fonts/SF_Pro_Rounded_Regular.ttf"),
-    SF_Bold: require("../assets/fonts/SF-Pro-Rounded-Bold.ttf"),
-  });
+
 
   const marcas = Array.from({ length: 3 });
   return (
@@ -29,7 +24,7 @@ export default function Home() {
       <SearchBar />
       <View></View>
       <View style={styles.blueContainer}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.yellowRectangleContainer}>
           <View style={styles.yellowRectangle}></View>
         </View>
@@ -79,6 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     width: "70%",
     paddingLeft: 20,
+    fontFamily:"Raleway_700Bold"
   },
   topBrandsContainer: {
     flexDirection: "column",
@@ -107,7 +103,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     position: "absolute",
-    bottom: 95,
+    bottom: windowWidth*0.18,
     paddingBottom: 10,
     flexDirection: "column",
     padding: 15,
@@ -138,12 +134,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subtitle: {
+    fontFamily:"Raleway_700Bold",
     color: "#FDFDFD",
     fontSize: 25,
+    
   },
   recommendationsContainer: {
     flexDirection: "column",
     marginTop: 30,
+    
+    paddingBottom:60
   },
   recommendationsCollection: {
     flexDirection: "row",
@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     height:'auto',
     overflow: 'hidden',
     paddingTop: 50, 
+    
   
 
  
@@ -184,12 +185,14 @@ const styles = StyleSheet.create({
     color:"#FDFDFD",
     marginBottom:6,
     marginTop:10,
+    fontFamily:"Raleway_700Bold"
     
 
   },
   price:{
     color:"#EBAD36",
-    fontSize:14
+    fontSize:14,
+    fontFamily:"Raleway_700Bold"
 
 
 

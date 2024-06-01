@@ -1,22 +1,57 @@
-import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions} from 'react-native'
+import { View, Text, SafeAreaView , StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator} from 'react-native'
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+import {useEffect, useState } from 'react'
+import { firebase } from "../firebase/firebaseConfig"
+import { FlatList } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import img from '../assets/Img/carro1.png'
 import Header from '../header/Header'
 import React from 'react'
-import img1 from '../assets/Img/carro2.png'
+import img1 from '../assets/Img/carro2.png' //https://i.pinimg.com/originals/45/68/7a/45687a213158cccef7ecdc75005cfdd6.png //'../assets/Img/carro2.png' 
 import img2 from '../assets/Img/carro3.png'
 import img3 from '../assets/Img/hyundai-santa-fe.png'
 import SearchBar from '../search/SearchBar.jsx'
 import info from '../screens/InfoScreen.jsx'
 import Card from '../components/Card.jsx';
+
+const img4 = 'https://i.pinimg.com/originals/45/68/7a/45687a213158cccef7ecdc75005cfdd6.png '
 // import navegation from '../screens/InfoScreen.jsx';
 
+import Cards from '../components/Card.jsx'
+
 export default function Cars({navigation}) {
-  return (
+
+  const [loading, setLoading] = useState(true); // Set loading to true on component mount
+  const [auto, setAuto] = useState([]); // Initial empty array of users
+  const autoRef = firebase.firestore().collection('auto')
+
+  useEffect( () => {
+
+    autoRef
+    .onSnapshot(querySnapshot => {
+    const auto = [];
+    
+    querySnapshot.forEach((documentSnapshot) => {
+    auto.push({
+    ...documentSnapshot.data(),
+    key: documentSnapshot.id
+    
+
+    });
+  });
   
-// style={{flex: 1, alignItems: "center", justifyContent: "center"}}
-    <View> 
+    setAuto(auto);
+
+  });
+
+  }, []);
+
+  return (
+    
+    
+
+    <GestureHandlerRootView> 
       
         <Header/>
         <Text style={styles.tittle} >Renta Un Carro</Text>
@@ -27,47 +62,41 @@ export default function Cars({navigation}) {
 
           <ScrollView contentContainerStyle={styles.elementPallet} showsVerticalScrollIndicator={false}> 
 
-            <Card navigation={navigation} image={img} title={'Toyota Corolla 2006'} price={'50$/day'} infoSub={'Carro Automático'}/>
-            <Card navigation={navigation} image={img1} title={'Mitsubishi Lancer 2006'} price={'30$/day'} infoSub={'Carro Sincrónico'}/>          
-            <Card navigation={navigation} image={img2} title={'Toyota Fortuner 2008'} price={'70$/day'} infoSub={'Carro Sincrónico'}/>            
-            <Card navigation={navigation} image={img3} title={'Hyndai 2006'} price={'60$/day'} infoSub={'Carro Automático'}/>
+          {/* <Card/> */}
 
-            {/*<TouchableOpacity 
-            style={styles.element}
-            
-            onPress={() => navigation.navigate('Info')}>*/}
-            {/* colocar una funcion que agarre el ID de los carros para que los muestre */}
-                {/* <View style={styles.element}> */}
-                  {/* onPress={() => navigation.navigate('Info', { id: vehicle.id }) } */}
-                      {/*<View style={styles.infoArea}>
-                        <Text style={styles.infoTittle}>Toyota Corolla 2006</Text>
-                        <Text style={styles.infoSub}>Carro Automático</Text>
-                        <Text style={styles.infoPrice}>
-                          <Text style={styles.listAmount}>50$/day</Text>
-                        </Text>
-                        
-                      </View>
-                      <View style={styles.imageArea}>
-                        <Image source={img} resizeMode='fill' style={styles.vehicleImage}/>
-                      </View>
-                    
-                
-            </TouchableOpacity>*/}                        
+         <FlatList 
+         data={auto}
+         renderItem={({ item }) => (
+
+          <TouchableOpacity 
+          style={styles.element}
+          onPress={() => navigation.navigate('Info', {carId: item.key } ) }>
+                    <View style={styles.infoArea}>
+                      <Text style={styles.infoTittle}>{item.modelo}</Text>
+                      <Text style={styles.infoSub}>{item.tipo}</Text>
+                      <Text style={styles.infoPrice}>
+                        <Text style={styles.listAmount}>{item.precio}$/dia</Text>
+                      </Text>
+                      
+                    </View>
+                    <View style={styles.imageArea}>
+                      
+                      <Image source={{uri: item.imagenURL}} resizeMode='fill' style={styles.vehicleImage}/>
+                    </View>
+            </TouchableOpacity>
+         )}/>
 
           </ScrollView>
         </View>
-    </View>
+      
+        
+    </GestureHandlerRootView>
     
   )
 }
 
 const styles = StyleSheet.create({
-    // container: {
-    //   flex: 1,
-    //   backgroundColor: 'pink',
-    //   alignItems: 'center',
-    //   justifyContent: 'center',
-    // },
+   
     textall:{
       flex:1,
       position: 'absolute',
@@ -95,7 +124,7 @@ const styles = StyleSheet.create({
     },
     headText:{
       // position: 'absolute',
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
       fontSize: 20,
       fontWeight: 'bold',
       marginTop: 10,
@@ -103,9 +132,9 @@ const styles = StyleSheet.create({
       right: 100,
       fontWeight: "bold",
       color: '#000000',
-      textShadowColor: 'rgba(0, 0, 0, 0.5)',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 0.5,
+      // textShadowColor: 'rgba(0, 0, 0, 0.5)',
+      // textShadowOffset: { width: 1, height: 1 },
+      // textShadowRadius: 0.5,
     },
   
     elementPallet:{
@@ -113,7 +142,7 @@ const styles = StyleSheet.create({
       // justifyContent: 'center',
       // top: 4,
       // letf: 400,
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       // width: 340,
       width: windowWidth * 0.85,
       // height: 2000,
@@ -146,7 +175,7 @@ const styles = StyleSheet.create({
       color: '#FDFDFD',
       fontSize: 14,
       fontWeight: 'bold',
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       numberOfLines: 1,
       // width: 150, // Ajusta el width según lo que necesites
       width: windowWidth * 0.85,
@@ -161,7 +190,7 @@ const styles = StyleSheet.create({
       top: 14,
       color: '#77828B',
       fontSize: 9,
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
       fontWeight: 'bold',
     },
   
@@ -169,20 +198,19 @@ const styles = StyleSheet.create({
       flex: 1,
       color: '#EBAD36',
       fontSize: 14,
-      fontFamily:"SF",
-      fontWeight: 'bold',
+      fontFamily:"Raleway_700Bold",
       position: "absolute",
       bottom: 0,
       
     },
   
     listAmount:{
-      fontFamily:"SF",
+      fontFamily:"Raleway_400Regular",
     },
   
     imageArea:{
       left:15,
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
     },
   
     vehicleImage:{
@@ -194,13 +222,13 @@ const styles = StyleSheet.create({
     },
   
     tittle:{
-      fontFamily:"SF",
+      fontFamily:"Raleway_700Bold",
       fontSize: 25,
       fontWeight: 'bold',
       color: '#000000',
-      textShadowColor: 'rgba(0, 0, 0, 0.5)',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 0.11,
+      // textShadowColor: 'rgba(0, 0, 0, 0.5)',
+      // textShadowOffset: { width: 1, height: 1 },
+      // textShadowRadius: 0.11,
       paddingLeft: 28,
       
   

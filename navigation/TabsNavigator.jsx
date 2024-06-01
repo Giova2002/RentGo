@@ -2,10 +2,14 @@ import React from 'react';
 import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StyleSheet, View } from 'react-native';
 import InfoScreen from '../screens/InfoScreen';
 import Reserva from '../screens/Reserva';
+
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

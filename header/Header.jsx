@@ -29,6 +29,8 @@ justifyContent: 'space-between',
 alignItems: 'center',
 paddingHorizontal:20,
 marginTop:25,
+
+
 },
 locationContainer:{
 flexDirection:"row",
@@ -39,14 +41,14 @@ alignItems:"center",
 title: {
 color: '#000000',
 fontSize: 14,
-fontFamily:"SF",
-color:"#748289"
+color:"#748289",
+fontFamily:"Raleway_700Bold"
 },
 location: {
 color: '#748289',
 fontSize: 19,
-fontFamily:"SF",
-color:"#000000"
+color:"#000000",
+fontFamily:"Raleway_700Bold"
 },
 imageContainer: {
 width: 28,

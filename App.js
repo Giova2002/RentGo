@@ -2,18 +2,36 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import TabsNavigator from './navigation/TabsNavigator';
-import {useFonts} from 'expo-font';
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+  Raleway_700Bold,
+  Raleway_800ExtraBold,
+  Raleway_900Black,
+} from '@expo-google-fonts/raleway';
 
 
 
 
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    SF: require("./assets/fonts/SF_Pro_Rounded_Regular.ttf"),
-    SF_Bold: require("./assets/fonts/SF-Pro-Rounded-Bold.ttf")
+  
+    let [fontsLoaded] = useFonts({
+      Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+  Raleway_700Bold,
+  Raleway_800ExtraBold,
+  Raleway_900Black,
+  
+    });
+  
 
-  })
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
   return (
     <NavigationContainer>
     
