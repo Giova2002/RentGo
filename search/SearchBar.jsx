@@ -1,28 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, TextInput, StyleSheet, Image, Dimensions, TouchableOpacity, Text, Modal, Animated, Easing, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import Svg, { Rect } from 'react-native-svg';
 import { useFonts } from "expo-font";
+import { useCarFiltersContext } from '../context/CarFiltersContext';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const SearchBar = ({ onSubmit }) => {
-  const [term, setTerm] = useState('');
+const SearchBar = ({  }) => {
+  const {data,setData}=useCarFiltersContext()
+  const navigation = useNavigation()
+  const route=useRoute()
+  const [term, setTerm] = useState(data.search);
   const [modalVisible, setModalVisible] = useState(false);
-  const [seatCount, setSeatCount] = useState(2); 
-  const [priceRange, setPriceRange] = useState([10, 500]); 
-  const [selectedBrands, setSelectedBrands] = useState([]); 
-  const [automaticSelected, setAutomaticSelected] = useState(false); 
-  const [manualSelected, setManualSelected] = useState(false); 
-  const [selectedLocations, setSelectedLocations] = useState([]); 
+  const [seatCount, setSeatCount] = useState(data.seatCount); 
+  const [priceRange, setPriceRange] = useState(data.priceRange); 
+  const [selectedBrands, setSelectedBrands] = useState(data.selectedBrands); 
+  const [automaticSelected, setAutomaticSelected] = useState(data.automaticSelected); 
+  const [manualSelected, setManualSelected] = useState(data.manualSelected); 
+  const [selectedLocations, setSelectedLocations] = useState(data.selectedLocations); 
 
   const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
 
   const handleSubmit = () => {
-    if (term.trim() !== '') {
-      onSubmit(term);
-    }
+    closeModal()
+    setData(({seatCount: seatCount,priceRange:priceRange,automaticSelected:automaticSelected, manualSelected:manualSelected, selectedBrands:selectedBrands,selectedLocations:selectedLocations,search:term,filter:true}))
+  navigation.navigate('Cars')
   };
 
   const incrementSeatCount = () => {
@@ -91,6 +96,42 @@ const SearchBar = ({ onSubmit }) => {
   const brands = ['Toyota', 'Chevrolet', 'Kia', 'Hyundai', 'Ford', 'Mitsubishi'];
   const locations = ['Caracas', 'Maracay', 'Barquisimeto', 'Guarenas', 'Porlamar'];
 
+  const searchString=(value)=>{
+    console.log('VALUEE',route)
+    if(value.trim != ""){
+      
+      setData(prevData => ({
+        ...prevData,
+        search: value
+      }));
+ 
+    }
+  
+  }
+
+  useEffect(() => {
+    if(data.search.trim != ""){
+  
+      if(route.name != "Cars"){
+        navigation.navigate("Cars")
+      }
+    }
+  }, [data.search]);
+
+  useEffect(() => {
+    setTerm(data.search)
+      }, [data.search]);
+
+      const defaultFilters=()=>{
+        setSeatCount(2)
+        setPriceRange([10, 500])
+        setAutomaticSelected(false)
+        setManualSelected(false)
+        setSelectedBrands([])
+        setSelectedLocations([])
+        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false})
+        closeModal()
+      }
   return (
     <View style={styles.container}>
       <View style={styles.search}>
@@ -99,7 +140,7 @@ const SearchBar = ({ onSubmit }) => {
           style={styles.input}
           placeholder="Busca Tu Carro"
           value={term}
-          onChangeText={setTerm}
+          onChangeText={(e)=>{searchString(e)}}
           onSubmitEditing={handleSubmit}
         />
       </View>
@@ -118,7 +159,11 @@ const SearchBar = ({ onSubmit }) => {
             </TouchableOpacity>
             <Text style={styles.title}>Filtros</Text>
             <View style={styles.separator} />
+
             <ScrollView horizontal={false} showsVerticalScrollIndicator={false} >
+            <TouchableOpacity onPress={defaultFilters} >
+                      <Text style={styles.restablecerBoton}>Restablecer</Text>
+                </TouchableOpacity>
               <View style={{ marginTop: 10, maxWidth:'100%' }} >
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Cantidad de Asientos</Text>
@@ -464,7 +509,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily:"Raleway_700Bold",
     color: '#FFFFFF',
-  },
+  }, 
+  restablecerBoton:{
+    fontSize:13,
+    width:"fit-content",
+    backgroundColor:"transparent",
+    fontFamily:"Raleway_700Bold",
+    color:"#748289",
+   textAlign:"right",
+   paddingRight:5
+
+  }
 });
 
 export default SearchBar;

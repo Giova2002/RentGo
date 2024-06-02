@@ -3,14 +3,17 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from 'react-nat
 import { firebase } from '../firebase/firebaseConfig'; 
 import Header from '../header/Header';
 import SearchBar from '../search/SearchBar';
-
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Home() {
+  const navigation = useNavigation()
+  const route = useRoute()
   const marcas = Array.from({ length: 3 });
   const [recommendedCars, setRecommendedCars] = useState([]);
+
 
   useEffect(() => {
     const fetchRecommendedCars = async () => {
@@ -26,11 +29,13 @@ export default function Home() {
     fetchRecommendedCars();
   }, []);
 
+
+
   return (
     <View style={styles.home}>
       <Header />
       <Text style={styles.title}>Busca Tu Coche de Ensueño Para Conducir</Text>
-      <SearchBar />
+      <SearchBar  />
       <View style={styles.blueContainer}>
       <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.yellowRectangleContainer}>

@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import InfoScreen from '../screens/InfoScreen';
-import Reservas from '../screens/Reserva';
+import Reserva from '../screens/Reserva';
+import ProfileScreen from '../screens/ProfileScreen';
+
 
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,14 +34,17 @@ const screenOptions = {
 
 function Car() {
   return (
+
     <Stack.Navigator
     screenOptions={{
       headerShown: false
     }}>
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
-      <Stack.Screen name="Reserva" component={Reservas} />
+      <Stack.Screen name="Reserva" component={Reserva} />
+      
     </Stack.Navigator>
+
   )
 }
 
@@ -46,6 +52,7 @@ export default TabsNavigator = props =>{
 
 
     return (
+
         <Tab.Navigator screenOptions ={screenOptions}>
 
         <Tab.Screen
@@ -68,7 +75,7 @@ export default TabsNavigator = props =>{
           />
         <Tab.Screen
          name='Likes'
-        component={Likes}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({focused})=>{
             return(
@@ -138,7 +145,9 @@ export default TabsNavigator = props =>{
          } }
         
         />
+        
       </Tab.Navigator>
+
     )
 }
 
