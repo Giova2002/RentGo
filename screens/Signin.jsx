@@ -67,7 +67,7 @@ export default function Signin() {
 
       await updateProfile(user, { displayName: values.name });
 
-      await addDoc(collection(db, "usuarios"), {
+      await addDoc(collection(db, "usuario"), {
         apellido: values.apellido,
         correo: values.email,
         id_arrendador: "",
