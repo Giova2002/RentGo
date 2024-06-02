@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import TabsNavigator from './navigation/TabsNavigator';
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import {Home,Likes,Cars,MyCarsOnRent,AddCar,Login} from "./screens";
+import {Home,Likes,Cars,MyCarsOnRent,AddCar,Login,Signin} from "./screens";
 
 
 const Stack = createStackNavigator();
@@ -12,10 +12,15 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
-    </Stack.Navigator>
+      <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Likes" component={Likes} />
+        <Stack.Screen name="Cars" component={Cars} />
+        <Stack.Screen name="MyCarsOnRent" component={MyCarsOnRent} />
+        <Stack.Screen name="AddCar" component={AddCar} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signin" component={Signin} />
+      <TabsNavigator/>
+      
   </NavigationContainer>
 );
 }

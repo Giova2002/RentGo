@@ -4,16 +4,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Home() {
-  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home Screen</Text>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Text style={styles.loginButtonText}>Login</Text>
-      </TouchableOpacity>
     </View>
   );
 }
