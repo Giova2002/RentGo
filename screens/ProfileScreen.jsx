@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 
@@ -9,13 +9,11 @@ const windowHeight = Dimensions.get("window").height;
 const ProfileScreen = () => {
   
   const initialUser = {
-    img: require('../assets/profile.jpg'),
-    nombre: "Diana",
-    correo: "diana.sulva@correo.unimet.edu.ve"
+    id:"iUPxvupTSPDK4czA7dmQ"
   };
 
-  const [user, setUser] = useState(initialUser);
-  const [name, setName] = useState(user.nombre);
+  const [user, setUser] = useState(null);
+
 
   const handleSave = async () => {
     try {
@@ -24,6 +22,7 @@ const ProfileScreen = () => {
       });
       Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
     } catch (error) {
+      console.log(error)
       Alert.alert('Error', 'Hubo un problema al actualizar su perfil');
     }
   };

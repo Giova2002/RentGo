@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Image ,TouchableOpacity} from 'react-native';
 import { firebase } from '../firebase/firebaseConfig'; 
 import Header from '../header/Header';
 import SearchBar from '../search/SearchBar';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useCarFiltersContext } from '../context/CarFiltersContext';
+
+
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Home() {
+  const {data,setData}=useCarFiltersContext()
   const navigation = useNavigation()
-  const route = useRoute()
-  const marcas = Array.from({ length: 3 });
+  const marcas = [{name:"Toyota",image:require('../assets/marcasLogos/toyota.png')},{name:"Ford",image:require('../assets/marcasLogos/ford.png')},{name:"Mitsubishi",image:require('../assets/marcasLogos/mitsubishi.png')}]
   const [recommendedCars, setRecommendedCars] = useState([]);
 
 
@@ -19,7 +22,10 @@ export default function Home() {
     const fetchRecommendedCars = async () => {
       try {
         const snapshot = await firebase.firestore().collection('auto').where('recomendado', '==', true).get();
-        const recommendedCarsData = snapshot.docs.map(doc => doc.data());
+        const recommendedCarsData = snapshot.docs.map(doc => ({
+          key: doc.id, // Agrega el ID del documento aquí
+          ...doc.data()
+        }));
         setRecommendedCars(recommendedCarsData);
       } catch (error) {
         console.error('Error fetching recommended cars:', error);
@@ -31,6 +37,10 @@ export default function Home() {
 
 
 
+  const goToCarsByBrand=(brand)=>{
+    setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[brand],selectedLocations:[], search:data.search,filter:false,filterByBrand:true})
+    navigation.navigate("Cars")
+  }
   return (
     <View style={styles.home}>
       <Header />
@@ -45,8 +55,12 @@ export default function Home() {
         <View style={styles.topBrandsContainer}>
           <Text style={styles.subtitle}>Marcas Líderes</Text>
           <View style={styles.brandsCollection}>
-            {marcas.map((_, index) => (
-              <View key={index} style={styles.brandsContainer}></View>
+            {marcas.map((marca, index) => (
+              <TouchableOpacity onPress={()=>{goToCarsByBrand(marca.name)}}>
+              <View key={index} style={styles.brandsContainer}>
+                <Image source={marca.image}  style={styles.brandImage} resizeMode='contain'/>
+              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
@@ -58,6 +72,7 @@ export default function Home() {
             contentContainerStyle={styles.scrollContainer}
           >
             {recommendedCars.map((car, index) => (
+              <TouchableOpacity   onPress={() => navigation.navigate("Info", { carId: car.key })}>
               <View key={index} style={styles.carInfo}>
                 <View style={styles.carRecommendationContainer}>
                   <Image
@@ -68,6 +83,7 @@ export default function Home() {
                   <Text style={styles.price}>{car.precio}$/día</Text>
                 </View>
               </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -128,6 +144,14 @@ const styles = StyleSheet.create({
     height: 107,
     backgroundColor: "#2F3942",
     borderRadius: 10,
+    display:'flex',
+    padding:20
+  },
+  brandImage:{
+width:'100%',
+height:'100%',
+
+
   },
   subtitle: {
     fontFamily: "Raleway_700Bold",

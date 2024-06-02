@@ -113,6 +113,11 @@ filter()
         }
 
       }
+
+      if(data.selectedBrands.length>0 && data.filterByBrand){
+        auto=auto.filter((element)=> {return data.selectedBrands.includes(element.marca) })
+      }
+
         if(data.search.trim != ""){
           auto=auto.filter((element)=> {return element.modelo.toLowerCase().includes(data.search.toLowerCase()) || element.marca.toLowerCase().includes(data.search.toLowerCase()) })
         }

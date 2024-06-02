@@ -26,7 +26,7 @@ const SearchBar = ({  }) => {
 
   const handleSubmit = () => {
     closeModal()
-    setData(({seatCount: seatCount,priceRange:priceRange,automaticSelected:automaticSelected, manualSelected:manualSelected, selectedBrands:selectedBrands,selectedLocations:selectedLocations,search:term,filter:true}))
+    setData(({seatCount: seatCount,priceRange:priceRange,automaticSelected:automaticSelected, manualSelected:manualSelected, selectedBrands:selectedBrands,selectedLocations:selectedLocations,search:term,filter:true,filterByBrand:false}))
   navigation.navigate('Cars')
   };
 
@@ -129,7 +129,7 @@ const SearchBar = ({  }) => {
         setManualSelected(false)
         setSelectedBrands([])
         setSelectedLocations([])
-        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false})
+        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false,filterByBrand:false})
         closeModal()
       }
   return (
