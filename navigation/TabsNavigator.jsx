@@ -4,21 +4,12 @@ import { Home, Likes, Cars, MyCarsOnRent, AddCar, Login, Signin } from "../scree
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
-import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
+import InfoScreen from '../screens/InfoScreen';
+import Reserva from '../screens/Reserva';
+import ProfileScreen from '../screens/ProfileScreen';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDLC-pS5Vo8WDeWHnJXnrIe4608MrVyak4",
-  authDomain: "rentgo-c7fab.firebaseapp.com",
-  projectId: "rentgo-c7fab",
-  storageBucket: "rentgo-c7fab.appspot.com",
-  messagingSenderId: "625456398357",
-  appId: "1:625456398357:web:10302507e32033badcce1c",
-  measurementId: "G-ML4RSSK39M"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -52,6 +43,22 @@ function TabsNavigator() {
 
     return unsubscribe;
   }, [navigation]);
+  function Car() {
+  return (
+
+    <Stack.Navigator
+    screenOptions={{
+      headerShown: false
+    }}>
+      <Stack.Screen name="Cars" component={Cars} />
+      <Stack.Screen name="Info" component={InfoScreen} />
+      <Stack.Screen name="Reserva" component={Reserva} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      
+    </Stack.Navigator>
+
+  )
+}
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>

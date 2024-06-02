@@ -2,27 +2,51 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import TabsNavigator from './navigation/TabsNavigator';
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import {Home,Likes,Cars,MyCarsOnRent,AddCar,Login,Signin} from "./screens";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+  Raleway_700Bold,
+  Raleway_800ExtraBold,
+  Raleway_900Black,
+} from '@expo-google-fonts/raleway';
+import { useCarFiltersContext,CarFiltersProvider } from './context/CarFiltersContext'
+import { UserProvider } from './context/UserContext';
 
 
-const Stack = createStackNavigator();
+
 
 export default function App() {
+  
+    let [fontsLoaded] = useFonts({
+      Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+  Raleway_700Bold,
+  Raleway_800ExtraBold,
+  Raleway_900Black,
+  
+    });
+  
+
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
   return (
+    <UserProvider>
+    <CarFiltersProvider>
     <NavigationContainer>
-      <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Likes" component={Likes} />
-        <Stack.Screen name="Cars" component={Cars} />
-        <Stack.Screen name="MyCarsOnRent" component={MyCarsOnRent} />
-        <Stack.Screen name="AddCar" component={AddCar} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signin" component={Signin} />
+    
+ 
+
       <TabsNavigator/>
-      
-  </NavigationContainer>
-);
+
+
+    </NavigationContainer>
+    </CarFiltersProvider>
+    </UserProvider>
+  );
 }
 
 const styles = StyleSheet.create({

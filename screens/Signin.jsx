@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
-import { googleProvider } from "../firebase";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLC-pS5Vo8WDeWHnJXnrIe4608MrVyak4",
@@ -21,26 +20,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export default function Signin() {
+export default function Likes() {
   const navigation = useNavigation();
   const [values, setValues] = useState({ name: "", email: "", pass: "", apellido: "", img: "" });
   const [errorMsg, setErrorMsg] = useState("");
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
-  useEffect(() => {
-    setPersistence(auth, browserLocalPersistence);
-
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigation.navigate("Home");
-      }
-    });
-    return unsubscribe;
-  }, [navigation]);
-
   const signInWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, GoogleAuthProvider);
       console.log(result);
     } catch (error) {
       console.error(error);
@@ -93,9 +81,30 @@ export default function Signin() {
     });
 
     if (!result.canceled) {
-      setValues({ ...values, img: result.uri });
+      setValues({ ...values, img: result.assets[0].uri });
     }
   };
+
+  useEffect(() => {
+    const saveProfile = async (user) => {
+      try {
+        const userProfile = { displayName: values.name };
+        await updateProfile(user, userProfile);
+        Alert.alert("Creando usuario", "Accediendo");
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Error", "Coloque datos correctos");
+      }
+    };
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("Home");
+        saveProfile(user);
+      }
+    });
+    return unsubscribe;
+  }, [navigation, values.name]);
 
   return (
     <View style={styles.padre}>
