@@ -10,6 +10,8 @@ import Reserva from '../screens/Reserva';
 import ProfileScreen from '../screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const screenOptions = {
@@ -26,9 +28,31 @@ const screenOptions = {
     borderRadius: 15
   }
 };
+const firebaseConfig = {
+  apiKey: "AIzaSyDLC-pS5Vo8WDeWHnJXnrIe4608MrVyak4",
+  authDomain: "rentgo-c7fab.firebaseapp.com",
+  projectId: "rentgo-c7fab",
+  storageBucket: "rentgo-c7fab.appspot.com",
+  messagingSenderId: "625456398357",
+  appId: "1:625456398357:web:10302507e32033badcce1c",
+  measurementId: "G-ML4RSSK39M"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 function TabsNavigator() {
   const navigation = useNavigation();
+  useEffect(() => {
+    setPersistence(auth, browserLocalPersistence);
+    
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        navigation.navigate("Login");
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   function Car() {
   return (
 
