@@ -103,9 +103,9 @@ const ProfileScreen = () => {
     try {
       await firebase.firestore().collection('usuario').doc(userId).update(user);
       Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
-      setTimeout(() => {
-        navigation.goBack(); // Navegar de regreso a la pantalla anterior
-      }, 2000);
+      // setTimeout(() => {
+      //   navigation.goBack(); // Navegar de regreso a la pantalla anterior
+      // }, 2000);
     } catch (error) {
       console.log(error);
       Alert.alert('Error', 'Hubo un problema al actualizar su perfil');

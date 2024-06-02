@@ -17,7 +17,12 @@ export default function Home() {
   const navigation = useNavigation()
   const marcas = [{name:"Toyota",image:require('../assets/marcasLogos/toyota.png')},{name:"Ford",image:require('../assets/marcasLogos/ford.png')},{name:"Mitsubishi",image:require('../assets/marcasLogos/mitsubishi.png')}]
   const [recommendedCars, setRecommendedCars] = useState([]);
-
+  
+//ESTO PUEDE JODER MAS ADELANTE
+  useEffect(() => {
+    // Este efecto se ejecutará una vez cuando el componente se monte
+    navigation.navigate("Home");
+  }, []);
 
   useEffect(() => {
     const fetchRecommendedCars = async () => {

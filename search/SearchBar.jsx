@@ -135,6 +135,8 @@ const SearchBar = ({}) => {
     "Hyundai",
     "Ford",
     "Mitsubishi",
+    "BMW",
+
   ];
   const locations = [
     "Caracas",
@@ -153,7 +155,7 @@ const SearchBar = ({}) => {
       }));
     }
   };
-
+//esto es lo que da error antes navigate cars ahora home
   useEffect(() => {
     if (data.search.trim != "") {
       if (route.name != "Cars") {
