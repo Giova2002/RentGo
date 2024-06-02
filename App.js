@@ -1,3 +1,5 @@
+
+import { AppRegistry } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,7 +13,7 @@ import {
   Raleway_800ExtraBold,
   Raleway_900Black,
 } from '@expo-google-fonts/raleway';
-
+import { useCarFiltersContext,CarFiltersProvider } from './context/CarFiltersContext'
 
 
 
@@ -33,6 +35,7 @@ export default function App() {
   //   return null;
   // }
   return (
+    <CarFiltersProvider>
     <NavigationContainer>
     
  
@@ -41,6 +44,7 @@ export default function App() {
 
 
     </NavigationContainer>
+    </CarFiltersProvider>
   );
 }
 

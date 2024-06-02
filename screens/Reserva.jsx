@@ -3,12 +3,10 @@ import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
-
-
-
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const back = require("../assets/Img/arrow.png");
+const storage = firebase.storage();
 
 
 export default Reserva = ({route, navigation}) => {
@@ -19,6 +17,7 @@ export default Reserva = ({route, navigation}) => {
   const [LicenseImg, setLicenseImg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  // const [isLoading, setIsLoading] = useState(false);
 
 const [paymentInfo, setPaymentInfo] = useState({
   bankName: '',
@@ -93,36 +92,38 @@ const [formInfo, setFormInfo] = useState({
 
   console.log("carId:", carId); 
 
-  const handlePaymentSubmit = async () => {
-    if (!paymentInfo.bankName || !paymentInfo.ci || !paymentInfo.phoneNumber) {
-      alert("Todos los campos son obligatorios");
-      return;
-    }
-    
-    
+
+  const handleImageUpload = async (imageUri, folder) => {
     try {
-      await firebase.firestore().collection('pagos_reserva').add({
-        bankName: paymentInfo.bankName,
-        ci: paymentInfo.ci,
-        phoneNumber: paymentInfo.phoneNumber,
-        id_auto: carId,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      alert("Información de pago enviada con éxito");
-      toggleModal();
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const ref = storage.ref().child(`${folder}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+      await ref.put(blob);
+      const downloadUrl = await ref.getDownloadURL();
+      return downloadUrl;
     } catch (error) {
-      console.error("Error al enviar la información de pago: ", error);
-      alert("Error al enviar la información de pago");
+      console.error("Error uploading image: ", error);
+      return null;
     }
-  }
+  };
 
     const handleReserve = async () => {
+
+      if (!formInfo.nombre_completo || !formInfo.ci || !IdImg || !LicenseImg) {
+        alert("Por favor, complete todos los campos requeridos");
+        return;
+      }
+      if (!paymentMethod) {
+        alert("Por favor, seleccione un método de pago");
+        return;
+      }
+
       if (paymentMethod === 'cash' && !paymentInfo.cashAmount) {
         alert("Por favor, ingrese la cantidad de efectivo");
         return;
       }
   
-      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci || !paymentInfo.phoneNumber)) {
+      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
         alert("Todos los campos de Pago Móvil son obligatorios");
         return;
       }
@@ -131,16 +132,10 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, ingrese un número de contacto");
         return;
       }
-      // Cargar imagen de cédula en Firebase Storage y obtener URL
-    // const idImageUrl = formInfo.ci_foto ? await handleImageUpload(IdImg) : null;
-
-    // // Cargar imagen de licencia en Firebase Storage y obtener URL
-    // const licenseImageUrl = formInfo.licencia ? await handleImageUpload(LicenseImg) : null;
-
-    const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
-
-    // Cargar imagen de licencia en Firebase Storage y obtener URL
-    const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
+      
+      const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
+      const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
+      // setIsLoading(true);
   
       try {
         await firebase.firestore().collection('reserva').add({
@@ -168,125 +163,59 @@ const [formInfo, setFormInfo] = useState({
       } catch (error) {
         console.error("Error al realizar la reserva: ", error);
         alert("Error al realizar la reserva");
-      }
+      } 
+      // finally {
+      //   // setIsLoading(false);
+      // }
     };
 
-    // const handleImageUpload = async (imageUri, folder) => {
-    //   try {
-    //     const response = await fetch(imageUri);
-    //     const blob = await response.blob();
-    //     const ref = firebase.storage.ref(`${folder}/${new Date().toISOString()}`);
-    //     await ref.put(blob);
-    //     const downloadUrl = await ref.getDownloadURL();
-    //     return downloadUrl;
-    //   } catch (error) {
-    //     console.error("Error uploading image: ", error);
-    //     return null;
-    //   }
-    // };
-
-    // const handleTakeIdPhoto = async () => {
-    //   let result = await ImagePicker.launchCameraAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //     allowsEditing: true,
-    //   });
-  
-    //   if (!result.canceled) {
-    //     const imageUri = result.assets[0].uri;
-    //     const imageUrl = await handleImageUpload(imageUri, 'cedula');
-    //     setIdImg(imageUrl);
-    //   }
-    // };
-  
-    // const handleTakeLicenseImg = async () => {
-    //   let result = await ImagePicker.launchCameraAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //     allowsEditing: true,
-    //   });
-  
-    //   if (!result.canceled) {
-    //     const imageUri = result.assets[0].uri;
-    //     const imageUrl = await handleImageUpload(imageUri, 'licencia');
-    //     setLicenseImg(imageUrl);
-    //   }
-    // };
-  
-    // const handlePickIdImg = async () => {
-    //   let result = await ImagePicker.launchImageLibraryAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //     allowsEditing: true,
-    //   });
-  
-    //   if (!result.canceled) {
-    //     const imageUri = result.assets[0].uri;
-    //     const imageUrl = await handleImageUpload(imageUri, 'cedulas');
-    //     setIdImg(imageUrl);
-    //   }
-    // };
-  
-    // const handlePickLicenseImg = async () => {
-    //   let result = await ImagePicker.launchImageLibraryAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //     allowsEditing: true,
-    //   });
-  
-    //   if (!result.canceled) {
-    //     const imageUri = result.assets[0].uri;
-    //     const imageUrl = await handleImageUpload(imageUri, 'licencias');
-    //     setLicenseImg(imageUrl);
-    //   }
-    // };
-
-
-
-  const handleImagePick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-    });
-  
-    if (!result.canceled) {     
-      const image = result.assets[0].uri;
-      return image;
-    }
-  };
-  
-
-  const handleTakeIdPhoto = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+    const handleImagePick = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-      }
-    );
+      });
   
-    if (!result.canceled) {
-      const image = result.assets[0].uri;
-      setIdImg(image);
-    }
-    
-  };
-  const handleTakeLicenseImg = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        return image;
+      }
+    };
+  
+    const handleTakeIdPhoto = async () => {
+      let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-      }
-    );
+      });
   
-    if (!result.canceled) {
-      const image = result.assets[0].uri;
-      
-      setLicenseImg(image);
-    }
-  };
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        setIdImg(image);
+      }
+    };
+  
+    const handleTakeLicenseImg = async () => {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      });
+  
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        setLicenseImg(image);
+      }
+    };
+  
+    const handlePickIdImg = async () => {
+      let result = await handleImagePick();
+      setIdImg(result);
+    };
+  
+    const handlePickLicenseImg = async () => {
+      let result = await handleImagePick();
+      setLicenseImg(result);
+    };
 
-  const handlePickIdImg = async () => {
-    let result = await handleImagePick();    
-    setIdImg(result);
-  }  
-  const handlePickLicenseImg = async () => {
-    let result = await handleImagePick();
-    setLicenseImg(result);
-  }  
+
  
   return (
 
@@ -294,6 +223,7 @@ const [formInfo, setFormInfo] = useState({
     
     <ScrollView style={styles.container}>
       <GestureHandlerRootView>
+
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
@@ -455,10 +385,15 @@ const [formInfo, setFormInfo] = useState({
             </View>
             
           )}
-
-  
+           {/* {isLoading && (
+        <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -50 }, { translateY: -50 }] }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+   */}
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
             <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
+           
         </Pressable>
       
       </View>
