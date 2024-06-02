@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { firebase } from '../firebase/firebaseConfig';
 import { UserContext } from '../context/UserContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { width } from '@fortawesome/free-brands-svg-icons/fa42Group';
 
 
@@ -12,6 +12,7 @@ const back = require("../assets/Img/arrow.png");
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const storage = firebase.storage();
+
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
@@ -103,13 +104,15 @@ const ProfileScreen = () => {
       await firebase.firestore().collection('usuario').doc(userId).update(user);
       Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
       setTimeout(() => {
-        navigation.navigate('Home'); // Cambia 'OtraPantalla' por el nombre de la pantalla a la que quieres navegar
+        navigation.goBack(); // Navegar de regreso a la pantalla anterior
       }, 2000);
     } catch (error) {
       console.log(error);
       Alert.alert('Error', 'Hubo un problema al actualizar su perfil');
     }
   };
+  
+
 
   if (loading) {
     return (

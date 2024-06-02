@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, Image ,TouchableOpacity
 import { firebase } from '../firebase/firebaseConfig'; 
 import Header from '../header/Header';
 import SearchBar from '../search/SearchBar';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute,useFocusEffect } from '@react-navigation/native';
 import { useCarFiltersContext } from '../context/CarFiltersContext';
+
 
 
 
@@ -34,7 +35,6 @@ export default function Home() {
 
     fetchRecommendedCars();
   }, []);
-
 
 
   const goToCarsByBrand=(brand)=>{
