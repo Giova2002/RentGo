@@ -42,6 +42,7 @@ function Car() {
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       
     </Stack.Navigator>
 
@@ -75,7 +76,7 @@ export default TabsNavigator = props =>{
           />
         <Tab.Screen
          name='Likes'
-        component={ProfileScreen}
+        component={Likes}
         options={{
           tabBarIcon: ({focused})=>{
             return(
