@@ -3,17 +3,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Home, Likes, Cars, MyCarsOnRent, AddCar, Login, Signin } from "../screens";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { createStackNavigator } from '@react-navigation/stack';
+import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import InfoScreen from '../screens/InfoScreen';
 import Reserva from '../screens/Reserva';
 import ProfileScreen from '../screens/ProfileScreen';
-
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: false,
@@ -31,18 +29,6 @@ const screenOptions = {
 
 function TabsNavigator() {
   const navigation = useNavigation();
-
-  useEffect(() => {
-    setPersistence(auth, browserLocalPersistence);
-    
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (!user) {
-        navigation.navigate("Login");
-      }
-    });
-
-    return unsubscribe;
-  }, [navigation]);
   function Car() {
   return (
 

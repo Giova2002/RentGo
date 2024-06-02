@@ -4,16 +4,11 @@ import Reserva from './Reserva'
 import Header from '../header/Header'
 import Profile from '../header/Profile'
 
-export default function Cars() {
+export default function Likes() {
   return (
-<<<<<<< HEAD
-    <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-      <Text>Cars</Text>
-=======
     <View style={{flex: 1, alignItems: "center"}}>
       <Header />
       <Text>Likes</Text>
->>>>>>> diana
     </View>
   )
 }
