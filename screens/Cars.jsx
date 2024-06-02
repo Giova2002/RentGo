@@ -65,7 +65,7 @@ export default function Cars({navigation}) {
           {/* <Card/> */}
 
          <FlatList 
-         data={auto}
+         data={auto.filter(item => item.disponible)}
          renderItem={({ item }) => (
 
           <TouchableOpacity 

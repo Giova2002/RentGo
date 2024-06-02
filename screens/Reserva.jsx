@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 
-import { firebase } from "../firebase/firebaseConfig"
+
+import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const back = require("../assets/Img/arrow.png");
 
@@ -130,6 +131,16 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, ingrese un número de contacto");
         return;
       }
+      // Cargar imagen de cédula en Firebase Storage y obtener URL
+    // const idImageUrl = formInfo.ci_foto ? await handleImageUpload(IdImg) : null;
+
+    // // Cargar imagen de licencia en Firebase Storage y obtener URL
+    // const licenseImageUrl = formInfo.licencia ? await handleImageUpload(LicenseImg) : null;
+
+    const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
+
+    // Cargar imagen de licencia en Firebase Storage y obtener URL
+    const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
   
       try {
         await firebase.firestore().collection('reserva').add({
@@ -139,15 +150,15 @@ const [formInfo, setFormInfo] = useState({
           banco: paymentInfo.bankName,
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
-          numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
+          // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
           precio: car.precio,
-          ID_propietario: car.id_usuario,
+          // ID_propietario: car.id_usuario,
           nombre_completo: formInfo.nombre_completo,
           ci: formInfo.ci,
-
-      
+          url_cedula: idImageUrl,
+          url_licencia: licenseImageUrl,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
           
         });
@@ -160,7 +171,71 @@ const [formInfo, setFormInfo] = useState({
       }
     };
 
+    // const handleImageUpload = async (imageUri, folder) => {
+    //   try {
+    //     const response = await fetch(imageUri);
+    //     const blob = await response.blob();
+    //     const ref = firebase.storage.ref(`${folder}/${new Date().toISOString()}`);
+    //     await ref.put(blob);
+    //     const downloadUrl = await ref.getDownloadURL();
+    //     return downloadUrl;
+    //   } catch (error) {
+    //     console.error("Error uploading image: ", error);
+    //     return null;
+    //   }
+    // };
 
+    // const handleTakeIdPhoto = async () => {
+    //   let result = await ImagePicker.launchCameraAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //     allowsEditing: true,
+    //   });
+  
+    //   if (!result.canceled) {
+    //     const imageUri = result.assets[0].uri;
+    //     const imageUrl = await handleImageUpload(imageUri, 'cedula');
+    //     setIdImg(imageUrl);
+    //   }
+    // };
+  
+    // const handleTakeLicenseImg = async () => {
+    //   let result = await ImagePicker.launchCameraAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //     allowsEditing: true,
+    //   });
+  
+    //   if (!result.canceled) {
+    //     const imageUri = result.assets[0].uri;
+    //     const imageUrl = await handleImageUpload(imageUri, 'licencia');
+    //     setLicenseImg(imageUrl);
+    //   }
+    // };
+  
+    // const handlePickIdImg = async () => {
+    //   let result = await ImagePicker.launchImageLibraryAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //     allowsEditing: true,
+    //   });
+  
+    //   if (!result.canceled) {
+    //     const imageUri = result.assets[0].uri;
+    //     const imageUrl = await handleImageUpload(imageUri, 'cedulas');
+    //     setIdImg(imageUrl);
+    //   }
+    // };
+  
+    // const handlePickLicenseImg = async () => {
+    //   let result = await ImagePicker.launchImageLibraryAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //     allowsEditing: true,
+    //   });
+  
+    //   if (!result.canceled) {
+    //     const imageUri = result.assets[0].uri;
+    //     const imageUrl = await handleImageUpload(imageUri, 'licencias');
+    //     setLicenseImg(imageUrl);
+    //   }
+    // };
 
 
 
@@ -188,6 +263,7 @@ const [formInfo, setFormInfo] = useState({
       const image = result.assets[0].uri;
       setIdImg(image);
     }
+    
   };
   const handleTakeLicenseImg = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -198,6 +274,7 @@ const [formInfo, setFormInfo] = useState({
   
     if (!result.canceled) {
       const image = result.assets[0].uri;
+      
       setLicenseImg(image);
     }
   };
@@ -315,7 +392,7 @@ const [formInfo, setFormInfo] = useState({
               onPress={() => setPaymentMethod('agree')}
             >
               <FontAwesomeIcon icon={faPeopleArrows} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>A convenir</Text>
+              <Text style={{ color: '#000000', fontSize: 13 }}>Acuerdo</Text>
             </Pressable>
           </View>
 
@@ -407,16 +484,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: 'Raleway_700Bold',
   },
   details: {
     padding: 20,
     backgroundColor: '#E6E6E6',
     borderRadius: 25,
+    fontFamily: 'Raleway_700Bold',
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    fontFamily: 'Raleway_700Bold',
   },
   input: {
     borderWidth: 1,
