@@ -17,7 +17,7 @@ export default Reserva = ({route, navigation}) => {
   const [LicenseImg, setLicenseImg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-  // const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
 
 const [paymentInfo, setPaymentInfo] = useState({
   bankName: '',
@@ -90,6 +90,8 @@ const [formInfo, setFormInfo] = useState({
     );
   }
 
+  
+
   console.log("carId:", carId); 
 
 
@@ -132,6 +134,7 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, ingrese un número de contacto");
         return;
       }
+      setLoading(true);
       
       const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
       const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
@@ -164,9 +167,11 @@ const [formInfo, setFormInfo] = useState({
         console.error("Error al realizar la reserva: ", error);
         alert("Error al realizar la reserva");
       } 
-      // finally {
-      //   // setIsLoading(false);
-      // }
+      finally {
+        // Ocultar el spinner de carga
+        setLoading(false);
+      
+      }
     };
 
     const handleImagePick = async () => {
@@ -391,6 +396,14 @@ const [formInfo, setFormInfo] = useState({
         </View>
       )}
    */}
+            {loading && (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#EBAD36" />
+              <Text style={styles.cargando}>Su reserva está siendo procesada</Text>
+            </View>
+          )}
+
+
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
             <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
            
