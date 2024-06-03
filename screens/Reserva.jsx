@@ -144,6 +144,12 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, complete todos los campos requeridos");
         return;
       }
+
+      if(!selectedRange.startDate || !selectedRange.endDate){
+        alert("Por favor, seleccione la fecha de inicio o de fin de su reserva");
+        return;
+
+      }
       if (!paymentMethod) {
         alert("Por favor, seleccione un método de pago");
         return;
