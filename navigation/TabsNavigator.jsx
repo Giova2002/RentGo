@@ -1,7 +1,9 @@
+import React from 'react';
 import {Home,Likes,Cars,MyCarsOnRent,AddCar} from "../screens";
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { StyleSheet, View } from 'react-native';
+
 
 const Tab = createBottomTabNavigator();
 const screenOptions = {
@@ -34,7 +36,7 @@ export default TabsNavigator = props =>{
             return(
             <View style = {{alignItems: "center", justifyContent:"center",top:10}}>
                <Image
-                    source={require('../assets/homepage.png')} 
+                    source={focused ? require('../assets/homepageamarillo.png') : require('../assets/homepagegris.png')}
                     style={{ width: 30, height: 35.2 }} 
                   />
             </View>
@@ -52,7 +54,7 @@ export default TabsNavigator = props =>{
             return(
             <View style = {{alignItems: "center", justifyContent:"center",top:10}}>
                <Image
-                    source={require('../assets/heart.png')} 
+                    source={focused ? require('../assets/corazonamarillo.png') : require('../assets/corazongris.png')}
                     style={{ width: 35, height: 33 }} 
                   />
             </View>
@@ -70,7 +72,7 @@ export default TabsNavigator = props =>{
             return(
             <View style = {{alignItems: "center", justifyContent:"center",top:10}}>
                <Image
-                    source={require('../assets/car.png')} 
+                    source={focused ? require('../assets/autoamarillo.png') : require('../assets/autogris.png')}
                     style={{ width: 57, height: 57 }} 
                   />
             </View>
@@ -88,7 +90,7 @@ export default TabsNavigator = props =>{
             return(
             <View style = {{alignItems: "center", justifyContent:"center",top:10}}>
                <Image
-                    source={require('../assets/lista.png')} 
+                    source={focused ? require('../assets/listamarillo.png') : require('../assets/listgris.png')} 
                     style={{ width: 35, height: 35 }} 
                   />
             </View>
@@ -106,7 +108,7 @@ export default TabsNavigator = props =>{
             return(
             <View style = {{alignItems: "center", justifyContent:"center",top:10}}>
                <Image
-                    source={require('../assets/boton-mas.png')} 
+                    source={focused ? require('../assets/masamarillo.png') : require('../assets/masgris.png')} 
                     style={{ width: 35, height: 35 }} 
                   />
             </View>
