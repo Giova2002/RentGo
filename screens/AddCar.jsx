@@ -1,3 +1,4 @@
+
 import { View, Text, StyleSheet, Picker, TextInput, Toucha, ScrollView, Image, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from "../firebase/firebaseConfig"
@@ -87,9 +88,26 @@ return null;
 };
 
 
-const addField = async (e) => {
+const addField = async () => {
 setLoading(true);
-
+if (
+marca.trim() === '' ||
+modelo.trim() === '' ||
+ubicacion.trim() === '' ||
+precio.trim() === '' ||
+tipo.trim() === '' ||
+descripcion.trim() === '' ||
+maleta.trim() === '' ||
+puertas.trim() === '' ||
+detalles.trim() === '' ||
+gasolina.trim() === '' ||
+asientos.trim() === '' ||
+image.trim() === ''
+) {
+alert('Por favor rellenar todos los campos');
+setLoading(false);
+return;
+}
 const imageUrl = image ? await handleImageUpload(image) : null;
 
 try {
@@ -245,6 +263,14 @@ value={precio}
 multiline={true}
 underlineColorAndroid="transparent"
 autocapitalize="none"
+onSubmitEditing={() => {
+if (precio.trim() === '') {
+Alert.alert('Error', 'Please fill in the Cantidad de Asientos field.');
+} else {
+// Proceed with form submission or other actions
+console.log('Form submitted successfully.');
+}
+}}
 />
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:9, }} >
 <DropDownPicker
@@ -335,7 +361,7 @@ autocapitalize="none"
 />
 <View style={{borderWidth: 1, borderRadius: 10, marginLeft:20, marginRight:20,}}>
 <View style={style.anexarCont}>
-<Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 20}}>Anexar Foto: </Text>
+<Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16}}>Anexar Foto: </Text>
 {image && <Image source={{ uri: image.uri }} style={{ width: 100, height: 50 }} />}
 <TouchableOpacity onPress={handlePicker}>
 <FontAwesomeIcon icon={faUpload} size={25} />
