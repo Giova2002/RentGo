@@ -75,8 +75,7 @@ const CalendarComponent = ({ reservas, onRangeSelected }) => {
     // inhabilitar fechas reservadas   
     reservedDates.forEach((date) => {
         markedDates[date] = {
-            disabled: true,
-            disableTouchEvent: true,
+            disabled: true,            
             disabledDotColor: 'gray',
         };
     }); 
