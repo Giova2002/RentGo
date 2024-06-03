@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Modal} from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CalendarComponent from '../components/CalendarComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
-
-
-import { firebase } from "../firebase/firebaseConfig"
+import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const back = require("../assets/Img/arrow.png");
+const storage = firebase.storage();
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 
 export default Reserva = ({route, navigation}) => {
@@ -20,6 +21,7 @@ export default Reserva = ({route, navigation}) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  // const [isLoading, setIsLoading] = useState(true);
 
 const [paymentInfo, setPaymentInfo] = useState({
   bankName: '',
@@ -92,38 +94,42 @@ const [formInfo, setFormInfo] = useState({
     );
   }
 
+  
+
   console.log("carId:", carId); 
 
-  const handlePaymentSubmit = async () => {
-    if (!paymentInfo.bankName || !paymentInfo.ci || !paymentInfo.phoneNumber) {
-      alert("Todos los campos son obligatorios");
-      return;
-    }
-    
-    
+
+  const handleImageUpload = async (imageUri, folder) => {
     try {
-      await firebase.firestore().collection('pagos_reserva').add({
-        bankName: paymentInfo.bankName,
-        ci: paymentInfo.ci,
-        phoneNumber: paymentInfo.phoneNumber,
-        id_auto: carId,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      alert("Información de pago enviada con éxito");
-      toggleModal();
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const ref = storage.ref().child(`${folder}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+      await ref.put(blob);
+      const downloadUrl = await ref.getDownloadURL();
+      return downloadUrl;
     } catch (error) {
-      console.error("Error al enviar la información de pago: ", error);
-      alert("Error al enviar la información de pago");
+      console.error("Error uploading image: ", error);
+      return null;
     }
-  }
+  };
 
     const handleReserve = async () => {
+
+      if (!formInfo.nombre_completo || !formInfo.ci || !IdImg || !LicenseImg) {
+        alert("Por favor, complete todos los campos requeridos");
+        return;
+      }
+      if (!paymentMethod) {
+        alert("Por favor, seleccione un método de pago");
+        return;
+      }
+
       if (paymentMethod === 'cash' && !paymentInfo.cashAmount) {
         alert("Por favor, ingrese la cantidad de efectivo");
         return;
       }
   
-      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci || !paymentInfo.phoneNumber)) {
+      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
         alert("Todos los campos de Pago Móvil son obligatorios");
         return;
       }
@@ -132,6 +138,11 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, ingrese un número de contacto");
         return;
       }
+      setLoading(true);
+      
+      const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
+      const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
+      // setIsLoading(true);
   
       try {
         await firebase.firestore().collection('reserva').add({
@@ -141,15 +152,15 @@ const [formInfo, setFormInfo] = useState({
           banco: paymentInfo.bankName,
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
-          numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
+          // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
           precio: car.precio,
-          ID_propietario: car.id_usuario,
+          // ID_propietario: car.id_usuario,
           nombre_completo: formInfo.nombre_completo,
           ci: formInfo.ci,
-
-      
+          url_cedula: idImageUrl,
+          url_licencia: licenseImageUrl,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
           
         });
@@ -159,59 +170,61 @@ const [formInfo, setFormInfo] = useState({
       } catch (error) {
         console.error("Error al realizar la reserva: ", error);
         alert("Error al realizar la reserva");
+      } 
+      finally {
+        // Ocultar el spinner de carga
+        setLoading(false);
+      
       }
     };
 
-
-
-
-
-  const handleImagePick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-    });
-  
-    if (!result.canceled) {     
-      const image = result.assets[0].uri;
-      return image;
-    }
-  };
-  
-
-  const handleTakeIdPhoto = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+    const handleImagePick = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-      }
-    );
+      });
   
-    if (!result.canceled) {
-      const image = result.assets[0].uri;
-      setIdImg(image);
-    }
-  };
-  const handleTakeLicenseImg = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        return image;
+      }
+    };
+  
+    const handleTakeIdPhoto = async () => {
+      let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-      }
-    );
+      });
   
-    if (!result.canceled) {
-      const image = result.assets[0].uri;
-      setLicenseImg(image);
-    }
-  };
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        setIdImg(image);
+      }
+    };
+  
+    const handleTakeLicenseImg = async () => {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      });
+  
+      if (!result.canceled) {
+        const image = result.assets[0].uri;
+        setLicenseImg(image);
+      }
+    };
+  
+    const handlePickIdImg = async () => {
+      let result = await handleImagePick();
+      setIdImg(result);
+    };
+  
+    const handlePickLicenseImg = async () => {
+      let result = await handleImagePick();
+      setLicenseImg(result);
+    };
 
-  const handlePickIdImg = async () => {
-    let result = await handleImagePick();    
-    setIdImg(result);
-  }  
-  const handlePickLicenseImg = async () => {
-    let result = await handleImagePick();
-    setLicenseImg(result);
-  }  
+
  
   return (
 
@@ -219,6 +232,7 @@ const [formInfo, setFormInfo] = useState({
     
     <ScrollView style={styles.container}>
       <GestureHandlerRootView>
+        
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
@@ -321,7 +335,7 @@ const [formInfo, setFormInfo] = useState({
               onPress={() => setPaymentMethod('agree')}
             >
               <FontAwesomeIcon icon={faPeopleArrows} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>A convenir</Text>
+              <Text style={{ color: '#000000', fontSize: 13 }}>Acuerdo</Text>
             </Pressable>
           </View>
 
@@ -384,10 +398,23 @@ const [formInfo, setFormInfo] = useState({
             </View>
             
           )}
+           {/* {isLoading && (
+        <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -50 }, { translateY: -50 }] }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+   */}
+            {loading && (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#EBAD36" />
+              <Text style={styles.cargando}>Su reserva está siendo procesada</Text>
+            </View>
+          )}
 
-  
+
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
             <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
+           
         </Pressable>
       
       </View>
@@ -406,23 +433,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    width: '65%',
-    height: 200,
-    marginTop: 20,
+    // width: '65%',
+    // height: 200,
+    marginTop: 70,
+    marginBottom: 30,
+    objectFit: 60,
+    width: windowWidth * 0.60,
+    height: windowHeight * 0.15,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: 'Raleway_700Bold',
   },
   details: {
     padding: 20,
     backgroundColor: '#E6E6E6',
     borderRadius: 25,
+    fontFamily: 'Raleway_700Bold',
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    fontFamily: 'Raleway_700Bold',
   },
   input: {
     borderWidth: 1,
