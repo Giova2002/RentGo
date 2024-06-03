@@ -22,6 +22,7 @@ export default Reserva = ({route, navigation}) => {
   const [reservedDates, setReservedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [selectedRange, setSelectedRange] = useState({ startDate: '', endDate: '' });
   // const [isLoading, setIsLoading] = useState(true);
 
 const [paymentInfo, setPaymentInfo] = useState({
@@ -185,6 +186,8 @@ const [formInfo, setFormInfo] = useState({
           ci: formInfo.ci,
           url_cedula: idImageUrl,
           url_licencia: licenseImageUrl,
+          fecha_inicio: new Date(selectedRange.startDate),
+          fecha_fin: new Date(selectedRange.endDate),
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
           
         });
@@ -332,7 +335,7 @@ const [formInfo, setFormInfo] = useState({
         
         <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
 
-        <CalendarComponent reservas={reservedDates}/>
+        <CalendarComponent reservas={reservedDates} onRangeSelected={setSelectedRange}/>
 
         <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 

@@ -1,10 +1,10 @@
 import { text } from '@fortawesome/fontawesome-svg-core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Calendar, DateObject } from 'react-native-calendars';
 import calendarioEsp from './LocaleConfig';
 
-const CalendarComponent = ({ reservas }) => {
+const CalendarComponent = ({ reservas, onRangeSelected }) => {
     
     calendarioEsp();    
 
@@ -19,6 +19,10 @@ const CalendarComponent = ({ reservas }) => {
   useEffect(() => {
     disableDates(reservas);
   }, [reservas]);
+
+  useEffect(() => {
+    onRangeSelected(selectedRange);
+  }, [selectedRange]);
 
   const onDayPress = (day) => {
 
@@ -40,12 +44,6 @@ const CalendarComponent = ({ reservas }) => {
     }
     }
   };
-
-//   markedDates[reserva.fecha] = {
-//     disabled: true,
-//     disableTouchEvent: true,
-//     disabledDotColor: 'red',        
-//     };
 
   const disableDates = (reservas) => {
     const disabledDates = [];
@@ -124,8 +122,8 @@ const CalendarComponent = ({ reservas }) => {
         styles={styles.calendar}    
       />
       <Text style={styles.selectedDatesText}>
-        {selectedRange.startDate && `Start Date: ${selectedRange.startDate}`}
-        {selectedRange.endDate && `, End Date: ${selectedRange.endDate}`}
+        {selectedRange.startDate && `Fecha inicio: ${selectedRange.startDate}`}
+        {selectedRange.endDate && `, Fecha fin: ${selectedRange.endDate}`}
       </Text>
     </View>
   );
