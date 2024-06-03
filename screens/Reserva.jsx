@@ -13,7 +13,7 @@ const back = require("../assets/Img/arrow.png");
 export default Reserva = ({route, navigation}) => {
 
 
-  
+ 
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -459,6 +459,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
     position: 'fixed',  
+    zIndex:1
   },
   IdImage: {
     width: 300,
