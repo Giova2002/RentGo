@@ -1,33 +1,59 @@
-import React, { useState,useEffect } from 'react';
-import { View, TextInput, StyleSheet, Image, Dimensions, TouchableOpacity, Text, Modal, Animated, Easing, ScrollView } from 'react-native';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import { useNavigation,useRoute } from '@react-navigation/native';
-import Svg, { Rect } from 'react-native-svg';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  Modal,
+  Animated,
+  Easing,
+  ScrollView,
+} from "react-native";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Svg, { Rect } from "react-native-svg";
 import { useFonts } from "expo-font";
-import { useCarFiltersContext } from '../context/CarFiltersContext';
+import { useCarFiltersContext } from "../context/CarFiltersContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const SearchBar = ({  }) => {
-  const {data,setData}=useCarFiltersContext()
-  const navigation = useNavigation()
-  const route=useRoute()
+const SearchBar = ({}) => {
+  const { data, setData } = useCarFiltersContext();
+  const navigation = useNavigation();
+  const route = useRoute();
   const [term, setTerm] = useState(data.search);
   const [modalVisible, setModalVisible] = useState(false);
-  const [seatCount, setSeatCount] = useState(data.seatCount); 
-  const [priceRange, setPriceRange] = useState(data.priceRange); 
-  const [selectedBrands, setSelectedBrands] = useState(data.selectedBrands); 
-  const [automaticSelected, setAutomaticSelected] = useState(data.automaticSelected); 
-  const [manualSelected, setManualSelected] = useState(data.manualSelected); 
-  const [selectedLocations, setSelectedLocations] = useState(data.selectedLocations); 
+  const [seatCount, setSeatCount] = useState(data.seatCount);
+  const [priceRange, setPriceRange] = useState(data.priceRange);
+  const [selectedBrands, setSelectedBrands] = useState(data.selectedBrands);
+  const [automaticSelected, setAutomaticSelected] = useState(
+    data.automaticSelected
+  );
+  const [manualSelected, setManualSelected] = useState(data.manualSelected);
+  const [selectedLocations, setSelectedLocations] = useState(
+    data.selectedLocations
+  );
 
-  const slideAnim = useState(new Animated.Value(windowHeight))[0]; 
+  const slideAnim = useState(new Animated.Value(windowHeight))[0];
 
   const handleSubmit = () => {
-    closeModal()
-    setData(({seatCount: seatCount,priceRange:priceRange,automaticSelected:automaticSelected, manualSelected:manualSelected, selectedBrands:selectedBrands,selectedLocations:selectedLocations,search:term,filter:true,filterByBrand:false}))
-  navigation.navigate('Cars')
+    closeModal();
+    setData({
+      seatCount: seatCount,
+      priceRange: priceRange,
+      automaticSelected: automaticSelected,
+      manualSelected: manualSelected,
+      selectedBrands: selectedBrands,
+      selectedLocations: selectedLocations,
+      search: term,
+      filter: true,
+      filterByBrand: false,
+    });
+    navigation.navigate("Cars");
   };
 
   const incrementSeatCount = () => {
@@ -63,7 +89,9 @@ const SearchBar = ({  }) => {
 
   const toggleBrandSelection = (brand) => {
     if (selectedBrands.includes(brand)) {
-      setSelectedBrands(selectedBrands.filter(selectedBrand => selectedBrand !== brand));
+      setSelectedBrands(
+        selectedBrands.filter((selectedBrand) => selectedBrand !== brand)
+      );
     } else {
       setSelectedBrands([...selectedBrands, brand]);
     }
@@ -71,7 +99,11 @@ const SearchBar = ({  }) => {
 
   const toggleLocationSelection = (location) => {
     if (selectedLocations.includes(location)) {
-      setSelectedLocations(selectedLocations.filter(selectedLocation => selectedLocation !== location));
+      setSelectedLocations(
+        selectedLocations.filter(
+          (selectedLocation) => selectedLocation !== location
+        )
+      );
     } else {
       setSelectedLocations([...selectedLocations, location]);
     }
@@ -91,61 +123,101 @@ const SearchBar = ({  }) => {
   const maxValue = 500;
   const numberOfBars = 20;
   const barWidth = (windowWidth * 0.8) / numberOfBars;
-  const barData = Array.from({ length: numberOfBars }, (_, index) => minValue + ((maxValue - minValue) / numberOfBars) * index);
+  const barData = Array.from(
+    { length: numberOfBars },
+    (_, index) => minValue + ((maxValue - minValue) / numberOfBars) * index
+  );
 
-  const brands = ['Toyota', 'Chevrolet', 'Kia', 'Hyundai', 'Ford', 'Mitsubishi'];
-  const locations = ['Caracas', 'Maracay', 'Barquisimeto', 'Guarenas', 'Porlamar'];
+  const brands = [
+    "Toyota",
+    "Chevrolet",
+    "Kia",
+    "Hyundai",
+    "Ford",
+    "Mitsubishi",
+    "BMW",
+    "Nissan"
 
-  const searchString=(value)=>{
-    console.log('VALUEE',route)
-    if(value.trim != ""){
-      
-      setData(prevData => ({
+  ];
+  const locations = [
+    "Caracas",
+    "Maracay",
+    "Barquisimeto",
+    "Guarenas",
+    "Porlamar",
+  ];
+
+  const searchString = (value) => {
+    console.log("VALUEE", route);
+    if (value.trim != "") {
+      setData((prevData) => ({
         ...prevData,
-        search: value
+        search: value,
       }));
- 
     }
-  
-  }
-
+  };
+//esto es lo que da error antes navigate cars ahora home
   useEffect(() => {
-    if(data.search.trim != ""){
-  
-      if(route.name != "Cars"){
-        navigation.navigate("Cars")
+    console.log('SEARCHHHH',data.search)
+    if (data.search.trim() !== "") {
+      if (route.name != "Cars") {
+        navigation.navigate("Cars");
       }
     }
   }, [data.search]);
 
   useEffect(() => {
-    setTerm(data.search)
-      }, [data.search]);
+    setTerm(data.search);
+  }, [data.search]);
 
-      const defaultFilters=()=>{
-        setSeatCount(2)
-        setPriceRange([10, 500])
-        setAutomaticSelected(false)
-        setManualSelected(false)
-        setSelectedBrands([])
-        setSelectedLocations([])
-        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false,filterByBrand:false})
-        closeModal()
-      }
+  useEffect(() => {
+    setSeatCount(data.seatCount);
+    setPriceRange(data.priceRange);
+    setAutomaticSelected(data.automaticSelected);
+    setManualSelected(data.manualSelected);
+    setSelectedBrands(data.selectedBrands);
+    setSelectedLocations(data.selectedLocations);
+  }, [data]);
+
+  const defaultFilters = () => {
+    setSeatCount(2);
+    setPriceRange([10, 500]);
+    setAutomaticSelected(false);
+    setManualSelected(false);
+    setSelectedBrands([]);
+    setSelectedLocations([]);
+    setData({
+      seatCount: 2,
+      priceRange: [10, 500],
+      automaticSelected: false,
+      manualSelected: false,
+      selectedBrands: [],
+      selectedLocations: [],
+      search: data.search,
+      filter: false,
+      filterByBrand: false,
+    });
+    closeModal();
+  };
   return (
     <View style={styles.container}>
       <View style={styles.search}>
-        <Image source={require('../assets/search.png')} style={styles.image} />
+        <Image source={require("../assets/search.png")} style={styles.image} />
         <TextInput
           style={styles.input}
           placeholder="Busca Tu Carro"
           value={term}
-          onChangeText={(e)=>{searchString(e)}}
+          onChangeText={(e) => {
+            searchString(e);
+          }}
           onSubmitEditing={handleSubmit}
         />
       </View>
       <TouchableOpacity style={styles.filters} onPress={openModal}>
-        <Image source={require('../assets/filter.png')} style={styles.imageFilter} />
+        <Image
+          source={require("../assets/filter.png")}
+          style={styles.imageFilter}
+        />
       </TouchableOpacity>
       <Modal
         transparent={true}
@@ -153,41 +225,55 @@ const SearchBar = ({  }) => {
         onRequestClose={closeModal}
       >
         <View style={styles.modalContainer}>
-          <Animated.View style={[styles.modalContent, { transform: [{ translateY: slideAnim }] }]}>
+          <Animated.View
+            style={[
+              styles.modalContent,
+              { transform: [{ translateY: slideAnim }] },
+            ]}
+          >
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Filtros</Text>
             <View style={styles.separator} />
 
-            <ScrollView horizontal={false} showsVerticalScrollIndicator={false} >
-            <TouchableOpacity onPress={defaultFilters} >
-                      <Text style={styles.restablecerBoton}>Restablecer</Text>
-                </TouchableOpacity>
-              <View style={{ marginTop: 10, maxWidth:'100%' }} >
+            <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
+              <TouchableOpacity onPress={defaultFilters}>
+                <Text style={styles.restablecerBoton}>Restablecer</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 10, maxWidth: "100%" }}>
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Cantidad de Asientos</Text>
                   <View style={styles.counterContainer}>
-                    <TouchableOpacity onPress={decrementSeatCount} style={styles.counterButton}>
+                    <TouchableOpacity
+                      onPress={decrementSeatCount}
+                      style={styles.counterButton}
+                    >
                       <Text style={styles.counterButtonText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.counterText}>{seatCount}</Text>
-                    <TouchableOpacity onPress={incrementSeatCount} style={styles.counterButton}>
+                    <TouchableOpacity
+                      onPress={incrementSeatCount}
+                      style={styles.counterButton}
+                    >
                       <Text style={styles.counterButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Precio</Text>
                 </View>
-               
+
                 <View style={styles.chartPriceContainer}>
                   <View style={styles.chartContainer}>
                     <Svg height="100" width={windowWidth * 0.8}>
                       {barData.map((price, index) => {
                         const barHeight = (price / maxValue) * 100;
-                        const barColor = price >= priceRange[0] && price <= priceRange[1] ? '#EBAD36' : '#CCCCCC';
+                        const barColor =
+                          price >= priceRange[0] && price <= priceRange[1]
+                            ? "#EBAD36"
+                            : "#CCCCCC";
                         return (
                           <Rect
                             key={index}
@@ -210,16 +296,28 @@ const SearchBar = ({  }) => {
                     step={1}
                     allowOverlap={false}
                     snapped
-                    selectedStyle={{ backgroundColor: '#EBAD36' }}
-                    unselectedStyle={{ backgroundColor: '#CCCCCC' }}
-                    markerStyle={{ backgroundColor: '#FFFFFF', borderColor: '#EBAD36', borderWidth: 2 }}
+                    selectedStyle={{ backgroundColor: "#EBAD36" }}
+                    unselectedStyle={{ backgroundColor: "#CCCCCC" }}
+                    markerStyle={{
+                      backgroundColor: "#FFFFFF",
+                      borderColor: "#EBAD36",
+                      borderWidth: 2,
+                    }}
                   />
                 </View>
                 <View style={styles.priceRangeContainer}>
-                  <TextInput style={styles.priceRangeText} value={`$${priceRange[0]}`} editable={false} />
-                  <TextInput style={styles.priceRangeText} value={`$${priceRange[1]}`} editable={false} />
+                  <TextInput
+                    style={styles.priceRangeText}
+                    value={`$${priceRange[0]}`}
+                    editable={false}
+                  />
+                  <TextInput
+                    style={styles.priceRangeText}
+                    value={`$${priceRange[1]}`}
+                    editable={false}
+                  />
                 </View>
-                
+
                 {/* <TouchableOpacity onPress={() => console.log("Marca")} style={styles.option}> */}
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Marca</Text>
@@ -231,7 +329,9 @@ const SearchBar = ({  }) => {
                       key={index}
                       style={[
                         styles.brandItem,
-                        selectedBrands.includes(brand) && { backgroundColor: '#EBAD36' } 
+                        selectedBrands.includes(brand) && {
+                          backgroundColor: "#EBAD36",
+                        },
                       ]}
                       onPress={() => toggleBrandSelection(brand)}
                     >
@@ -248,7 +348,9 @@ const SearchBar = ({  }) => {
                       key={index}
                       style={[
                         styles.locationItem,
-                        selectedLocations.includes(location) && { backgroundColor: '#EBAD36' } 
+                        selectedLocations.includes(location) && {
+                          backgroundColor: "#EBAD36",
+                        },
                       ]}
                       onPress={() => toggleLocationSelection(location)}
                     >
@@ -256,9 +358,7 @@ const SearchBar = ({  }) => {
                     </TouchableOpacity>
                   ))}
                 </View>
-                
-                
-                
+
                 {/* <TouchableOpacity onPress={() => console.log("Tipo")} style={styles.option}> */}
                 <View style={styles.option}>
                   <Text style={[styles.title]}>Tipo</Text>
@@ -266,19 +366,19 @@ const SearchBar = ({  }) => {
                 {/* </TouchableOpacity> */}
 
                 <View style={styles.typeContainer}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[
-                      styles.typeButton, 
-                      automaticSelected && { backgroundColor: '#EBAD36' } 
+                      styles.typeButton,
+                      automaticSelected && { backgroundColor: "#EBAD36" },
                     ]}
                     onPress={handleAutomaticPress}
                   >
                     <Text style={styles.typeButtonText}>Carro Automático</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[
-                      styles.typeButton, 
-                      manualSelected && { backgroundColor: '#EBAD36' } 
+                      styles.typeButton,
+                      manualSelected && { backgroundColor: "#EBAD36" },
                     ]}
                     onPress={handleManualPress}
                   >
@@ -286,9 +386,10 @@ const SearchBar = ({  }) => {
                   </TouchableOpacity>
                 </View>
 
-                
-                
-                <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
+                <TouchableOpacity
+                  style={styles.searchButton}
+                  onPress={handleSubmit}
+                >
                   <Text style={styles.searchButtonText}>Buscar</Text>
                 </TouchableOpacity>
               </View>
@@ -307,22 +408,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   search: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#000000',
+    borderColor: "#000000",
     borderRadius: 5,
     paddingHorizontal: 10,
     margin: 10,
     width: windowWidth * 0.68,
     height: windowHeight * 0.07,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold",
   },
   input: {
     flex: 1,
     marginLeft: 10,
     fontSize: 15,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold",
   },
   image: {
     width: windowWidth * 0.068,
@@ -342,184 +443,175 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   modalContent: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     borderRadius: 10,
-    width: '100%',
+    width: "100%",
     height: windowHeight * 0.9,
     padding: 20,
     paddingBottom: 40,
     alignItems: "center",
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
   },
   title: {
-    fontFamily:"Raleway_700Bold",
+    fontFamily: "Raleway_700Bold",
     fontSize: 18,
     marginBottom: 10,
-    
   },
   option: {
-    paddingVertical: windowHeight*0.02,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    
-    
+    paddingVertical: windowHeight * 0.02,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   counterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    
+    flexDirection: "row",
+    alignItems: "center",
   },
   counterButton: {
     width: windowWidth * 0.07,
     height: windowHeight * 0.03,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
     marginHorizontal: 5,
-
   },
   counterButtonText: {
     fontSize: 20,
-    color: '#000000',
-    fontFamily:"Raleway_700Bold"
+    color: "#000000",
+    fontFamily: "Raleway_700Bold",
   },
   counterText: {
     fontSize: 17,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold",
   },
   chartContainer: {
-    alignItems: 'center', 
+    alignItems: "center",
     marginBottom: 10,
-    
   },
   chartPriceContainer: {
-    flexDirection: 'column', 
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
     marginBottom: 10,
-    
   },
   priceRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: windowWidth * 0.8,
     marginTop: 10,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   priceRangeText: {
     width: windowWidth * 0.15,
     height: windowHeight * 0.04,
-    textAlign: 'center',
-    backgroundColor: '#FFFFFF',
+    textAlign: "center",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 5,
     paddingHorizontal: 5,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     left: 20,
   },
   closeButtonText: {
-    fontFamily:"Raleway_700Bold",
+    fontFamily: "Raleway_700Bold",
     fontSize: 18,
-    color: '#000000',
+    color: "#000000",
   },
   separator: {
     height: 1,
-    backgroundColor: '#CCCCCC',
-    width: '100%',
+    backgroundColor: "#CCCCCC",
+    width: "100%",
     marginVertical: 10,
   },
   brandContainer: {
     marginTop: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   brandItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     marginBottom: 10,
-    width: '48%',
-    alignItems: 'center',
+    width: "48%",
+    alignItems: "center",
   },
   brandText: {
     fontSize: 16,
-    fontFamily:"Raleway_700Bold",
-    color: '#000000',
+    fontFamily: "Raleway_700Bold",
+    color: "#000000",
   },
   typeContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 10,
-    justifyContent:"center",
-    paddingBottom:20
+    justifyContent: "center",
+    paddingBottom: 20,
   },
   typeButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 5,
-    
   },
   typeButtonText: {
     fontSize: 16,
-    fontFamily:"Raleway_700Bold"
+    fontFamily: "Raleway_700Bold",
   },
   locationContainer: {
     marginTop: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   locationItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     marginBottom: 10,
-    width: '48%',
-    alignItems: 'center',
+    width: "48%",
+    alignItems: "center",
   },
   locationText: {
     fontSize: 16,
-    fontFamily:"Raleway_700Bold",
-    color: '#000000',
+    fontFamily: "Raleway_700Bold",
+    color: "#000000",
   },
   searchButton: {
-    backgroundColor: '#1C252E',
+    backgroundColor: "#1C252E",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 5,
     marginTop: 20,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   searchButtonText: {
     fontSize: 16,
-    fontFamily:"Raleway_700Bold",
-    color: '#FFFFFF',
-  }, 
-  restablecerBoton:{
-    fontSize:13,
-    width:"fit-content",
-    backgroundColor:"transparent",
-    fontFamily:"Raleway_700Bold",
-    color:"#748289",
-   textAlign:"right",
-   paddingRight:5
-
-  }
+    fontFamily: "Raleway_700Bold",
+    color: "#FFFFFF",
+  },
+  restablecerBoton: {
+    fontSize: 13,
+    width: "fit-content",
+    backgroundColor: "transparent",
+    fontFamily: "Raleway_700Bold",
+    color: "#748289",
+    textAlign: "right",
+    paddingRight: 5,
+  },
 });
 
 export default SearchBar;

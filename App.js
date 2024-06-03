@@ -14,6 +14,7 @@ import {
   Raleway_900Black,
 } from '@expo-google-fonts/raleway';
 import { useCarFiltersContext,CarFiltersProvider } from './context/CarFiltersContext'
+import { UserProvider } from './context/UserContext';
 
 
 
@@ -31,10 +32,11 @@ export default function App() {
     });
   
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
+    <UserProvider>
     <CarFiltersProvider>
     <NavigationContainer>
     
@@ -45,6 +47,7 @@ export default function App() {
 
     </NavigationContainer>
     </CarFiltersProvider>
+    </UserProvider>
   );
 }
 

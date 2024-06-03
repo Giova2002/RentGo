@@ -1,47 +1,142 @@
-import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions } from 'react-native';
-import React, { useState,useEffect } from 'react';
-import { launchImageLibrary } from 'react-native-image-picker';
+import React, { useState, useEffect,useContext } from 'react';
+import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { firebase } from '../firebase/firebaseConfig';
+import { UserContext } from '../context/UserContext';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { width } from '@fortawesome/free-brands-svg-icons/fa42Group';
 
 
+const back = require("../assets/Img/arrow.png");
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+const storage = firebase.storage();
 
 const ProfileScreen = () => {
-  
-  const initialUser = {
-    id:"iUPxvupTSPDK4czA7dmQ"
-  };
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const userId = "iUPxvupTSPDK4czA7dmQ";
+  const { user,setUser } = useContext(UserContext);
 
-  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const fetchUserById = async (userId) => {
+      try {
+        const doc = await firebase.firestore().collection('usuario').doc(user.id).get();
+        if (doc.exists) {
+          setUser({ id: doc.id, ...doc.data() });
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchUserById(userId);
+  }, []);
 
-  const handleSave = async () => {
+  const uploadImage = async (uri) => {
+    console.log('URI:', uri);
+    console.log("stoooore",storage)
     try {
-      await db.collection('usuarios').doc(user.correo).update({
-        nombre: name
-      });
-      Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
+      const response = await fetch(uri);
+      console.log('Response:', response);
+      const blob = await response.blob();
+      console.log('Blob:', blob);
+      const ref = storage.ref().child(`images/${userId}/${Date.now()}`);
+      console.log('Storage Ref:', ref);
+      const snapshot = await ref.put(blob);
+      console.log('Snapshot:', snapshot);
+      const imageUrl = await snapshot.ref.getDownloadURL();
+      console.log('Image URL:', imageUrl);
+      return imageUrl;
     } catch (error) {
-      console.log(error)
-      Alert.alert('Error', 'Hubo un problema al actualizar su perfil');
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+  
+
+  const handleImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la biblioteca de medios.');
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result)
+
+    if (!result.canceled) {
+      const selectedImage = result.assets[0].uri;
+      console.log('Selected Image URI: ', selectedImage);
+      if (!selectedImage) {
+        console.error('Invalid image URI');
+        return;
+      }
+      setLoading(true);
+      try {
+        const imageUrl = await uploadImage(selectedImage);
+        console.log('Image URL: ', imageUrl);
+        setUser(prevData => ({
+          ...prevData,
+          img: imageUrl
+        }));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        setLoading(false);
+        Alert.alert('Error', 'Hubo un problema al subir la imagen. Por favor, inténtelo de nuevo.');
+      }
     }
   };
 
-  const handleImagePicker = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage = response.assets[0].uri;
-        setUser({ ...user, img: { uri: selectedImage } });
-      }
-    });
+  const handleSave = async () => {
+    try {
+      await firebase.firestore().collection('usuario').doc(userId).update(user);
+      Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
+      setTimeout(() => {
+        navigation.goBack(); // Navegar de regreso a la pantalla anterior
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', 'Hubo un problema al actualizar su perfil');
+    }
   };
+  
+
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#EBAD36" />
+        <Text style={styles.cargando}>Cargando</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.yellowContainer}>
+        <View style ={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.arrow}>
+                <Image source={back} resizeMode="contain"  />
+              </TouchableOpacity>
+      
         <Text style={styles.header}>Editar Perfil</Text>
+        
+              </View>
+        
         <View style={styles.profileImageContainer}>
-          <Image source={user.img} style={styles.profileImage} />
+          <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
         </View>
         <TouchableOpacity style={styles.editImageButton} onPress={handleImagePicker}>
           <Text style={styles.editImageText}>Editar Imagen</Text>
@@ -52,11 +147,26 @@ const ProfileScreen = () => {
         <Text style={styles.label}>Nombre:</Text>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={text => setName(text)}
+          value={user.nombre}
+          onChangeText={text => setUser(prevData => ({
+            ...prevData,
+            nombre: text
+          }))}
         />
       </View>
-      
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Apellido:</Text>
+        <TextInput
+          style={styles.input}
+          value={user.apellido}
+          onChangeText={text => setUser(prevData => ({
+            ...prevData,
+            apellido: text
+          }))}
+        />
+      </View>
+
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email:</Text>
         <TextInput
@@ -66,14 +176,13 @@ const ProfileScreen = () => {
         />
       </View>
       <View style={styles.botonContainer}>
-      
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -124,7 +233,8 @@ const styles = StyleSheet.create({
     width: windowWidth,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom:25
+    paddingBottom:5,
+
 
   },
   label: {
@@ -139,6 +249,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 5,
     fontFamily: "Raleway_400Regular",
+    
     
     
   },
@@ -159,6 +270,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width:windowWidth*0.4,
     justifyContent:'center',
+    marginTop:25
     
     
     
@@ -168,6 +280,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Raleway_700Bold",
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center'},
+
+    cargando:{
+        alignSelf: "center",
+        color: 'black',
+        fontSize: 15,
+        fontFamily: 'Raleway_700Bold'
+
+    },
+    arrow:{
+      position:"absolute",
+      top:0,
+      left:15
+      
+
+      
+      
+    },
+    headerContainer:{
+      flexDirection:"row",
+      justifyContent:"center",
+      position:"relative",
+      width:"100%",
+   
+
+    
+    }
 });
 
 export default ProfileScreen;

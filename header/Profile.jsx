@@ -1,12 +1,23 @@
-import { StyleSheet, Text, View, Image} from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native'
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export default function Profile() {
+    const { user } = useContext(UserContext);
+    const navigation=useNavigation()
+    console.log(user)
 return (
 <View style={styles.container}>
+    <TouchableOpacity onPress={()=>{navigation.navigate("Profile")}}>
 <View style={styles.imageContainer}>
+    {user?.img ?
+<Image source={{uri:user.img}} style={styles.image} />:
 <Image source={require('../assets/profile.jpg')} style={styles.image} />
+}
 </View>
+</TouchableOpacity>
 </View>
 );
 }

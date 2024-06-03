@@ -1,23 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Modal} from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import CalendarComponent from '../components/CalendarComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DropDownPicker from 'react-native-dropdown-picker';
+import disableDates from '../components/CalendarComponent';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 
 export default Reserva = ({route, navigation}) => {
 
 
-  
+ 
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
+  const [reservedDates, setReservedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [selectedRange, setSelectedRange] = useState({ startDate: '', endDate: '' });
+  const [totalAmount, setTotalAmount] = useState(0);
   // const [isLoading, setIsLoading] = useState(true);
+
+const [openC, setOpenC] = useState(false);
+const [bancos, setBancos] = useState('');
+const [banco, setBanco] = useState([
+  { label: 'Banco de Venezuela', value: 'Banco de Venezuela' },
+  { label: 'Banco Provincial', value: 'Banco Provincial' },
+  { label: 'Banesco', value: 'Banesco' },
+  { label: 'Banco del Tesoro', value: 'Banco del Tesoro' },
+  { label: 'Banco Bicentenario', value: 'Banco Bicentenario' },
+  { label: 'Mercantil', value: 'Mercantil' },
+  { label: 'BOD', value: 'BOD' },
+  { label: 'BNC', value: 'BNC' },
+  { label: 'Banca Amiga', value: 'Banca Amiga' }
+]);
 
 const [paymentInfo, setPaymentInfo] = useState({
   bankName: '',
@@ -77,9 +99,43 @@ const [formInfo, setFormInfo] = useState({
       }
     };
 
+    // hacer fetch de las reservas asociadas al CarID y extraer las fechas (fecha inicio y fecha final) para deshabilitarlas en el calendario
+    const fetchReservas = async () => {
+      try {
+        const reservaRef = firebase.firestore().collection('reserva');
+        const reservas = await reservaRef.where('id_auto', '==', carId).get();
+
+        if (!reservas.empty){
+          const dates = [];
+          reservas.forEach((reserva) => {
+            const data = reserva.data();
+            const startDate = data.fecha_inicio.toDate().toISOString().split('T')[0];
+            const endDate = data.fecha_fin.toDate().toISOString().split('T')[0];
+            dates.push({ startDate, endDate });
+          });
+          setReservedDates(dates);
+        }
+      }
+      catch (error) {
+        console.error("Error fetching reservas data:", error);
+      }            
+    }
+
     fetchCar();
     fetchUserInfo();
+    fetchReservas();
   }, [carId]);
+
+  useEffect(() => {
+    if (selectedRange.startDate && selectedRange.endDate && car) {
+      const startDate = new Date(selectedRange.startDate);
+      const endDate = new Date(selectedRange.endDate);
+      const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // Including the end date
+      const total = diffDays * car.precio;
+      setTotalAmount(total);
+    }
+  }, [selectedRange, car]);
 
   if (loading) {
     return (
@@ -115,6 +171,12 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, complete todos los campos requeridos");
         return;
       }
+
+      if(!selectedRange.startDate || !selectedRange.endDate){
+        alert("Por favor, seleccione la fecha de inicio o de fin de su reserva");
+        return;
+
+      }
       if (!paymentMethod) {
         alert("Por favor, seleccione un método de pago");
         return;
@@ -125,7 +187,7 @@ const [formInfo, setFormInfo] = useState({
         return;
       }
   
-      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
+      if (paymentMethod === 'mobile' && (!bancos|| !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
         alert("Todos los campos de Pago Móvil son obligatorios");
         return;
       }
@@ -145,18 +207,22 @@ const [formInfo, setFormInfo] = useState({
           id_auto: carId,
           metodo_pago: paymentMethod,
           cantidad_efectivo: paymentInfo.cashAmount,
-          banco: paymentInfo.bankName,
+          // banco: paymentInfo.bankName,
+          banco: bancos,
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
           // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
-          precio: car.precio,
+          precio_total: totalAmount,
+          precio_por_dia: car.precio,
           // ID_propietario: car.id_usuario,
           nombre_completo: formInfo.nombre_completo,
           ci: formInfo.ci,
           url_cedula: idImageUrl,
           url_licencia: licenseImageUrl,
+          fecha_inicio: new Date(selectedRange.startDate),
+          fecha_fin: new Date(selectedRange.endDate),
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
           
         });
@@ -220,7 +286,6 @@ const [formInfo, setFormInfo] = useState({
       setLicenseImg(result);
     };
 
-
  
   return (
 
@@ -228,7 +293,7 @@ const [formInfo, setFormInfo] = useState({
     
     <ScrollView style={styles.container}>
       <GestureHandlerRootView>
-
+        
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
@@ -260,18 +325,18 @@ const [formInfo, setFormInfo] = useState({
             onChangeText={(text) => setFormInfo({ ...formInfo, ci: text })}
           />
 
-        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical:10}}>
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical:10,borderColor:"#748289"}}>
           <View style={styles.anexarCont}>
             
-            <Text style={{fontSize:16}}>Anexar Cédula</Text>        
+            <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:'#748289'}}>Anexar Cédula</Text>        
 
             <View style={{flexDirection:'row'}}>
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
-                <FontAwesomeIcon icon={faCamera} size={25} />
+                <FontAwesomeIcon icon={faCamera} size={20} />
               </Pressable>
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickIdImg}>
-                <FontAwesomeIcon icon={faUpload} size={25} />
+                <FontAwesomeIcon icon={faUpload} size={20} />
               </Pressable>          
             </View>          
 
@@ -281,18 +346,18 @@ const [formInfo, setFormInfo] = useState({
 
         </View>               
         
-        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10}}>
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10,borderColor:"#748289"}}>
           <View style={styles.anexarCont}>
             
-            <Text style={{fontSize:16}}>Anexar Licencia</Text>        
+            <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:"#748289"}}>Anexar Licencia</Text>        
 
             <View style={{flexDirection:'row'}}>
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
-                <FontAwesomeIcon icon={faCamera} size={25} />
+                <FontAwesomeIcon icon={faCamera} size={20} />
               </Pressable>
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickLicenseImg}>
-                <FontAwesomeIcon icon={faUpload} size={25} />
+                <FontAwesomeIcon icon={faUpload} size={20} />
               </Pressable>          
             </View>          
 
@@ -302,6 +367,10 @@ const [formInfo, setFormInfo] = useState({
 
         </View>              
         
+        <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
+
+        <CalendarComponent reservas={reservedDates} onRangeSelected={setSelectedRange}/>
+
         <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 
         <View style={styles.containerPago}>
@@ -310,24 +379,24 @@ const [formInfo, setFormInfo] = useState({
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('cash')}
             >
-              <FontAwesomeIcon icon={faMoneyBill} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Efectivo</Text>
+              <FontAwesomeIcon icon={faMoneyBill} size={38} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular' }}>Efectivo</Text>
             </Pressable>
 
             <Pressable
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('mobile')}
             >
-              <FontAwesomeIcon icon={faMoneyBillTransfer} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Pago Móvil</Text>
+              <FontAwesomeIcon icon={faMoneyBillTransfer} size={38} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular' }}>Pago Móvil</Text>
             </Pressable>
 
             <Pressable
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('agree')}
             >
-              <FontAwesomeIcon icon={faPeopleArrows} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Acuerdo</Text>
+              <FontAwesomeIcon icon={faPeopleArrows} size={39} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular'}}>Acuerdo</Text>
             </Pressable>
           </View>
 
@@ -349,17 +418,28 @@ const [formInfo, setFormInfo] = useState({
           )}
 
           {paymentMethod === 'mobile' && (
-            <View>
-              <Text style={styles.titleForms}>
+          <View>
+            <Text style={styles.titleForms}>
                 Ingrese los datos de la cuenta con la que realizará el pago 
               </Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Banco"
-                value={paymentInfo.bankName}
-                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, bankName: text })}
-              />
-              <TextInput
+              <View style={{ marginBottom: openC ? 200 : 10 }}>
+              <DropDownPicker
+              open={openC}
+              value={bancos}
+              items={banco}
+              setOpen={setOpenC}
+              setItems={setBanco}
+              setValue={setBancos}
+              placeholder="Seleccione el Banco"
+              style={styles.picker}
+              textStyle={[styles.pickerText, banco && styles.selectedPickerText]} // Apply different style for the selected option
+              dropdownStyle={[styles.dropdownStyle, { backgroundColor: '#F5F5F5' }]}
+              
+            />
+            
+            </View>
+            
+            <TextInput
                 style={styles.input}
                 placeholder="Número de Cédula"
                 value={paymentInfo.ci_pago_movil}
@@ -373,8 +453,8 @@ const [formInfo, setFormInfo] = useState({
                 onChangeText={(text) => setPaymentInfo({ ...paymentInfo, phoneNumber_pago_movil: text })}
                 keyboardType="phone-pad"
               />
-            </View>
-          )}
+          </View>
+        )}
 
           {paymentMethod === 'agree' && (
 
@@ -403,9 +483,9 @@ const [formInfo, setFormInfo] = useState({
             </View>
           )}
 
-
+          <Text style={styles.totalAmountText}>Monto Total: ${totalAmount}</Text>
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
-            <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
+            <Text style={{ color: '#EBAD36', fontSize: 18,fontFamily: 'Raleway_700Bold'}}>Reservar</Text>
            
         </Pressable>
       
@@ -425,9 +505,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    width: '65%',
-    height: 200,
-    marginTop: 20,
+    // width: '65%',
+    // height: 200,
+    marginTop: 70,
+    marginBottom: 30,
+    objectFit: 60,
+    width: windowWidth * 0.60,
+    height: windowHeight * 0.15,
   },
   title: {
     fontSize: 24,
@@ -439,26 +523,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#E6E6E6',
     borderRadius: 25,
     fontFamily: 'Raleway_700Bold',
+    paddingBottom:50
+   
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
     fontFamily: 'Raleway_700Bold',
+    paddingBottom:10,
+    paddingTop:10
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
-    borderColor: '#000000',
+    borderColor:"#748289",
+    fontFamily: 'Raleway_700Bold',
+    color:"#748289"
+    
   },
   anexar: {
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    width: 60,
+    width: 50,
+    height:50,
     marginHorizontal: 5,
   },
   submitButton: {
@@ -469,11 +561,13 @@ const styles = StyleSheet.create({
     width: '50%',
     alignSelf: 'center',
     marginBottom: 100,
+    
   },
   containerPago: {
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom:25
   },
   pagosButton: {
     padding: 15,
@@ -487,6 +581,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
     position: 'fixed',  
+    zIndex:1
   },
   IdImage: {
     width: 300,
@@ -499,11 +594,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#D7D6D6',   
     marginTop: 20,     
     marginBottom: 10,
+   
   },
   anexarCont: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',          
+    alignItems: 'center',  
+          
   },
 
   loaderContainer: {
@@ -577,6 +674,38 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontFamily: 'Raleway_400Regular',
     },
+    totalAmountText: {
+      fontSize: 20,
+      fontFamily: 'Raleway_700Bold',
+      textAlign: 'center',
+      marginVertical: 20,
+    },
+    picker: {
+      marginBottom: 4,
+      backgroundColor: "#F5F5F5",
+      
+      // backgroundColor: "#F5F5F5",
+      fontFamily: 'Raleway_700Bold',
+      },
+      
+      pickerText: {
+      fontSize:15,
+      fontFamily: 'Raleway_700Bold',
+      color: '#pink',
+      },
+      dropdownStyle: {
+      zIndex: 9999,
+      backgroundColor: "#F5F5F5",
+      },
+      
+      
+      selectedPickerText: {
+        color: '#aaa',
+      },
+      
+
+
+    
 });
 
 

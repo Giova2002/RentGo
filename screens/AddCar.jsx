@@ -401,118 +401,101 @@ const handlePicker = async () => {
 
 const style= StyleSheet.create({
 
-  container: {
- 
-  
-    flex: 1,
-   marginTop: -40,
-   
- 
+container: {
+flex: 1,
+marginTop: -40,
 
-  },
-  formContainer:{
+},
+formContainer:{
 
-    height:50,
-    marginLeft:20,
-    marginRight:20,
-    marginTop:30,
- 
-  },
- 
-  
+height:50,
+marginLeft:20,
+marginRight:20,
+marginTop:30,
+},
 
-  rentButton: {
-    marginTop: 30,
-    height: 40,
-    alignSelf: "center",
-    width: 150,
-    backgroundColor: "#EBAD36",
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
+rentButton: {
+marginTop: 30,
+height: 40,
+alignSelf: "center",
+width: 150,
+backgroundColor: "#EBAD36",
+borderRadius: 8,
+justifyContent: "center",
+alignItems: "center",
 
-  },
-  rentButtonText: {
-    color: "black",
-    fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
-  },
+},
+rentButtonText: {
+color: "black",
+fontWeight: "500",
+fontFamily: 'Raleway_700Bold'
+},
 
-  HeaderText: {
-    fontSize: 18,
-    
-   alignSelf: "center",
-    top: 0,
-    marginBottom:30,
-    fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
-  },
+HeaderText: {
+fontSize: 18,
+alignSelf: "center",
+top: 0,
+marginBottom:30,
+fontWeight: "500",
+fontFamily: 'Raleway_700Bold'
+},
 
-  buttoncointainer:{
-    paddingBottom: 120,
-    
-  },
+buttoncointainer:{
+paddingBottom: 120,
+},
 
-  anexarCont: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',  
-    fontWeight: "500",
-    fontFamily: 'Raleway_700Bold',
-    height: 50,
-    textAlignVertical:"center",
-   
-    
-  },
+anexarCont: {
+flexDirection: 'row',
+justifyContent: 'space-around',
+alignItems: 'center',
+fontWeight: "500",
+fontFamily: 'Raleway_700Bold',
+height: 50,
+textAlignVertical:"center",
 
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center'},
-    
+},
 
-    cargando:{
-        alignSelf: "center",
-        color: 'black',
-        fontSize: '15',
-        fontFamily: 'Raleway_700Bold'
+loaderContainer: {
+flex: 1,
+justifyContent: 'center'},
 
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      padding: 10,
-      marginBottom: 10,
-     
-      borderRadius: 10,
-      borderColor: '#000000',
-     
-      marginLeft:20,
-      marginRight:20,
-      fontFamily: 'Raleway_700Bold',
-      zIndex: 0,
-      fontSize:15,
-      height:48,
-    
-    },
- 
+cargando:{
+alignSelf: "center",
+color: 'black',
+fontSize: '15',
+fontFamily: 'Raleway_700Bold'
+
+},
+input: {
+borderWidth: 1,
+borderColor: '#ccc',
+padding: 10,
+marginBottom: 10,
+borderRadius: 10,
+borderColor:"#748289",
+marginLeft:20,
+marginRight:20,
+fontFamily: 'Raleway_700Bold',
+zIndex: 0,
+fontSize:15,
+height:48,
+},
 picker: {
- 
-    marginBottom: 10,
+marginBottom: 10,
+borderColor:"#748289",
 
 backgroundColor: "#F5F5F5",
-    fontFamily: 'Raleway_700Bold',
-  },
+fontFamily: 'Raleway_700Bold',
+},
 
-  pickerText: {
-    fontSize:15,
-    fontFamily: 'Raleway_700Bold',
-    color: '#aaaaaa',
-  
+pickerText: {
+fontSize:15,
+fontFamily: 'Raleway_700Bold',
+color: '#aaaaaa',
 },
 dropdownStyle: {
-  
-  zIndex: 9999, 
-  backgroundColor: "#F5F5F5",
+zIndex: 9999,
+backgroundColor: "#F5F5F5",
 },
 
 
