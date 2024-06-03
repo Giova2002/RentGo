@@ -23,6 +23,7 @@ export default Reserva = ({route, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [selectedRange, setSelectedRange] = useState({ startDate: '', endDate: '' });
+  const [totalAmount, setTotalAmount] = useState(0);
   // const [isLoading, setIsLoading] = useState(true);
 
 const [paymentInfo, setPaymentInfo] = useState({
@@ -110,6 +111,17 @@ const [formInfo, setFormInfo] = useState({
     fetchReservas();
   }, [carId]);
 
+  useEffect(() => {
+    if (selectedRange.startDate && selectedRange.endDate && car) {
+      const startDate = new Date(selectedRange.startDate);
+      const endDate = new Date(selectedRange.endDate);
+      const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // Including the end date
+      const total = diffDays * car.precio;
+      setTotalAmount(total);
+    }
+  }, [selectedRange, car]);
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -186,7 +198,8 @@ const [formInfo, setFormInfo] = useState({
           // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
-          precio: car.precio,
+          precio_total: totalAmount,
+          precio_por_dia: car.precio,
           // ID_propietario: car.id_usuario,
           nombre_completo: formInfo.nombre_completo,
           ci: formInfo.ci,
@@ -444,7 +457,7 @@ const [formInfo, setFormInfo] = useState({
             </View>
           )}
 
-
+          <Text style={styles.totalAmountText}>Monto Total: ${totalAmount}</Text>
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
             <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
            
@@ -622,6 +635,12 @@ const styles = StyleSheet.create({
       padding: 16,
       fontWeight: 'bold',
       fontFamily: 'Raleway_400Regular',
+    },
+    totalAmountText: {
+      fontSize: 20,
+      fontFamily: 'Raleway_700Bold',
+      textAlign: 'center',
+      marginVertical: 20,
     },
 });
 
