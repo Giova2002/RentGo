@@ -90,10 +90,28 @@ export default function AddCar() {
 
    
 
-    const addField = async (e) => {
+    const addField = async () => {
       setLoading(true);
    
-
+      if (
+        marca.trim() === '' ||
+        modelo.trim() === '' ||
+        ubicacion.trim() === '' ||
+        precio.trim() === '' ||
+        tipo.trim() === '' ||
+        descripcion.trim() === '' ||
+        maleta.trim() === '' ||
+        puertas.trim() === '' ||
+        detalles.trim() === '' ||
+        gasolina.trim() === '' ||
+        asientos.trim() === '' ||
+        image.trim() === ''
+   
+      ) {
+        alert('Por favor rellenar todos los campos');
+        setLoading(false);
+        return;
+      }
       const imageUrl = image ? await handleImageUpload(image) : null;
       
 
@@ -211,26 +229,19 @@ const handlePicker = async () => {
 
       
       </View>
-      {/* <TextInput
-       style={style.input}
-      placeholder="Marca"
-      placeholderTextColor= "#aaaaaa"
-      onChangeText={(marca) => setMarca(marca)}
-      value={marca}
-      multiline={true}
-      underlineColorAndroid="transparent"
-      autocapitalize="none"
-      /> */}
-            <TextInput
-        style={style.input}
-      placeholder="Modelo"
-      placeholderTextColor= "#aaaaaa"
-      onChangeText={(modelo) => setModelo(modelo)}
-      value={modelo}
-      multiline={true}
-      underlineColorAndroid="transparent"
-      autocapitalize="none"
-      />
+      <TextInput
+  style={style.input}
+  placeholder="Modelo"
+  placeholderTextColor="#aaaaaa"
+  onChangeText={(modelo) => setModelo(modelo)}
+  value={modelo}
+  multiline={true}
+  underlineColorAndroid="transparent"
+  autocapitalize="none"
+  onSubmitEditing={() => Keyboard.dismiss()}
+  blurOnSubmit={false}
+/>
+     
 
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:99, }} >
     <DropDownPicker
@@ -258,6 +269,16 @@ const handlePicker = async () => {
       multiline={true}
       underlineColorAndroid="transparent"
       autocapitalize="none"
+      onSubmitEditing={() => {
+        if (precio.trim() === '') {
+          Alert.alert('Error', 'Please fill in the Cantidad de Asientos field.');
+        } else {
+          // Proceed with form submission or other actions
+          console.log('Form submitted successfully.');
+        }
+      }}
+    
+  
       />
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:9, }} >
 <DropDownPicker
@@ -349,17 +370,19 @@ const handlePicker = async () => {
 
     
       />
-     <View style={{borderWidth: 1, borderRadius: 10,    marginLeft:20, marginRight:20,}}>
-        <View style={style.anexarCont}>
-          <Text style={{  fontFamily: 'Raleway_700Bold',  fontSize: 15}}>Anexar Foto: </Text>
-  
-             {image && <Image source={{ uri: image.uri }} style={{ width: 100, height: 50 }} />}
-               <TouchableOpacity onPress={handlePicker}>
-                 <FontAwesomeIcon icon={faUpload} size={25} />
-               </TouchableOpacity>
-
-        </View>
+<View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 250 }}>
+  <View style={[style.anexarCont]}>
+    <Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16 }}>Anexar Foto:</Text>
+    <TouchableOpacity onPress={handlePicker}>
+      <FontAwesomeIcon icon={faUpload} size={25} />
+    </TouchableOpacity>
+  </View>
+  {image && (
+    <View style={{ alignItems: 'center', marginTop: 10 }}>
+      <Image source={{ uri: image }} style={{ width: 200, height: 150 }} />
     </View>
+  )}
+</View>
 <View style={style.buttoncointainer}>
   
     <TouchableOpacity style={style.rentButton} onPress={addField}>
@@ -416,7 +439,7 @@ const style= StyleSheet.create({
   },
 
   HeaderText: {
-    fontSize: 15,
+    fontSize: 18,
     
    alignSelf: "center",
     top: 0,
@@ -488,13 +511,13 @@ backgroundColor: "#F5F5F5",
 },
 dropdownStyle: {
   
-  zIndex: 9999, // Set the zIndex to a high value
+  zIndex: 9999, 
   backgroundColor: "#F5F5F5",
 },
 
 
 selectedPickerText: {
-  color: 'black', // Set the color for the selected option to black
+  color: 'black',
 },
 
 
