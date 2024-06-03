@@ -456,34 +456,6 @@ const [formInfo, setFormInfo] = useState({
           </View>
         )}
 
-          {/* {paymentMethod === 'mobile' && (
-            <View>
-              <Text style={styles.titleForms}>
-                Ingrese los datos de la cuenta con la que realizará el pago 
-              </Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Banco"
-                value={paymentInfo.bankName}
-                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, bankName: text })}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Número de Cédula"
-                value={paymentInfo.ci_pago_movil}
-                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, ci_pago_movil: text })}
-                keyboardType="numeric"
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Número de Teléfono"
-                value={paymentInfo.phoneNumber_pago_movil}
-                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, phoneNumber_pago_movil: text })}
-                keyboardType="phone-pad"
-              />
-            </View>
-          )} */}
-
           {paymentMethod === 'agree' && (
 
             <View>  
@@ -706,16 +678,16 @@ const styles = StyleSheet.create({
       pickerText: {
       fontSize:15,
       fontFamily: 'Raleway_700Bold',
-      color: '#F5F5F5',
+      color: '#aaaaaa',
       },
       dropdownStyle: {
-      zIndex: 9999, // Set the zIndex to a high value
+      zIndex: 9999,
       backgroundColor: "#F5F5F5",
       },
       
       
       selectedPickerText: {
-      color: 'black', // Set the color for the selected option to black
+      color: 'black',
       },
     
 });
