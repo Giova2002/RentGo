@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Modal} from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +7,8 @@ import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 
 export default Reserva = ({route, navigation}) => {
@@ -228,7 +230,7 @@ const [formInfo, setFormInfo] = useState({
     
     <ScrollView style={styles.container}>
       <GestureHandlerRootView>
-
+        
       <View style={styles.arrow}>
         <TouchableOpacity          
           onPress={() => navigation.goBack()}
@@ -425,9 +427,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    width: '65%',
-    height: 200,
-    marginTop: 20,
+    // width: '65%',
+    // height: 200,
+    marginTop: 70,
+    marginBottom: 30,
+    objectFit: 60,
+    width: windowWidth * 0.60,
+    height: windowHeight * 0.15,
   },
   title: {
     fontSize: 24,
