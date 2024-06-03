@@ -433,7 +433,7 @@ const [formInfo, setFormInfo] = useState({
               placeholder="Seleccione el Banco"
               style={styles.picker}
               textStyle={[styles.pickerText, banco && styles.selectedPickerText]} // Apply different style for the selected option
-              dropdownStyle={styles.dropdownStyle}
+              dropdownStyle={[styles.dropdownStyle, { backgroundColor: '#F5F5F5' }]}
               
             />
             
@@ -670,15 +670,16 @@ const styles = StyleSheet.create({
     },
     picker: {
       marginBottom: 4,
-      
       backgroundColor: "#F5F5F5",
+      
+      // backgroundColor: "#F5F5F5",
       fontFamily: 'Raleway_700Bold',
       },
       
       pickerText: {
       fontSize:15,
       fontFamily: 'Raleway_700Bold',
-      color: '#aaaaaa',
+      color: '#pink',
       },
       dropdownStyle: {
       zIndex: 9999,
@@ -687,8 +688,11 @@ const styles = StyleSheet.create({
       
       
       selectedPickerText: {
-      color: 'black',
+        color: '#aaa',
       },
+      
+
+
     
 });
 
