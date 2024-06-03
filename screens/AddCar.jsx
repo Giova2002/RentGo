@@ -370,7 +370,7 @@ const handlePicker = async () => {
 
     
       />
-<View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 250 }}>
+<View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 270 }}>
   <View style={[style.anexarCont]}>
     <Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16 }}>Anexar Foto:</Text>
     <TouchableOpacity onPress={handlePicker}>
