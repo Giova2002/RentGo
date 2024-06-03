@@ -136,6 +136,7 @@ const SearchBar = ({}) => {
     "Ford",
     "Mitsubishi",
     "BMW",
+    "Nissan"
 
   ];
   const locations = [
