@@ -218,25 +218,17 @@ dropdownTextStyle={style.dropdownTextStyle}
 />
 
 </View>
-{/* <TextInput
-style={style.input}
-placeholder="Marca"
-placeholderTextColor= "#aaaaaa"
-onChangeText={(marca) => setMarca(marca)}
-value={marca}
-multiline={true}
-underlineColorAndroid="transparent"
-autocapitalize="none"
-/> */}
 <TextInput
 style={style.input}
 placeholder="Modelo"
-placeholderTextColor= "#aaaaaa"
+placeholderTextColor="#aaaaaa"
 onChangeText={(modelo) => setModelo(modelo)}
 value={modelo}
 multiline={true}
 underlineColorAndroid="transparent"
 autocapitalize="none"
+onSubmitEditing={() => Keyboard.dismiss()}
+blurOnSubmit={false}
 />
 
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:99, }} >
@@ -359,15 +351,18 @@ underlineColorAndroid="transparent"
 autocapitalize="none"
 
 />
-<View style={{borderWidth: 1, borderRadius: 10, marginLeft:20, marginRight:20,}}>
-<View style={style.anexarCont}>
-<Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16}}>Anexar Foto: </Text>
-{image && <Image source={{ uri: image.uri }} style={{ width: 100, height: 50 }} />}
+<View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 250 }}>
+<View style={[style.anexarCont]}>
+<Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16 }}>Anexar Foto:</Text>
 <TouchableOpacity onPress={handlePicker}>
 <FontAwesomeIcon icon={faUpload} size={25} />
 </TouchableOpacity>
-
 </View>
+{image && (
+<View style={{ alignItems: 'center', marginTop: 10 }}>
+<Image source={{ uri: image }} style={{ width: 200, height: 150 }} />
+</View>
+)}
 </View>
 <View style={style.buttoncointainer}>
 <TouchableOpacity style={style.rentButton} onPress={addField}>
@@ -474,13 +469,13 @@ fontFamily: 'Raleway_700Bold',
 color: '#aaaaaa',
 },
 dropdownStyle: {
-zIndex: 9999, // Set the zIndex to a high value
+zIndex: 9999,
 backgroundColor: "#F5F5F5",
 },
 
 
 selectedPickerText: {
-color: 'black', // Set the color for the selected option to black
+color: 'black',
 },
 
 
