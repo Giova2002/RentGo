@@ -325,18 +325,18 @@ const [formInfo, setFormInfo] = useState({
             onChangeText={(text) => setFormInfo({ ...formInfo, ci: text })}
           />
 
-        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical:10}}>
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical:10,borderColor:"#748289"}}>
           <View style={styles.anexarCont}>
             
-            <Text style={{fontSize:16}}>Anexar Cédula</Text>        
+            <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:'#748289'}}>Anexar Cédula</Text>        
 
             <View style={{flexDirection:'row'}}>
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
-                <FontAwesomeIcon icon={faCamera} size={25} />
+                <FontAwesomeIcon icon={faCamera} size={20} />
               </Pressable>
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickIdImg}>
-                <FontAwesomeIcon icon={faUpload} size={25} />
+                <FontAwesomeIcon icon={faUpload} size={20} />
               </Pressable>          
             </View>          
 
@@ -346,18 +346,18 @@ const [formInfo, setFormInfo] = useState({
 
         </View>               
         
-        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10}}>
+        <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10,borderColor:"#748289"}}>
           <View style={styles.anexarCont}>
             
-            <Text style={{fontSize:16}}>Anexar Licencia</Text>        
+            <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:"#748289"}}>Anexar Licencia</Text>        
 
             <View style={{flexDirection:'row'}}>
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
-                <FontAwesomeIcon icon={faCamera} size={25} />
+                <FontAwesomeIcon icon={faCamera} size={20} />
               </Pressable>
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickLicenseImg}>
-                <FontAwesomeIcon icon={faUpload} size={25} />
+                <FontAwesomeIcon icon={faUpload} size={20} />
               </Pressable>          
             </View>          
 
@@ -379,24 +379,24 @@ const [formInfo, setFormInfo] = useState({
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('cash')}
             >
-              <FontAwesomeIcon icon={faMoneyBill} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Efectivo</Text>
+              <FontAwesomeIcon icon={faMoneyBill} size={38} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular' }}>Efectivo</Text>
             </Pressable>
 
             <Pressable
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('mobile')}
             >
-              <FontAwesomeIcon icon={faMoneyBillTransfer} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Pago Móvil</Text>
+              <FontAwesomeIcon icon={faMoneyBillTransfer} size={38} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular' }}>Pago Móvil</Text>
             </Pressable>
 
             <Pressable
               style={({ pressed }) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36' }, styles.pagosButton]}
               onPress={() => setPaymentMethod('agree')}
             >
-              <FontAwesomeIcon icon={faPeopleArrows} size={43} />
-              <Text style={{ color: '#000000', fontSize: 13 }}>Acuerdo</Text>
+              <FontAwesomeIcon icon={faPeopleArrows} size={39} />
+              <Text style={{ color: '#000000', fontSize: 13,fontFamily: 'Raleway_400Regular'}}>Acuerdo</Text>
             </Pressable>
           </View>
 
@@ -485,7 +485,7 @@ const [formInfo, setFormInfo] = useState({
 
           <Text style={styles.totalAmountText}>Monto Total: ${totalAmount}</Text>
           <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#354655' : '#1C252E',}, styles.submitButton,]} onPress={handleReserve}>
-            <Text style={{ color: '#EBAD36', fontSize: 18, fontWeight: 'bold'}}>Reservar</Text>
+            <Text style={{ color: '#EBAD36', fontSize: 18,fontFamily: 'Raleway_700Bold'}}>Reservar</Text>
            
         </Pressable>
       
@@ -523,26 +523,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#E6E6E6',
     borderRadius: 25,
     fontFamily: 'Raleway_700Bold',
+    paddingBottom:50
+   
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
     fontFamily: 'Raleway_700Bold',
+    paddingBottom:10,
+    paddingTop:10
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
-    borderColor: '#000000',
+    borderColor:"#748289",
+    fontFamily: 'Raleway_700Bold',
+    color:"#748289"
+    
   },
   anexar: {
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    width: 60,
+    width: 50,
+    height:50,
     marginHorizontal: 5,
   },
   submitButton: {
@@ -553,11 +561,13 @@ const styles = StyleSheet.create({
     width: '50%',
     alignSelf: 'center',
     marginBottom: 100,
+    
   },
   containerPago: {
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom:25
   },
   pagosButton: {
     padding: 15,
@@ -584,11 +594,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#D7D6D6',   
     marginTop: 20,     
     marginBottom: 10,
+   
   },
   anexarCont: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',          
+    alignItems: 'center',  
+          
   },
 
   loaderContainer: {

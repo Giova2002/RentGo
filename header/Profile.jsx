@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export default function Profile() {
     const { user } = useContext(UserContext);

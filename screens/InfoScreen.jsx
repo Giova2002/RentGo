@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator,Dimensions } from 'react-native'
 import React ,{useEffect, useState } from 'react'
 import { firebase } from "../firebase/firebaseConfig"
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const back = require("../assets/Img/arrow.png");
 const fortuner = require("../assets/fortuner.png");
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export default function InfoScreen({ route, navigation }) {
   const { carId } = route.params;
@@ -56,7 +58,7 @@ export default function InfoScreen({ route, navigation }) {
             </View>
           </View>
           <View style={styles.imageSection}>
-            <View style={{ width: 350, height: 200 }}>
+            <View style={{ width: 350, height: 210 }}>
               <Image source={{uri: car.imagenURL}} style={styles.image} />
             </View>
           </View>

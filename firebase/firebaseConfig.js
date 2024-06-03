@@ -15,6 +15,7 @@ measurementId: "G-ML4RSSK39M"
 
 if (!firebase.apps.length){
 firebase.initializeApp(firebaseConfig)
+
 }
 
 

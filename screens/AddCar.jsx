@@ -429,6 +429,7 @@ fontWeight: "500",
 fontFamily: 'Raleway_700Bold',
 height: 50,
 textAlignVertical:"center",
+
 },
 
 loaderContainer: {
@@ -448,7 +449,7 @@ borderColor: '#ccc',
 padding: 10,
 marginBottom: 10,
 borderRadius: 10,
-borderColor: '#000000',
+borderColor:"#748289",
 marginLeft:20,
 marginRight:20,
 fontFamily: 'Raleway_700Bold',
@@ -458,6 +459,7 @@ height:48,
 },
 picker: {
 marginBottom: 10,
+borderColor:"#748289",
 
 backgroundColor: "#F5F5F5",
 fontFamily: 'Raleway_700Bold',
