@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import CalendarComponent from '../components/CalendarComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import disableDates from '../components/CalendarComponent';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
 const windowWidth = Dimensions.get("window").width;
@@ -17,8 +19,10 @@ export default Reserva = ({route, navigation}) => {
  
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
+  const [reservedDates, setReservedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [selectedRange, setSelectedRange] = useState({ startDate: '', endDate: '' });
   // const [isLoading, setIsLoading] = useState(true);
 
 const [paymentInfo, setPaymentInfo] = useState({
@@ -79,8 +83,31 @@ const [formInfo, setFormInfo] = useState({
       }
     };
 
+    // hacer fetch de las reservas asociadas al CarID y extraer las fechas (fecha inicio y fecha final) para deshabilitarlas en el calendario
+    const fetchReservas = async () => {
+      try {
+        const reservaRef = firebase.firestore().collection('reserva');
+        const reservas = await reservaRef.where('id_auto', '==', carId).get();
+
+        if (reservas.exists){
+          const dates = [];
+          reservas.forEach((reserva) => {
+            const data = reserva.data();
+            const startDate = data.fecha_inicio.toDate().toISOString().split('T')[0];
+            const endDate = data.fecha_fin.toDate().toISOString().split('T')[0];
+            dates.push({ startDate, endDate });
+          });
+          setReservedDates(dates);
+        }
+      }
+      catch (error) {
+        console.error("Error fetching reservas data:", error);
+      }            
+    }
+
     fetchCar();
     fetchUserInfo();
+    fetchReservas();
   }, [carId]);
 
   if (loading) {
@@ -159,6 +186,8 @@ const [formInfo, setFormInfo] = useState({
           ci: formInfo.ci,
           url_cedula: idImageUrl,
           url_licencia: licenseImageUrl,
+          fecha_inicio: new Date(selectedRange.startDate),
+          fecha_fin: new Date(selectedRange.endDate),
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
           
         });
@@ -304,6 +333,10 @@ const [formInfo, setFormInfo] = useState({
 
         </View>              
         
+        <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
+
+        <CalendarComponent reservas={reservedDates} onRangeSelected={setSelectedRange}/>
+
         <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 
         <View style={styles.containerPago}>
