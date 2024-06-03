@@ -129,22 +129,22 @@ export default function AddCar() {
     const newFieldId = maxId + 1;
 
     await firebase.firestore().collection('auto').add({
-    id_auto: newFieldId,
-    marca: marca,
-    modelo: modelo,
-    ubicacion: ubicacion,
-    precio: precio,
-    tipo: tipo,
-    descripcion: descripcion,
-    maleta: maleta,
-    nro_puertas: puertas,
-    detalles: detalles,
-    litros_gas: gasolina,
-    bluetooth: bluetooth,
-    cant_asientos: asientos,
-    disponible: true,
-    recomendado: false,
-    imagenURL: imageUrl,
+      id_auto: newFieldId,
+      marca: marca,
+      modelo: modelo,
+      ubicacion: ubicacion,
+      precio: parseFloat(precio),
+      tipo: tipo,
+      descripcion: descripcion,
+      maleta: maleta,
+      nro_puertas: parseFloat(puertas),
+      detalles: detalles,
+      litros_gas: parseFloat(gasolina),
+      bluetooth: bluetooth,
+      cant_asientos: parseFloat(asientos),
+      disponible: true,
+      recomendado: false,
+      imagenURL: imageUrl,
     
         });
 
