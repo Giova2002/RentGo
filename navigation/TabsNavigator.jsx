@@ -32,6 +32,22 @@ const screenOptions = {
   }
 
 }
+function HomeStack() {
+  return (
+
+    <Stack.Navigator
+    screenOptions={{
+      headerShown: false
+    }}>
+      
+     <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+  
+      
+    </Stack.Navigator>
+
+  )
+}
 
 function Car() {
   return (
@@ -40,9 +56,12 @@ function Car() {
     screenOptions={{
       headerShown: false
     }}>
-      <Stack.Screen name="Cars" component={Cars} />
+      
+     <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+  
       
     </Stack.Navigator>
 
@@ -54,11 +73,11 @@ export default TabsNavigator = props =>{
 
     return (
 
-        <Tab.Navigator screenOptions ={screenOptions}>
+      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
 
         <Tab.Screen
         name='Home'
-        component={Home}
+        component={HomeStack}
         options={{
           tabBarIcon: ({focused})=>{
             return(
