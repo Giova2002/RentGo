@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import disableDates from '../components/CalendarComponent';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
 const windowWidth = Dimensions.get("window").width;
@@ -18,7 +19,7 @@ export default Reserva = ({route, navigation}) => {
   
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [reservedDates, setReservedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   // const [isLoading, setIsLoading] = useState(true);
@@ -81,8 +82,31 @@ const [formInfo, setFormInfo] = useState({
       }
     };
 
+    // hacer fetch de las reservas asociadas al CarID y extraer las fechas (fecha inicio y fecha final) para deshabilitarlas en el calendario
+    const fetchReservas = async () => {
+      try {
+        const reservaRef = firebase.firestore().collection('reserva');
+        const reservas = await reservaRef.where('id_auto', '==', carId).get();
+
+        if (reservas.exists){
+          const dates = [];
+          reservas.forEach((reserva) => {
+            const data = reserva.data();
+            const startDate = data.fecha_inicio.toDate().toISOString().split('T')[0];
+            const endDate = data.fecha_fin.toDate().toISOString().split('T')[0];
+            dates.push({ startDate, endDate });
+          });
+          setReservedDates(dates);
+        }
+      }
+      catch (error) {
+        console.error("Error fetching reservas data:", error);
+      }            
+    }
+
     fetchCar();
     fetchUserInfo();
+    fetchReservas();
   }, [carId]);
 
   if (loading) {
@@ -308,7 +332,7 @@ const [formInfo, setFormInfo] = useState({
         
         <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
 
-        <CalendarComponent />
+        <CalendarComponent reservas={reservedDates}/>
 
         <Text style={[{marginTop: 10}, styles.label]}>Método de Pago</Text> 
 

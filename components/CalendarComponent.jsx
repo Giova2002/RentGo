@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Calendar, DateObject } from 'react-native-calendars';
 import calendarioEsp from './LocaleConfig';
 
-const CalendarComponent = () => {
+const CalendarComponent = ({ reservas }) => {
     
     calendarioEsp();    
 
@@ -13,10 +13,19 @@ const CalendarComponent = () => {
     endDate: '',
   });
 
+  const [reservedDates, setReservedDates] = useState([]);   
   const today = new Date().toISOString().split('T')[0];
+
+  useEffect(() => {
+    disableDates(reservas);
+  }, [reservas]);
 
   const onDayPress = (day) => {
 
+    if (reservedDates.includes(day.dateString)) {
+        Alert.alert('Fecha no disponible', 'La fecha seleccionada ya está reservada.');
+        return;
+      }
     if (new Date(day.dateString) < new Date(today)) {        
         Alert.alert('Fecha Invalida', 'Las fechas de reserva no pueden estar en el pasado.');
         return;
@@ -32,12 +41,47 @@ const CalendarComponent = () => {
     }
   };
 
+//   markedDates[reserva.fecha] = {
+//     disabled: true,
+//     disableTouchEvent: true,
+//     disabledDotColor: 'red',        
+//     };
+
+  const disableDates = (reservas) => {
+    const disabledDates = [];
+
+    reservas.forEach(({ startDate, endDate }) => {
+      let start = new Date(startDate);
+      let end = new Date(endDate);
+      let date = new Date(start);
+
+      while (date <= end) {
+        const dateString = date.toISOString().split('T')[0];
+        if (new Date(dateString) >= new Date(today)) {
+          disabledDates.push(dateString);
+        }
+        date.setDate(date.getDate() + 1);
+      }
+    });
+
+    setReservedDates(disabledDates);
+  }
+
   const getMarkedDates = () => {
     const markedDates = {
         [today]: {             
             textColor: '#EBAD36',
         }
     };
+    
+    // inhabilitar fechas reservadas   
+    reservedDates.forEach((date) => {
+        markedDates[date] = {
+            disabled: true,
+            disableTouchEvent: true,
+            disabledDotColor: 'gray',
+        };
+    }); 
 
     if (selectedRange.startDate) {
       markedDates[selectedRange.startDate] = {
