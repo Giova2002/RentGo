@@ -3,7 +3,7 @@ import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } fro
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 
 const firebaseConfig = {
@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export default function Likes() {
+export default function SignIn() {
   const navigation = useNavigation();
 
   const [values, setValues] = useState({ name: "", email: "", pass: "", apellido: "", img: "" });
@@ -56,7 +56,8 @@ export default function Likes() {
 
       await updateProfile(user, { displayName: values.name });
 
-      await addDoc(collection(db, "usuario"), {
+      const userRef = doc(collection(db, "usuario"), user.uid);
+      await setDoc(userRef, {
         apellido: values.apellido,
         correo: values.email,
         id_arrendador: "",
@@ -64,8 +65,10 @@ export default function Likes() {
         img: values.img,
         nombre: values.name,
         password: values.pass,
+        uid: user.uid,
       });
 
+      Alert.alert("Registro exitoso", "Usuario registrado correctamente");
       navigation.navigate("Login");
     } catch (err) {
       setSubmitButtonDisabled(false);
@@ -224,3 +227,5 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
