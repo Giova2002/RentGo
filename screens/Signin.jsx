@@ -22,6 +22,7 @@ const db = getFirestore(app);
 
 export default function Likes() {
   const navigation = useNavigation();
+
   const [values, setValues] = useState({ name: "", email: "", pass: "", apellido: "", img: "" });
   const [errorMsg, setErrorMsg] = useState("");
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
@@ -65,7 +66,7 @@ export default function Likes() {
         password: values.pass,
       });
 
-      navigation.navigate("Home");
+      navigation.navigate("Login");
     } catch (err) {
       setSubmitButtonDisabled(false);
       setErrorMsg(err.message);
@@ -99,7 +100,7 @@ export default function Likes() {
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.navigate("Login");
         saveProfile(user);
       }
     });
@@ -155,7 +156,7 @@ export default function Likes() {
           <TouchableOpacity style={styles.cajaBoton} onPress={signInWithGoogle}>
             <Text style={styles.textoBoton}>Regístrate con Google</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
             <Text style={styles.loginText}>Si ya tienes una cuenta, inicia sesión</Text>
           </TouchableOpacity>
         </View>

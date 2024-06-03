@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+// Login.js
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import appFirebase from '../firebase';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-
-const auth = getAuth(appFirebase);
+import { auth } from '../firebase'; // Importa auth desde firebase.js
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate('Home'); // Redirigir a Home si ya está autenticado
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const logueo = async () => {
     try {
@@ -43,6 +52,9 @@ export default function Login() {
         <View style={styles.padreBoton}>
           <TouchableOpacity style={styles.cajaBoton} onPress={logueo}>
             <Text style={styles.textoBoton}>Sign in</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
+            <Text style={styles.loginText}>Si no tienes una cuenta, regístrate</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -91,5 +103,10 @@ const styles = StyleSheet.create({
   textoBoton: {
     textAlign: 'center',
     color: 'white',
+  },
+  loginText: {
+    textAlign: "center",
+    color: "orange",
+    marginTop: 16,
   },
 });

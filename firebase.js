@@ -8,6 +8,8 @@ import "firebase/firestore";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -30,8 +32,14 @@ if (!firebase.apps.length){
 const appFirebase = initializeApp(firebaseConfig);
 export default appFirebase
 //firebase.initializeApp(firebaseConfig);
-const auth = getAuth();
-export {auth };
+const app = initializeApp(firebaseConfig);
+let auth;
+if (!auth) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  });
+}
+export { auth, app };
 export const db = getFirestore(appFirebase);
 export const store = getStorage(appFirebase);
 export const googleProvider = new GoogleAuthProvider();

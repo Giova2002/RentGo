@@ -1,32 +1,33 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 import { firebase } from '../firebase/firebaseConfig';
 import { UserContext } from '../context/UserContext';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { width } from '@fortawesome/free-brands-svg-icons/fa42Group';
-
+import { useNavigation } from '@react-navigation/native';
+import { getAuth, signOut } from 'firebase/auth';
 
 const back = require("../assets/Img/arrow.png");
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const storage = firebase.storage();
+const auth = getAuth();
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
-  const userId = "iUPxvupTSPDK4czA7dmQ";
-  const { user,setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchUserById = async (userId) => {
+    const fetchUser = async () => {
       try {
-        const doc = await firebase.firestore().collection('usuario').doc(user.id).get();
-        if (doc.exists) {
-          setUser({ id: doc.id, ...doc.data() });
-        } else {
-          console.log('No such document!');
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const doc = await firebase.firestore().collection('usuario').doc(currentUser.uid).get();
+          if (doc.exists) {
+            setUser({ id: doc.id, ...doc.data() });
+          } else {
+            console.log('No such document!');
+          }
         }
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -35,30 +36,22 @@ const ProfileScreen = () => {
       }
     };
 
-    fetchUserById(userId);
-  }, []);
+    fetchUser();
+  }, [setUser]);
 
   const uploadImage = async (uri) => {
-    console.log('URI:', uri);
-    console.log("stoooore",storage)
     try {
       const response = await fetch(uri);
-      console.log('Response:', response);
       const blob = await response.blob();
-      console.log('Blob:', blob);
-      const ref = storage.ref().child(`images/${userId}/${Date.now()}`);
-      console.log('Storage Ref:', ref);
+      const ref = storage.ref().child(`images/${user.id}/${Date.now()}`);
       const snapshot = await ref.put(blob);
-      console.log('Snapshot:', snapshot);
       const imageUrl = await snapshot.ref.getDownloadURL();
-      console.log('Image URL:', imageUrl);
       return imageUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
     }
   };
-  
 
   const handleImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -73,11 +66,9 @@ const ProfileScreen = () => {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result)
 
     if (!result.canceled) {
       const selectedImage = result.assets[0].uri;
-      console.log('Selected Image URI: ', selectedImage);
       if (!selectedImage) {
         console.error('Invalid image URI');
         return;
@@ -85,7 +76,6 @@ const ProfileScreen = () => {
       setLoading(true);
       try {
         const imageUrl = await uploadImage(selectedImage);
-        console.log('Image URL: ', imageUrl);
         setUser(prevData => ({
           ...prevData,
           img: imageUrl
@@ -101,7 +91,7 @@ const ProfileScreen = () => {
 
   const handleSave = async () => {
     try {
-      await firebase.firestore().collection('usuario').doc(userId).update(user);
+      await firebase.firestore().collection('usuario').doc(user.id).update(user);
       Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
       setTimeout(() => {
         navigation.goBack(); // Navegar de regreso a la pantalla anterior
@@ -111,8 +101,16 @@ const ProfileScreen = () => {
       Alert.alert('Error', 'Hubo un problema al actualizar su perfil');
     }
   };
-  
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.navigate('Login'); // Navegar a la pantalla de inicio de sesión
+    } catch (error) {
+      console.error('Error signing out:', error);
+      Alert.alert('Error', 'Hubo un problema al cerrar sesión. Por favor, inténtelo de nuevo.');
+    }
+  };
 
   if (loading) {
     return (
@@ -126,15 +124,14 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.yellowContainer}>
-        <View style ={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.arrow}>
-                <Image source={back} resizeMode="contain"  />
-              </TouchableOpacity>
-      
-        <Text style={styles.header}>Editar Perfil</Text>
-        
-              </View>
-        
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.arrow}>
+            <Image source={back} resizeMode="contain" />
+          </TouchableOpacity>
+
+          <Text style={styles.header}>Editar Perfil</Text>
+        </View>
+
         <View style={styles.profileImageContainer}>
           <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
         </View>
@@ -178,6 +175,9 @@ const ProfileScreen = () => {
       <View style={styles.botonContainer}>
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -233,9 +233,7 @@ const styles = StyleSheet.create({
     width: windowWidth,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom:5,
-
-
+    paddingBottom: 5,
   },
   label: {
     fontSize: 16,
@@ -243,72 +241,69 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway_700Bold",
   },
   input: {
-    width: windowWidth*0.9,
-    height:windowHeight*0.04,
+    width: windowWidth * 0.9,
+    height: windowHeight * 0.04,
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 5,
     fontFamily: "Raleway_400Regular",
-    
-    
-    
   },
-  botonContainer:{
-    
-    justifyContent:'center',
-    display:"flex",
-    alignItems:"center"
-
-
-
+  botonContainer: {
+    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   saveButton: {
     backgroundColor: '#EBAD36',
-   height:windowHeight*0.04,
-    
+    height: windowHeight * 0.04,
     borderRadius: 5,
     alignItems: 'center',
-    width:windowWidth*0.4,
-    justifyContent:'center',
-    marginTop:25
-    
-    
-    
+    width: windowWidth * 0.4,
+    justifyContent: 'center',
+    marginTop: 25,
   },
   saveButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: "Raleway_700Bold",
   },
+  logoutButton: {
+    backgroundColor: '#2F3942',
+    height: windowHeight * 0.04,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: windowWidth * 0.4,
+    justifyContent: 'center',
+    marginTop: 25,
+  },
+  logoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: "Raleway_700Bold",
+  },
   loaderContainer: {
     flex: 1,
-    justifyContent: 'center'},
-
-    cargando:{
-        alignSelf: "center",
-        color: 'black',
-        fontSize: 15,
-        fontFamily: 'Raleway_700Bold'
-
-    },
-    arrow:{
-      position:"absolute",
-      top:0,
-      left:15
-      
-
-      
-      
-    },
-    headerContainer:{
-      flexDirection:"row",
-      justifyContent:"center",
-      position:"relative",
-      width:"100%",
-   
-
-    
-    }
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  cargando: {
+    fontSize: 16,
+    fontFamily: "Raleway_700Bold",
+    color: "#EBAD36",
+    marginTop: 10,
+  },
+  arrow: {
+    position: "absolute",
+    top: 0,
+    left: 15
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    position: "relative",
+    width: "100%",
+  }
 });
 
 export default ProfileScreen;

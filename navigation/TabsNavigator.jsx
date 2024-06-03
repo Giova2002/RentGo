@@ -152,6 +152,10 @@ function AppNavigator() {
       <Stack.Screen name="Tabs" component={TabsNavigator} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signin" component={Signin} />
+      <Stack.Screen name="Cars" component={Cars} />
+      <Stack.Screen name="Info" component={InfoScreen} />
+      <Stack.Screen name="Reserva" component={Reserva} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   );
 }
@@ -162,12 +166,6 @@ export default function App() {
   return (
     <View style={{ flex: 1 }}>
       <AppNavigator />
-      <TouchableOpacity
-        style={styles.signinButton}
-        onPress={() => navigation.navigate("Signin")}
-      >
-        <Text style={{ color: 'white' }}>Sign Up</Text>
-      </TouchableOpacity>
     </View>
   );
 }
