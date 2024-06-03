@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, Image ,TouchableOpacity
 import { firebase } from '../firebase/firebaseConfig'; 
 import Header from '../header/Header';
 import SearchBar from '../search/SearchBar';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute,useFocusEffect } from '@react-navigation/native';
 import { useCarFiltersContext } from '../context/CarFiltersContext';
+
 
 
 
@@ -16,7 +17,12 @@ export default function Home() {
   const navigation = useNavigation()
   const marcas = [{name:"Toyota",image:require('../assets/marcasLogos/toyota.png')},{name:"Ford",image:require('../assets/marcasLogos/ford.png')},{name:"Mitsubishi",image:require('../assets/marcasLogos/mitsubishi.png')}]
   const [recommendedCars, setRecommendedCars] = useState([]);
-
+  
+//ESTO PUEDE JODER MAS ADELANTE
+  useEffect(() => {
+    // Este efecto se ejecutará una vez cuando el componente se monte
+    navigation.navigate("Home");
+  }, []);
 
   useEffect(() => {
     const fetchRecommendedCars = async () => {
@@ -34,7 +40,6 @@ export default function Home() {
 
     fetchRecommendedCars();
   }, []);
-
 
 
   const goToCarsByBrand=(brand)=>{

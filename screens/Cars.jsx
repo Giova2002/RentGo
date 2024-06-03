@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { firebase } from "../firebase/firebaseConfig";
 import { FlatList } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -33,12 +34,31 @@ const img4 =
 
 import Cards from "../components/Card.jsx";
 
-export default function Cars({ navigation }) {
-  const {data}=useCarFiltersContext()
+export default function Cars({ }) {
+  const {data,setData}=useCarFiltersContext()
   const route = useRoute();
+
+  const navigation = useNavigation()
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [auto, setAuto] = useState([]); // Initial empty array of users
   const autoRef = firebase.firestore().collection("auto");
+
+  useFocusEffect(
+   useCallback(() => {
+      // Do something when the screen is focused
+
+      return () => {
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false,filterByBrand:false})
+   
+      };
+    }, [])
+  );
+
+  
+
+
 
 
   useEffect(() => {
