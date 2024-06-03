@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DropDownPicker from 'react-native-dropdown-picker';
 import disableDates from '../components/CalendarComponent';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
@@ -25,6 +26,20 @@ export default Reserva = ({route, navigation}) => {
   const [selectedRange, setSelectedRange] = useState({ startDate: '', endDate: '' });
   const [totalAmount, setTotalAmount] = useState(0);
   // const [isLoading, setIsLoading] = useState(true);
+
+const [openC, setOpenC] = useState(false);
+const [bancos, setBancos] = useState('');
+const [banco, setBanco] = useState([
+  { label: 'Banco de Venezuela', value: 'Banco de Venezuela' },
+  { label: 'Banco Provincial', value: 'Banco Provincial' },
+  { label: 'Banesco', value: 'Banesco' },
+  { label: 'Banco del Tesoro', value: 'Banco del Tesoro' },
+  { label: 'Banco Bicentenario', value: 'Banco Bicentenario' },
+  { label: 'Mercantil', value: 'Mercantil' },
+  { label: 'BOD', value: 'BOD' },
+  { label: 'BNC', value: 'BNC' },
+  { label: 'Banca Amiga', value: 'Banca Amiga' }
+]);
 
 const [paymentInfo, setPaymentInfo] = useState({
   bankName: '',
@@ -172,7 +187,7 @@ const [formInfo, setFormInfo] = useState({
         return;
       }
   
-      if (paymentMethod === 'mobile' && (!paymentInfo.bankName || !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
+      if (paymentMethod === 'mobile' && (!bancos|| !paymentInfo.ci_pago_movil || !paymentInfo.phoneNumber_pago_movil)) {
         alert("Todos los campos de Pago Móvil son obligatorios");
         return;
       }
@@ -192,7 +207,8 @@ const [formInfo, setFormInfo] = useState({
           id_auto: carId,
           metodo_pago: paymentMethod,
           cantidad_efectivo: paymentInfo.cashAmount,
-          banco: paymentInfo.bankName,
+          // banco: paymentInfo.bankName,
+          banco: bancos,
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
           // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
@@ -269,7 +285,6 @@ const [formInfo, setFormInfo] = useState({
       let result = await handleImagePick();
       setLicenseImg(result);
     };
-
 
  
   return (
@@ -403,6 +418,45 @@ const [formInfo, setFormInfo] = useState({
           )}
 
           {paymentMethod === 'mobile' && (
+          <View>
+            <Text style={styles.titleForms}>
+                Ingrese los datos de la cuenta con la que realizará el pago 
+              </Text>
+              <View style={{ marginBottom: openC ? 200 : 10 }}>
+              <DropDownPicker
+              open={openC}
+              value={bancos}
+              items={banco}
+              setOpen={setOpenC}
+              setItems={setBanco}
+              setValue={setBancos}
+              placeholder="Seleccione el Banco"
+              style={styles.picker}
+              textStyle={[styles.pickerText, banco && styles.selectedPickerText]} // Apply different style for the selected option
+              dropdownStyle={styles.dropdownStyle}
+              
+            />
+            
+            </View>
+            
+            <TextInput
+                style={styles.input}
+                placeholder="Número de Cédula"
+                value={paymentInfo.ci_pago_movil}
+                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, ci_pago_movil: text })}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Número de Teléfono"
+                value={paymentInfo.phoneNumber_pago_movil}
+                onChangeText={(text) => setPaymentInfo({ ...paymentInfo, phoneNumber_pago_movil: text })}
+                keyboardType="phone-pad"
+              />
+          </View>
+        )}
+
+          {/* {paymentMethod === 'mobile' && (
             <View>
               <Text style={styles.titleForms}>
                 Ingrese los datos de la cuenta con la que realizará el pago 
@@ -428,7 +482,7 @@ const [formInfo, setFormInfo] = useState({
                 keyboardType="phone-pad"
               />
             </View>
-          )}
+          )} */}
 
           {paymentMethod === 'agree' && (
 
@@ -642,6 +696,28 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       marginVertical: 20,
     },
+    picker: {
+      marginBottom: 4,
+      
+      backgroundColor: "#F5F5F5",
+      fontFamily: 'Raleway_700Bold',
+      },
+      
+      pickerText: {
+      fontSize:15,
+      fontFamily: 'Raleway_700Bold',
+      color: '#F5F5F5',
+      },
+      dropdownStyle: {
+      zIndex: 9999, // Set the zIndex to a high value
+      backgroundColor: "#F5F5F5",
+      },
+      
+      
+      selectedPickerText: {
+      color: 'black', // Set the color for the selected option to black
+      },
+    
 });
 
 
