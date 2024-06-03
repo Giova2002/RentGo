@@ -14,7 +14,7 @@ return (
 <View style={styles.imageContainer}>
     {user?.img ?
 <Image source={{uri:user.img}} style={styles.image} />:
-<Image source={require('../assets/profile.jpg')} style={styles.image} />
+<Image source={require('../assets/perfil.png')} style={styles.image} />
 }
 </View>
 </TouchableOpacity>
