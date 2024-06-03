@@ -111,55 +111,55 @@ export default function SignIn() {
   }, [navigation, values.name]);
 
   return (
-    <View style={styles.padre}>
+    <View style={styles.container}>
       <View>
         <TouchableOpacity onPress={pickImage}>
-          <Image source={values.img ? { uri: values.img } : require('../assets/profile1.png')} style={styles.profile} />
+          <Image source={values.img ? { uri: values.img } : require('../assets/profile1.png')} style={styles.profileImage} />
         </TouchableOpacity>
       </View>
-      <View style={styles.tarjeta}>
-        <View style={styles.cajaTexto}>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Nombre"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             value={values.name}
             onChangeText={(text) => setValues({ ...values, name: text })}
           />
         </View>
-        <View style={styles.cajaTexto}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Apellido"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             value={values.apellido}
             onChangeText={(text) => setValues({ ...values, apellido: text })}
           />
         </View>
-        <View style={styles.cajaTexto}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Correo electrónico"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             value={values.email}
             onChangeText={(text) => setValues({ ...values, email: text })}
           />
         </View>
-        <View style={styles.cajaTexto}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Contraseña"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             secureTextEntry={true}
             value={values.pass}
             onChangeText={(text) => setValues({ ...values, pass: text })}
           />
         </View>
-        <Text style={styles.error}>{errorMsg}</Text>
-        <View style={styles.padreBoton}>
-          <TouchableOpacity style={styles.cajaBoton} onPress={register} disabled={submitButtonDisabled}>
-            <Text style={styles.textoBoton}>Guardar</Text>
+        <Text style={styles.errorText}>{errorMsg}</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={register} disabled={submitButtonDisabled}>
+            <Text style={styles.buttonText}>Registrate</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cajaBoton} onPress={signInWithGoogle}>
-            <Text style={styles.textoBoton}>Regístrate con Google</Text>
+          <TouchableOpacity style={styles.googleButton} onPress={signInWithGoogle}>
+            <Text style={styles.buttonText}>Regístrate con Google</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={styles.loginText}>Si ya tienes una cuenta, inicia sesión</Text>
           </TouchableOpacity>
         </View>
@@ -169,25 +169,26 @@ export default function SignIn() {
 }
 
 const styles = StyleSheet.create({
-  padre: {
+  container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: '#F5F5F5',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  profile: {
+  profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: "white",
+    borderColor: '#EBAD36',
+    borderWidth: 2,
+    marginBottom: 20,
   },
-  tarjeta: {
-    margin: 20,
-    backgroundColor: "white",
+  formContainer: {
+    width: '90%',
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    width: "90%",
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -196,36 +197,54 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  cajaTexto: {
-    paddingVertical: 20,
-    backgroundColor: "#cccccc40",
-    borderRadius: 30,
-    marginVertical: 10,
+  inputContainer: {
+    marginBottom: 15,
   },
-  padreBoton: {
-    alignItems: "center",
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontFamily: "Raleway_400Regular",
   },
-  cajaBoton: {
-    backgroundColor: "orange",
-    borderRadius: 30,
-    paddingVertical: 20,
-    width: 150,
-    marginTop: 20,
+  buttonContainer: {
+    alignItems: 'center',
   },
-  textoBoton: {
-    textAlign: "center",
-    color: "white",
+  button: {
+    backgroundColor: '#EBAD36',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
+    marginTop: 10,
   },
-  error: {
-    color: "red",
-    marginBottom: 16,
-    textAlign: "center",
+  googleButton: {
+    backgroundColor: '#2F3942',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: "Raleway_700Bold",
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: "Raleway_700Bold",
   },
   loginText: {
-    textAlign: "center",
-    color: "orange",
-    marginTop: 16,
+    color: '#EBAD36',
+    marginTop: 20,
+    textAlign: 'center',
+    fontFamily: "Raleway_700Bold",
   },
 });
-
 

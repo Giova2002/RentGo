@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, Alert, TouchableOpacity, Dimensions, ActivityIndicator, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { firebase } from '../firebase/firebaseConfig';
 import { UserContext } from '../context/UserContext';
@@ -122,69 +122,74 @@ const ProfileScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.yellowContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.arrow}>
-            <Image source={back} resizeMode="contain" />
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <View style={styles.yellowContainer}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.arrow}>
+              <Image source={back} resizeMode="contain" style={styles.arrowImage} />
+            </TouchableOpacity>
+            <Text style={styles.header}>Editar Perfil</Text>
+          </View>
+          <View style={styles.profileImageContainer}>
+            <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
+          </View>
+          <TouchableOpacity style={styles.editImageButton} onPress={handleImagePicker}>
+            <Text style={styles.editImageText}>Editar Imagen</Text>
           </TouchableOpacity>
-
-          <Text style={styles.header}>Editar Perfil</Text>
         </View>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nombre:</Text>
+            <TextInput
+              style={styles.input}
+              value={user.nombre}
+              onChangeText={text => setUser(prevData => ({
+                ...prevData,
+                nombre: text
+              }))}
+            />
+          </View>
 
-        <View style={styles.profileImageContainer}>
-          <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Apellido:</Text>
+            <TextInput
+              style={styles.input}
+              value={user.apellido}
+              onChangeText={text => setUser(prevData => ({
+                ...prevData,
+                apellido: text
+              }))}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email:</Text>
+            <TextInput
+              style={styles.input}
+              value={user.correo}
+              editable={false}
+            />
+          </View>
+          <View style={styles.botonContainer}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity style={styles.editImageButton} onPress={handleImagePicker}>
-          <Text style={styles.editImageText}>Editar Imagen</Text>
-        </TouchableOpacity>
       </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre:</Text>
-        <TextInput
-          style={styles.input}
-          value={user.nombre}
-          onChangeText={text => setUser(prevData => ({
-            ...prevData,
-            nombre: text
-          }))}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Apellido:</Text>
-        <TextInput
-          style={styles.input}
-          value={user.apellido}
-          onChangeText={text => setUser(prevData => ({
-            ...prevData,
-            apellido: text
-          }))}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <TextInput
-          style={styles.input}
-          value={user.correo}
-          editable={false}
-        />
-      </View>
-      <View style={styles.botonContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: '#F5F5F5',
+  },
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
@@ -196,17 +201,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 70,
     paddingBottom: 30,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  arrow: {
+    position: "absolute",
+    top: 0,
+    left: 15,
+  },
+  arrowImage: {
+    width: 24,
+    height: 24,
   },
   header: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "Raleway_700Bold",
-    paddingBottom: windowHeight * 0.04,
-    color: "#F5F5F5"
+    color: "#F5F5F5",
+    textAlign: 'center',
+    flex: 1,
   },
   profileImageContainer: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     borderWidth: 5,
     borderColor: '#F5F5F5',
     justifyContent: 'center',
@@ -214,71 +236,90 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
   },
   editImageButton: {
     backgroundColor: '#FFFFFF',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   editImageText: {
     color: '#EBAD36',
     fontFamily: "Raleway_700Bold",
-    fontSize: 14,
+    fontSize: 16,
   },
-  inputContainer: {
-    width: windowWidth,
+  formContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 5,
+  },
+  inputContainer: {
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
-    marginBottom: 5,
     fontFamily: "Raleway_700Bold",
+    color: '#333',
+    marginBottom: 5,
   },
   input: {
-    width: windowWidth * 0.9,
-    height: windowHeight * 0.04,
+    width: '100%',
+    height: 40,
     borderWidth: 1,
     borderColor: '#CCCCCC',
-    borderRadius: 5,
+    borderRadius: 10,
+    paddingHorizontal: 10,
     fontFamily: "Raleway_400Regular",
+    backgroundColor: '#FFFFFF',
   },
   botonContainer: {
-    justifyContent: 'center',
-    display: "flex",
-    alignItems: "center",
+    alignItems: 'center',
+    marginTop: 20,
   },
   saveButton: {
     backgroundColor: '#EBAD36',
-    height: windowHeight * 0.04,
-    borderRadius: 5,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
-    width: windowWidth * 0.4,
     justifyContent: 'center',
-    marginTop: 25,
+    width: '80%',
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   saveButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Raleway_700Bold",
   },
   logoutButton: {
     backgroundColor: '#2F3942',
-    height: windowHeight * 0.04,
-    borderRadius: 5,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
-    width: windowWidth * 0.4,
     justifyContent: 'center',
-    marginTop: 25,
+    width: '80%',
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   logoutButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Raleway_700Bold",
   },
   loaderContainer: {
@@ -293,17 +334,6 @@ const styles = StyleSheet.create({
     color: "#EBAD36",
     marginTop: 10,
   },
-  arrow: {
-    position: "absolute",
-    top: 0,
-    left: 15
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    position: "relative",
-    width: "100%",
-  }
 });
 
 export default ProfileScreen;

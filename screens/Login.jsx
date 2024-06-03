@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
@@ -32,29 +31,29 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.padre}>
-      <View style={styles.tarjeta}>
-        <View style={styles.cajaTexto}>
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Correo electrónico"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             onChangeText={(text) => setEmail(text)}
           />
         </View>
-        <View style={styles.cajaTexto}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Contraseña"
-            style={{ paddingHorizontal: 15 }}
+            style={styles.input}
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
           />
         </View>
-        <View style={styles.padreBoton}>
-          <TouchableOpacity style={styles.cajaBoton} onPress={logueo}>
-            <Text style={styles.textoBoton}>Sign in</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={logueo}>
+            <Text style={styles.buttonText}>Iniciar sesion</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
-            <Text style={styles.loginText}>Si no tienes una cuenta, regístrate</Text>
+            <Text style={styles.signupText}>Si no tienes una cuenta, regístrate</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,15 +62,15 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  padre: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
-  tarjeta: {
+  card: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     width: '90%',
     padding: 20,
@@ -84,29 +83,40 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  cajaTexto: {
-    paddingVertical: 20,
-    backgroundColor: '#cccccc40',
-    borderRadius: 30,
-    marginVertical: 10,
+  inputContainer: {
+    marginBottom: 15,
   },
-  padreBoton: {
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontFamily: "Raleway_400Regular",
+  },
+  buttonContainer: {
     alignItems: 'center',
   },
-  cajaBoton: {
-    backgroundColor: 'orange',
-    borderRadius: 30,
-    paddingVertical: 20,
-    width: 150,
-    marginTop: 20,
+  button: {
+    backgroundColor: '#EBAD36',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
+    marginTop: 10,
   },
-  textoBoton: {
+  buttonText: {
+    color: '#FFFFFF',
     textAlign: 'center',
-    color: 'white',
+    fontSize: 16,
+    fontFamily: "Raleway_700Bold",
   },
-  loginText: {
-    textAlign: "center",
-    color: "orange",
-    marginTop: 16,
+  signupText: {
+    color: '#2F3942',
+    marginTop: 20,
+    textAlign: 'center',
+    fontFamily: "Raleway_700Bold",
   },
 });
+
