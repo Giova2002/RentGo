@@ -37,12 +37,36 @@ const CalendarComponent = ({ reservas, onRangeSelected }) => {
     if (!selectedRange.startDate || (selectedRange.startDate && selectedRange.endDate)) {
         setSelectedRange({ startDate: day.dateString, endDate: '' });        
     } else {
-    if (new Date(day.dateString) < new Date(selectedRange.startDate)) {        
-        Alert.alert('Fecha Invalida', 'La fecha de finalización debe ser posterior a la fecha de inicio.');
-    } else {
-        setSelectedRange({ ...selectedRange, endDate: day.dateString });        
+        if (new Date(day.dateString) < new Date(selectedRange.startDate)) {        
+            Alert.alert('Fecha Invalida', 'La fecha de finalización debe ser posterior a la fecha de inicio.');
+        } else {
+            
+            const isRangeValid = validateRange(selectedRange.startDate, day.dateString);
+
+            if (isRangeValid) {
+                setSelectedRange({ ...selectedRange, endDate: day.dateString });        
+            } else {
+                Alert.alert('Rango inválido', 'El rango seleccionado incluye fechas reservadas.');
+            }        
+        }
     }
+  };
+
+  const validateRange = (startDate, endDate) => {
+    
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    let date = new Date(start);
+
+    while (date <= end) {
+      const dateString = date.toISOString().split('T')[0];
+      if (reservedDates.includes(dateString)) {
+        return false;
+      }
+      date.setDate(date.getDate() + 1);
     }
+
+    return true;
   };
 
   const disableDates = (reservas) => {
@@ -75,8 +99,7 @@ const CalendarComponent = ({ reservas, onRangeSelected }) => {
     // inhabilitar fechas reservadas   
     reservedDates.forEach((date) => {
         markedDates[date] = {
-            disabled: true,
-            disableTouchEvent: true,
+            disabled: true,            
             disabledDotColor: 'gray',
         };
     }); 

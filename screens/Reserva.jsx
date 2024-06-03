@@ -105,7 +105,7 @@ const [formInfo, setFormInfo] = useState({
         const reservaRef = firebase.firestore().collection('reserva');
         const reservas = await reservaRef.where('id_auto', '==', carId).get();
 
-        if (reservas.exists){
+        if (!reservas.empty){
           const dates = [];
           reservas.forEach((reserva) => {
             const data = reserva.data();
