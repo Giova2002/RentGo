@@ -359,7 +359,7 @@ underlineColorAndroid="transparent"
 autocapitalize="none"
 
 />
-<View style={{borderWidth: 1, borderRadius: 10, marginLeft:20, marginRight:20,}}>
+<View style={{borderWidth: 1, borderRadius: 10, marginLeft:20, marginRight:20}}>
 <View style={style.anexarCont}>
 <Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 16}}>Anexar Foto: </Text>
 {image && <Image source={{ uri: image.uri }} style={{ width: 100, height: 50 }} />}
@@ -434,6 +434,7 @@ fontWeight: "500",
 fontFamily: 'Raleway_700Bold',
 height: 50,
 textAlignVertical:"center",
+
 },
 
 loaderContainer: {
@@ -453,7 +454,7 @@ borderColor: '#ccc',
 padding: 10,
 marginBottom: 10,
 borderRadius: 10,
-borderColor: '#000000',
+borderColor:"#748289",
 marginLeft:20,
 marginRight:20,
 fontFamily: 'Raleway_700Bold',
@@ -463,6 +464,7 @@ height:48,
 },
 picker: {
 marginBottom: 10,
+borderColor:"#748289",
 
 backgroundColor: "#F5F5F5",
 fontFamily: 'Raleway_700Bold',
