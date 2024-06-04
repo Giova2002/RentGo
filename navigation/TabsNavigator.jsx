@@ -53,6 +53,7 @@ function TabsNavigator() {
 
     return unsubscribe;
   }, [navigation]);
+  
   function Car() {
   return (
 

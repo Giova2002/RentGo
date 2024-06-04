@@ -270,9 +270,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   arrow: {
+
     position: "absolute",
     top: 0,
     left: 15,
+    zIndex:1,
   },
   arrowImage: {
     width: 24,
