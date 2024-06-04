@@ -44,16 +44,29 @@ export default function Cars({ }) {
   const autoRef = firebase.firestore().collection("auto");
 
   useFocusEffect(
-   useCallback(() => {
-      // Do something when the screen is focused
-
+    useCallback(() => {
+      // Función que se ejecuta cuando la pantalla está enfocada
+      const timeout = setTimeout(() => {
+        // Establece los datos después de 2 segundos
+        setData({
+          seatCount: 2,
+          priceRange: [10, 500],
+          automaticSelected: false,
+          manualSelected: false,
+          selectedBrands: [],
+          selectedLocations: [],
+          search: "",
+          filter: false,
+          filterByBrand: false
+        });
+      }, 50);
+  
       return () => {
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-        setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[],selectedLocations:[], search:data.search,filter:false,filterByBrand:false})
-   
+        // Función que se ejecuta cuando la pantalla pierde el foco
+        console.log('ROUTEEE', route); // Imprime información sobre la ruta (podría ser útil para depuración)
+        clearTimeout(timeout); // Limpia el temporizador cuando la pantalla pierde el foco
       };
-    }, [])
+    }, []) // La dependencia de la función es un arreglo vacío, lo que significa que se ejecutará solo una vez (cuando se monta el componente)
   );
 
   
@@ -138,9 +151,10 @@ filter()
         auto=auto.filter((element)=> {return data.selectedBrands.includes(element.marca) })
       }
 
-        if(data.search.trim != ""){
+  
+          console.log('HOLAAAAA')
           auto=auto.filter((element)=> {return element.modelo.toLowerCase().includes(data.search.toLowerCase()) || element.marca.toLowerCase().includes(data.search.toLowerCase()) })
-        }
+        
         setAuto(auto)
         
       });
