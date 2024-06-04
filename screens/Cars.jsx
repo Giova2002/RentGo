@@ -324,4 +324,3 @@ const styles = StyleSheet.create({
   },
 });
 
-
