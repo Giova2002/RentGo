@@ -212,6 +212,7 @@ const [formInfo, setFormInfo] = useState({
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
           // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
+          numero_contacto: "https://w.app/atencionAlCliente",
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
           precio_total: totalAmount,
@@ -227,7 +228,7 @@ const [formInfo, setFormInfo] = useState({
           
         });
         alert("Reserva realizada con éxito");
-        navigation.navigate('Cars');
+        navigation.navigate('Home');
         // navigation.goBack();
       } catch (error) {
         console.error("Error al realizar la reserva: ", error);
@@ -460,10 +461,10 @@ const [formInfo, setFormInfo] = useState({
 
             <View>  
             <Text style={styles.titleForms}>
-              Este es el número de contacto del dueño del carro. Anote su número para cuadrar la metodología de pago directamente.
+              Link al WhatsApp de atención al Cliente
             </Text>
             <View style={styles.input}>
-              <Text>{car.phoneNumber}</Text>
+              <Text>{'https://w.app/atencionAlCliente'}</Text>
               
               {/* {car.id_usuario.phoneNumber} */}
             </View>
