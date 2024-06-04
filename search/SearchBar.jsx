@@ -149,21 +149,21 @@ const SearchBar = ({}) => {
 
   const searchString = (value) => {
     console.log("VALUEE", route);
-    if (value.trim != "") {
+
       setData((prevData) => ({
         ...prevData,
         search: value,
       }));
-    }
+    
   };
 //esto es lo que da error antes navigate cars ahora home
   useEffect(() => {
     console.log('SEARCHHHH',data.search)
-    if (data.search.trim() !== "") {
+  
       if (route.name != "Cars") {
         navigation.navigate("Cars");
       }
-    }
+    
   }, [data.search]);
 
   useEffect(() => {
@@ -186,6 +186,7 @@ const SearchBar = ({}) => {
     setManualSelected(false);
     setSelectedBrands([]);
     setSelectedLocations([]);
+    setTerm("")
     setData({
       seatCount: 2,
       priceRange: [10, 500],
@@ -193,7 +194,7 @@ const SearchBar = ({}) => {
       manualSelected: false,
       selectedBrands: [],
       selectedLocations: [],
-      search: data.search,
+      search: "",
       filter: false,
       filterByBrand: false,
     });
@@ -206,7 +207,7 @@ const SearchBar = ({}) => {
         <TextInput
           style={styles.input}
           placeholder="Busca Tu Carro"
-          value={term}
+          value={data.search}
           onChangeText={(e) => {
             searchString(e);
           }}
