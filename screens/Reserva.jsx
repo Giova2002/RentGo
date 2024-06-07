@@ -181,6 +181,17 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, seleccione un método de pago");
         return;
       }
+      if (paymentMethod === 'cash') {
+        const cashAmount = parseFloat(paymentInfo.cashAmount);
+        if (isNaN(cashAmount) || cashAmount <= 0) {
+          alert("Por favor, ingrese una cantidad válida de efectivo");
+          return;
+        }
+        if (cashAmount < totalAmount) {
+          alert(`Por favor, ingrese un monto mayor o igual al monto total de $${totalAmount}`);
+          return;
+        }
+      }
 
       if (paymentMethod === 'cash' && !paymentInfo.cashAmount) {
         alert("Por favor, ingrese la cantidad de efectivo");
