@@ -13,7 +13,7 @@ import {
   Raleway_800ExtraBold,
   Raleway_900Black,
 } from '@expo-google-fonts/raleway';
-import { useCarFiltersContext,CarFiltersProvider } from './context/CarFiltersContext'
+import { useCarFiltersContext, CarFiltersProvider } from './context/CarFiltersContext';
 import { UserProvider } from './context/UserContext';
 
 
@@ -23,12 +23,11 @@ export default function App() {
   
     let [fontsLoaded] = useFonts({
       Raleway_400Regular,
-  Raleway_500Medium,
-  Raleway_600SemiBold,
-  Raleway_700Bold,
-  Raleway_800ExtraBold,
-  Raleway_900Black,
-  
+      Raleway_500Medium,
+      Raleway_600SemiBold,
+      Raleway_700Bold,
+      Raleway_800ExtraBold,
+      Raleway_900Black,
     });
   
 
@@ -37,16 +36,15 @@ export default function App() {
   }
   return (
     <UserProvider>
-    <CarFiltersProvider>
-    <NavigationContainer>
-    
- 
-
-      <TabsNavigator/>
-
-
-    </NavigationContainer>
-    </CarFiltersProvider>
+      <CarFiltersProvider>
+      
+          <NavigationContainer>
+            <TabsNavigator />
+          </NavigationContainer>
+       
+  
+          
+      </CarFiltersProvider>
     </UserProvider>
   );
 }

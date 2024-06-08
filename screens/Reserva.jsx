@@ -332,9 +332,9 @@ const [formInfo, setFormInfo] = useState({
             <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:'#748289'}}>Anexar Cédula</Text>        
 
             <View style={{flexDirection:'row'}}>
-              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
+              {/* <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
                 <FontAwesomeIcon icon={faCamera} size={20} />
-              </Pressable>
+              </Pressable> */}
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickIdImg}>
                 <FontAwesomeIcon icon={faUpload} size={20} />
@@ -353,9 +353,9 @@ const [formInfo, setFormInfo] = useState({
             <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:"#748289"}}>Anexar Licencia</Text>        
 
             <View style={{flexDirection:'row'}}>
-              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
+              {/* <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
                 <FontAwesomeIcon icon={faCamera} size={20} />
-              </Pressable>
+              </Pressable> */}
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickLicenseImg}>
                 <FontAwesomeIcon icon={faUpload} size={20} />

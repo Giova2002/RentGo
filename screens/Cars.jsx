@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.5)",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
+    
   },
   listSeccion: {
     flexDirection: "column",
@@ -230,6 +231,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // flexGrow: 1,
     height: windowHeight * 0.57, // cambio el largo de toda la seccion
+    
+   
   },
   headText: {
     // position: 'absolute',
@@ -271,6 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1C252E",
     flexDirection: "row",
     marginTop: 30,
+    
   },
   infoArea: {
     fontFamily: "SF",
