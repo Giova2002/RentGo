@@ -1,6 +1,6 @@
 
 import { View, Text, StyleSheet, Picker, TextInput, Toucha, ScrollView, Image, ActivityIndicator } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useContext } from 'react'
 import { firebase } from "../firebase/firebaseConfig"
 import Header from '../header/Header'
 import Profile from '../header/Profile'
@@ -13,134 +13,123 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import 'firebase/compat/storage'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import DropDownPicker from 'react-native-dropdown-picker';
+import { UserContext } from '../context/UserContext';
+
 
 
 import 'firebase/storage';
 
 
 export default function AddCar() {
-
-const todoRef = firebase.firestore().collection("auto")
-const [ modelo, setModelo ] = useState('');
-const [ marca, setMarca ] = useState('');
-const [ ubicacion, setUbicacion ] = useState('');
-const [ precio, setPrecio ] = useState('');
-const [ tipo, setTipo ] = useState('');
-const [ descripcion, setDescripcion ] = useState('');
-const [ maleta, setMaleta ] = useState('');
-const [ addData, setAddData ] = useState('');
-const [ puertas, setPuertas ] = useState('');
-const [ detalles, setDetalles ] = useState('');
-const [ gasolina, setGasolina ] = useState('');
-const [ bluetooth, setBluetooth ] = useState('');
-const [ asientos, setAsientos ] = useState('');
-const [image, setImage] = useState('');
-const [loading, setLoading] = useState(false);
-
-const [open, setOpen] = useState(false);
-const [items, setItems] = useState([
-{ label: 'Toyota', value: 'Toyota' },
-{ label: 'Kia', value: 'Kia' },
-{ label: 'Ford', value: 'Ford' },
-{ label: 'Chevrolet', value: 'Chevrolet' },
-{ label: 'Hyundai', value: 'Hyundai' },
-{ label: 'Mitsubishi', value: 'Mitsubishi' },
-]);
-
-const [openC, setOpenC] = useState(false);
-const [ciudades, setCiudades] = useState([
-{ label: 'Caracas', value: 'Caracas' },
-{ label: 'Barquisimeto', value: 'Barquisimeto' },
-{ label: 'Porlamar', value: 'Porlamar' },
-{ label: 'Maracay', value: 'Maracay' },
-{ label: 'Guarenas', value: 'Guarenas' },
-]);
-
-const [openT, setOpenT] = useState(false);
-const [tipos, setTipos] = useState([
-{ label: 'Automático', value: 'Automático' },
-{ label: 'Sincrónico', value: 'Sincrónico' },
-
-]);
-const handleImageUpload = async (imageUri) => {
-try {
-const snapshot = await todoRef.get();
-let maxId = 0;
-snapshot.forEach((doc) => {
-const data = doc.data();
-if (data.id_auto && typeof data.id_auto === 'number' && data.id_auto > maxId) {
-maxId = data.id_auto;
-}
-});
-const newFieldId = maxId + 1;
-
-
-const response = await fetch(imageUri);
-const blob = await response.blob();
-const ref = firebase.storage().ref().child(`fotosCarros/car_id_${newFieldId}.jpg`);
-await ref.put(blob);
-const downloadUrl = await ref.getDownloadURL();
-return downloadUrl;
-} catch (error) {
-console.error("Error uploading image: ", error);
-return null;
-}
-};
-
-
-const addField = async () => {
-setLoading(true);
-if (
-marca.trim() === '' ||
-modelo.trim() === '' ||
-ubicacion.trim() === '' ||
-precio.trim() === '' ||
-tipo.trim() === '' ||
-descripcion.trim() === '' ||
-maleta.trim() === '' ||
-puertas.trim() === '' ||
-detalles.trim() === '' ||
-gasolina.trim() === '' ||
-asientos.trim() === '' ||
-image.trim() === ''
-) {
-alert('Por favor rellenar todos los campos');
-setLoading(false);
-return;
-}
-const imageUrl = image ? await handleImageUpload(image) : null;
-
-try {
-
-const snapshot = await todoRef.get();
-let maxId = 0;
-snapshot.forEach((doc) => {
-const data = doc.data();
-if (data.id_auto && typeof data.id_auto === 'number' && data.id_auto > maxId) {
-maxId = data.id_auto;
-}
-});
-const newFieldId = maxId + 1;
-
-await firebase.firestore().collection('auto').add({
-id_auto: newFieldId,
-marca: marca,
-modelo: modelo,
-ubicacion: ubicacion,
-precio: parseFloat(precio),
-tipo: tipo,
-descripcion: descripcion,
-maleta: maleta,
-nro_puertas: parseFloat(puertas),
-detalles: detalles,
-litros_gas: parseFloat(gasolina),
-bluetooth: bluetooth,
-cant_asientos: parseFloat(asientos),
-disponible: true,
-recomendado: false,
-imagenURL: imageUrl,
-});
-
+    const { user } = useContext(UserContext);
+  
+    const todoRef = firebase.firestore().collection("auto");
+    const [modelo, setModelo] = useState('');
+    const [marca, setMarca] = useState('');
+    const [ubicacion, setUbicacion] = useState('');
+    const [precio, setPrecio] = useState('');
+    const [tipo, setTipo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [maleta, setMaleta] = useState('');
+    const [puertas, setPuertas] = useState('');
+    const [detalles, setDetalles] = useState('');
+    const [gasolina, setGasolina] = useState('');
+    const [bluetooth, setBluetooth] = useState('');
+    const [asientos, setAsientos] = useState('');
+    const [image, setImage] = useState('');
+    const [loading, setLoading] = useState(false);
+  
+    const [open, setOpen] = useState(false);
+    const [items, setItems] = useState([
+      { label: 'Toyota', value: 'Toyota' },
+      { label: 'Kia', value: 'Kia' },
+      { label: 'Ford', value: 'Ford' },
+      { label: 'Chevrolet', value: 'Chevrolet' },
+      { label: 'Hyundai', value: 'Hyundai' },
+      { label: 'Mitsubishi', value: 'Mitsubishi' },
+    ]);
+  
+    const [openC, setOpenC] = useState(false);
+    const [ciudades, setCiudades] = useState([
+      { label: 'Caracas', value: 'Caracas' },
+      { label: 'Barquisimeto', value: 'Barquisimeto' },
+      { label: 'Porlamar', value: 'Porlamar' },
+      { label: 'Maracay', value: 'Maracay' },
+      { label: 'Guarenas', value: 'Guarenas' },
+    ]);
+  
+    const [openT, setOpenT] = useState(false);
+    const [tipos, setTipos] = useState([
+      { label: 'Automático', value: 'Automático' },
+      { label: 'Sincrónico', value: 'Sincrónico' },
+    ]);
+  
+    const handleImageUpload = async (imageUri) => {
+      try {
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        const ref = firebase.storage().ref().child(`fotosCarros/${user.id}_${Date.now()}.jpg`);
+        await ref.put(blob);
+        return ref.getDownloadURL();
+      } catch (error) {
+        console.error("Error uploading image: ", error);
+        return null;
+      }
+    };
+  
+    const addField = async () => {
+      setLoading(true);
+      if (
+        marca.trim() === '' ||
+        modelo.trim() === '' ||
+        ubicacion.trim() === '' ||
+        precio.trim() === '' ||
+        tipo.trim() === '' ||
+        descripcion.trim() === '' ||
+        maleta.trim() === '' ||
+        puertas.trim() === '' ||
+        detalles.trim() === '' ||
+        gasolina.trim() === '' ||
+        asientos.trim() === '' ||
+        image.trim() === ''
+      ) {
+        alert('Por favor rellenar todos los campos');
+        setLoading(false);
+        return;
+      }
+      const imageUrl = image ? await handleImageUpload(image) : null;
+  
+      try {
+        const snapshot = await todoRef.get();
+        let maxId = 0;
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.id_auto && typeof data.id_auto === 'number' && data.id_auto > maxId) {
+            maxId = data.id_auto;
+          }
+        });
+        const newFieldId = maxId + 1;
+  
+        const userRef = firebase.firestore().collection('usuario').doc(user.id);
+        await todoRef.add({
+          id_auto: newFieldId,
+          marca: marca,
+          modelo: modelo,
+          ubicacion: ubicacion,
+          precio: parseFloat(precio),
+          tipo: tipo,
+          descripcion: descripcion,
+          maleta: maleta,
+          nro_puertas: parseFloat(puertas),
+          detalles: detalles,
+          litros_gas: parseFloat(gasolina),
+          bluetooth: bluetooth,
+          cant_asientos: parseFloat(asientos),
+          disponible: true,
+          recomendado: false,
+          imagenURL: imageUrl,
+          arrendatarioRef: userRef,
+        });
 
 setMarca('');
 setModelo('');

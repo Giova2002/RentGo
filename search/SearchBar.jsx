@@ -159,10 +159,11 @@ const SearchBar = ({}) => {
 //esto es lo que da error antes navigate cars ahora home
   useEffect(() => {
     console.log('SEARCHHHH',data.search)
-  
+    if (data.search.trim() !== "") {
       if (route.name != "Cars") {
         navigation.navigate("Cars");
       }
+    }
     
   }, [data.search]);
 

@@ -18,18 +18,11 @@ export default function MyCarsOnRent() {
 
     <GestureHandlerRootView>
       <Header />
-      <Text style={styles.tittle}>Mis Carros alquilados</Text>
-      <View style={styles.listSeccion}>
-        <Text style={styles.headText}> Todos los Carros</Text>
-
-      
-      </View>
+      <Text style={styles.tittle}>Mis Carros en Alquiler</Text>
+     
 
     </GestureHandlerRootView>
-    // <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    //   <Header />
-    //   <Text>MyCarsOnRent</Text>
-    // </View>
+    
       
   )
 };

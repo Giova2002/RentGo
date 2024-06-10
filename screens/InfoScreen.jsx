@@ -1,23 +1,31 @@
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator,Dimensions } from 'react-native'
-import React ,{useEffect, useState } from 'react'
-import { firebase } from "../firebase/firebaseConfig"
+import React, { useEffect, useState, useContext } from 'react';
+import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { UserContext } from '../context/UserContext';
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 
 const back = require("../assets/Img/arrow.png");
-const fortuner = require("../assets/fortuner.png");
+const corazongris = require("../assets/corazongris.png");
+const corazonrojo = require("../assets/corazonrojo.png");
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function InfoScreen({ route, navigation }) {
+  const { user } = useContext(UserContext);
   const { carId } = route.params;
   const [loading, setLoading] = useState(true);
   const [car, setCar] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriting, setFavoriting] = useState(false); 
   const autoRef = firebase.firestore().collection('auto');
+  const userRef = firebase.firestore().collection('usuario');
 
   useEffect(() => {
     const fetchCar = async () => {
       try {
         const carDoc = await autoRef.doc(carId).get();
+        
         if (carDoc.exists) {
           setCar(carDoc.data());
         } else {
@@ -30,8 +38,52 @@ export default function InfoScreen({ route, navigation }) {
       }
     };
 
+    const checkFavoriteStatus = async () => {
+      try {
+        const userDoc = await userRef.doc(user.uid).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          if (userData.favoritos && userData.favoritos.some(fav => fav.id === carId)) {
+            setIsFavorite(true);
+          }
+        } else {
+          console.error("User not found!");
+        }
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      }
+    };
+
     fetchCar();
+    checkFavoriteStatus();
   }, [carId]);
+
+  const toggleFavorite = async () => {
+    setFavoriting(true); // Activar el indicador de carga
+    try {
+      const userDoc = await userRef.doc(user.uid).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        let newFavorites = [];
+        const carRef = autoRef.doc(carId);
+
+        if (userData.favoritos && userData.favoritos.some(fav => fav.id === carId)) {
+          newFavorites = userData.favoritos.filter(fav => fav.id !== carId);
+        } else {
+          newFavorites = userData.favoritos ? [...userData.favoritos, carRef] : [carRef];
+        }
+
+        await userRef.doc(user.uid).update({ favoritos: newFavorites });
+        setIsFavorite(!isFavorite);
+      } else {
+        console.error("User not found!");
+      }
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+    } finally {
+      setFavoriting(false); // Desactivar el indicador de carga
+    }
+  };
 
   if (loading) {
     return (
@@ -42,11 +94,8 @@ export default function InfoScreen({ route, navigation }) {
     );
   }
 
-  
-
   return (
     <SafeAreaView style={styles.safeArea}>
-        
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.headerSection}>
@@ -59,7 +108,7 @@ export default function InfoScreen({ route, navigation }) {
           </View>
           <View style={styles.imageSection}>
             <View style={{ width: 350, height: 210 }}>
-              <Image source={{uri: car.imagenURL}} style={styles.image} />
+              <Image source={{ uri: car.imagenURL }} style={styles.image} />
             </View>
           </View>
           <View style={styles.headSection}>
@@ -67,10 +116,17 @@ export default function InfoScreen({ route, navigation }) {
               <View>
                 <Text style={styles.makemodelText}>{car.modelo}</Text>
               </View>
-              <View>
+              <View style={styles.priceFavoriteContainer}>
                 <Text style={styles.price}>
                   <Text style={styles.amount}>{car.precio}$/día</Text>
                 </Text>
+                <TouchableOpacity onPress={toggleFavorite} activeOpacity={0.9} disabled={favoriting}>
+                  {favoriting ? (
+                    <ActivityIndicator size="small" color="black" />
+                  ) : (
+                    <Image source={isFavorite ? corazonrojo : corazongris} style={styles.favoriteIcon} />
+                  )}
+                </TouchableOpacity>
               </View>
             </View>
             <Text style={styles.typetranText}>{car.tipo}</Text>
@@ -96,12 +152,10 @@ export default function InfoScreen({ route, navigation }) {
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity>
         </View>
-        
       </GestureHandlerRootView>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -119,28 +173,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  menuIconStyle: {
-    width: 25,
-  },
   HeaderText: {
     fontSize: 20,
     marginLeft: 130,
     top: 21,
     fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
-  },
-  faceIconStyle: {
-    width: 30,
+    fontFamily: 'Raleway_700Bold',
   },
   imageSection: {
     width: "100%",
     height: 250,
     justifyContent: "center",
     alignItems: "center",
-  },
-  vehicleImage: {
-    width: 300,
-    height: 300,
   },
   headSection: {},
   topTextArea: {
@@ -150,17 +194,25 @@ const styles = StyleSheet.create({
   makemodelText: {
     fontSize: 20,
     fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
-    
+    fontFamily: 'Raleway_700Bold',
+  },
+  priceFavoriteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   price: {
     fontWeight: "400",
-    fontFamily: 'Raleway_700Bold'
+    fontFamily: 'Raleway_700Bold',
   },
   amount: {
     fontWeight: "bold",
     color: "#EBAD36",
-    fontFamily: 'Raleway_700Bold'
+    fontFamily: 'Raleway_700Bold',
+  },
+  favoriteIcon: {
+    width: 25,
+    height: 25,
+    marginLeft: 10,
   },
   typetranText: {
     marginTop: 1,
@@ -175,19 +227,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: "#696969",
     fontWeight: "500",
-    fontFamily: 'Raleway_400Regular'
-  },
-  propertiesText: {
-    marginTop: 20,
-    fontSize: 19,
-    fontWeight: "500",
-    fontFamily: 'Raleway_400Regular'
+    fontFamily: 'Raleway_400Regular',
   },
   propertiesArea: {
     marginTop: 20,
     flexDirection: "row",
     justifyContent: "flex-start",
-
   },
   level: {
     marginRight: 30,
@@ -195,12 +240,7 @@ const styles = StyleSheet.create({
   propertyText: {
     fontSize: 12,
     color: "#696969",
-    fontFamily: 'Raleway_400Regular'
-  },
-  valueText: {
-    fontSize: 12,
-    color: "black",
-    fontFamily: 'Raleway_400Regular'
+    fontFamily: 'Raleway_400Regular',
   },
   rentButton: {
     marginTop: 5,
@@ -215,7 +255,7 @@ const styles = StyleSheet.create({
   rentButtonText: {
     color: "black",
     fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
+    fontFamily: 'Raleway_700Bold',
   },
   image: {
     width: 300,
@@ -226,16 +266,16 @@ const styles = StyleSheet.create({
   arrow: {},
   loaderContainer: {
     flex: 1,
-    justifyContent: 'center'},
-
-    cargando:{
-        alignSelf: "center",
-        color: 'black',
-        fontSize: '15',
-        fontFamily: 'Raleway_700Bold'
-
-    }
+    justifyContent: 'center',
+  },
+  cargando: {
+    alignSelf: "center",
+    color: 'black',
+    fontSize: '15',
+    fontFamily: 'Raleway_700Bold',
+  }
 });
+
 
 
 
@@ -477,4 +517,3 @@ const styles = StyleSheet.create({
 
 // }
 // });
-

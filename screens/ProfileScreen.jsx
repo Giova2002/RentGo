@@ -23,8 +23,10 @@ const ProfileScreen = () => {
     const fetchUser = async () => {
       try {
         const currentUser = auth.currentUser;
+        console.log("CURRENT USER: ",currentUser.email)
         if (currentUser) {
           const doc = await firebase.firestore().collection('usuario').doc(currentUser.uid).get();
+          console.log("CURRENT uid: ",currentUser.uid)
           if (doc.exists) {
             setUser({ id: doc.id, ...doc.data() });
           } else {
@@ -41,11 +43,13 @@ const ProfileScreen = () => {
     fetchUser();
   }, [setUser]);
 
+  console.log('userrr',user)
+
   const uploadImage = async (uri) => {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const ref = storage.ref().child(`images/${user.id}/${Date.now()}`);
+      const ref = storage.ref().child(`profileImages/${user?.id}/${Date.now()}`);
       const snapshot = await ref.put(blob);
       const imageUrl = await snapshot.ref.getDownloadURL();
       return imageUrl;
@@ -93,7 +97,7 @@ const ProfileScreen = () => {
 
   const handleSave = async () => {
     try {
-      await firebase.firestore().collection('usuario').doc(user.id).update(user);
+      await firebase.firestore().collection('usuario').doc(user?.id).update(user);
       Alert.alert('Éxito', 'Su perfil se ha actualizado exitosamente');
       setTimeout(() => {
         navigation.goBack(); // Navegar de regreso a la pantalla anterior
@@ -136,7 +140,7 @@ const ProfileScreen = () => {
     //           </View>
         
     //     <View style={styles.profileImageContainer}>
-    //       <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
+    //       <Image source={{ uri: user?.img }} style={styles.profileImage} resizeMethod='cover' />
     //     </View>
     //     <TouchableOpacity style={styles.editImageButton} onPress={handleImagePicker}>
     //       <Text style={styles.editImageText}>Editar Imagen</Text>
@@ -147,7 +151,7 @@ const ProfileScreen = () => {
     //     <Text style={styles.label}>Nombre:</Text>
     //     <TextInput
     //       style={styles.input}
-    //       value={user.nombre}
+    //       value={user?.nombre}
     //       onChangeText={text => setUser(prevData => ({
     //         ...prevData,
     //         nombre: text
@@ -159,7 +163,7 @@ const ProfileScreen = () => {
     //     <Text style={styles.label}>Apellido:</Text>
     //     <TextInput
     //       style={styles.input}
-    //       value={user.apellido}
+    //       value={user?.apellido}
     //       onChangeText={text => setUser(prevData => ({
     //         ...prevData,
     //         apellido: text
@@ -171,7 +175,7 @@ const ProfileScreen = () => {
     //     <Text style={styles.label}>Email:</Text>
     //     <TextInput
     //       style={styles.input}
-    //       value={user.correo}
+    //       value={user?.correo}
     //       editable={false}
     //     />
     //   </View>
@@ -192,7 +196,9 @@ const ProfileScreen = () => {
             <Text style={styles.header}>Editar Perfil</Text>
           </View>
           <View style={styles.profileImageContainer}>
-            <Image source={{ uri: user.img }} style={styles.profileImage} resizeMethod='cover' />
+            {user?.img ?
+            <Image source={{ uri: user?.img }} style={styles.profileImage} resizeMethod='cover' />
+            :            <Image source={require('../assets/perfil.png')} style={styles.profileImage} resizeMethod='cover' />}
           </View>
           <TouchableOpacity style={styles.editImageButton} onPress={handleImagePicker}>
             <Text style={styles.editImageText}>Editar Imagen</Text>
@@ -203,7 +209,7 @@ const ProfileScreen = () => {
             <Text style={styles.label}>Nombre:</Text>
             <TextInput
               style={styles.input}
-              value={user.nombre}
+              value={user?.nombre}
               onChangeText={text => setUser(prevData => ({
                 ...prevData,
                 nombre: text
@@ -215,7 +221,7 @@ const ProfileScreen = () => {
             <Text style={styles.label}>Apellido:</Text>
             <TextInput
               style={styles.input}
-              value={user.apellido}
+              value={user?.apellido}
               onChangeText={text => setUser(prevData => ({
                 ...prevData,
                 apellido: text
@@ -227,7 +233,7 @@ const ProfileScreen = () => {
             <Text style={styles.label}>Email:</Text>
             <TextInput
               style={styles.input}
-              value={user.correo}
+              value={user?.correo}
               editable={false}
             />
           </View>

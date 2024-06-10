@@ -7,7 +7,7 @@ export const UserContext = createContext();
 
 // Crear el componente proveedor de contexto
 export const UserProvider = ({ children }) => {
-    const userId = "iUPxvupTSPDK4czA7dmQ";
+    // const userId = "iUPxvupTSPDK4czA7dmQ";
   const [user, setUser] = useState(null);
 
  // Función para obtener la información del usuario
