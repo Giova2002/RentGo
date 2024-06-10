@@ -36,8 +36,10 @@ export default function AddCar() {
     const [gasolina, setGasolina] = useState('');
     const [bluetooth, setBluetooth] = useState('');
     const [asientos, setAsientos] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [image, setImage] = useState('');
     const [loading, setLoading] = useState(false);
+    
   
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState([
@@ -91,6 +93,10 @@ export default function AddCar() {
         detalles.trim() === '' ||
         gasolina.trim() === '' ||
         asientos.trim() === '' ||
+        asientos.trim() === '' ||
+        phoneNumber.trim() === '' ||
+        !/^\d+$/.test(phoneNumber) || 
+        
         image.trim() === ''
       ) {
         alert('Por favor rellenar todos los campos');
@@ -129,6 +135,7 @@ export default function AddCar() {
           recomendado: false,
           imagenURL: imageUrl,
           arrendatarioRef: userRef,
+          phoneNumber: phoneNumber,
         });
 
 setMarca('');
@@ -143,6 +150,7 @@ setDetalles('');
 setGasolina('');
 setBluetooth('');
 setAsientos('');
+setPhoneNumber('');
 setImage('');
 
 alert("Su nuevo auto se ha agregado con éxito!");
@@ -180,6 +188,13 @@ return image;
 const handlePicker = async () => {
 let result = await handleImagePicker();
 setImage(result);
+};
+const handlePhoneNumberChange = (text) => {
+  
+  if (text.startsWith('0')) {
+      text = text.substring(1);
+  }
+  setPhoneNumber(text);
 };
 
 
@@ -253,6 +268,17 @@ console.log('Form submitted successfully.');
 }
 }}
 />
+<TextInput
+    style={style.input}
+    placeholder="Número de Teléfono (+58)"
+    placeholderTextColor="#aaaaaa"
+    onChangeText={handlePhoneNumberChange}
+    value={phoneNumber}
+    multiline={true}
+    underlineColorAndroid="transparent"
+    autocapitalize="none"
+/>
+
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:9, }} >
 <DropDownPicker
 open={openT}
