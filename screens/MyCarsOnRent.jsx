@@ -229,8 +229,10 @@ const styles = StyleSheet.create({
   listSeccion: {
     flexDirection: "column",
     alignItems: "center",
-    height: windowHeight * 0.8,
+    height: windowHeight * 0.90,
     paddingBottom: 90,
+    // flexGrow: 1,
+    
   },
   element: {
     height: windowHeight * 0.22,
@@ -362,7 +364,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Raleway_700Bold",
 
-  }
+  },
+  elementPallet: {
+  
+    fontFamily: "Raleway_400Regular",
+    flexDirection: "column",
+    flexGrow: 1,
+    paddingBottom: 30,
+  },
+  
   
 });
 
