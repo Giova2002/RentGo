@@ -499,8 +499,8 @@ const [formInfo, setFormInfo] = useState({
           {paymentMethod === 'agree' && (
             <View>  
               <Text style={styles.titleForms}>
-                Presione el link para comunicarse directamnete con el propietario del auto {'\n'} {'\n'}
-                IMPORTANTE: para culminar la reserva debera regrsar a la App y culminarla para que quede registrada
+                Presione el link para comunicarse directamnete con el propietario del auto. {'\n'} {'\n'}
+                IMPORTANTE: para culminar la reserva debera regresar a la App nuevamente y completar el proceso.
               </Text>
               <Pressable onPress={() => openWhatsApp(car.phoneNumber)} >
                 <Text style={styles.whatsappLink}>{  'w.app/atencionAlCliente/+58' + car.phoneNumber}</Text>
