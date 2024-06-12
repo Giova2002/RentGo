@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     color: "#FDFDFD",
     fontSize: 14,
     fontWeight: "bold",
-    fontFamily: "Raleway_400Regular",
+    fontFamily: "Raleway_700Bold",
     numberOfLines: 1,
     // width: 150, // Ajusta el width según lo que necesites
     width: windowWidth * 0.85,

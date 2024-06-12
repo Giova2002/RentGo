@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, Image, TextInput, ScrollView, StyleSheet, Button, Pressable, TouchableOpacity, ActivityIndicator, Dimensions, Linking} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CalendarComponent from '../components/CalendarComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -7,6 +7,8 @@ import { faMoneyBill, faMoneyBillTransfer, faPeopleArrows, faCamera, faUpload } 
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { UserContext } from '../context/UserContext';
+
 import disableDates from '../components/CalendarComponent';
 const back = require("../assets/Img/arrow.png");
 const storage = firebase.storage();
@@ -17,7 +19,7 @@ const windowHeight = Dimensions.get("window").height;
 export default Reserva = ({route, navigation}) => {
 
 
- 
+  const { user } = useContext(UserContext);
   const [IdImg, setIdImg] = useState(null);
   const [LicenseImg, setLicenseImg] = useState(null);
   const [reservedDates, setReservedDates] = useState([]);
@@ -85,6 +87,7 @@ const [formInfo, setFormInfo] = useState({
       }
     };
 
+    
     const fetchUserInfo = async () => {
       const user = firebase.auth().currentUser;
       if (user) {
@@ -98,6 +101,7 @@ const [formInfo, setFormInfo] = useState({
         }
       }
     };
+    
 
     // hacer fetch de las reservas asociadas al CarID y extraer las fechas (fecha inicio y fecha final) para deshabilitarlas en el calendario
     const fetchReservas = async () => {
@@ -124,7 +128,7 @@ const [formInfo, setFormInfo] = useState({
     fetchCar();
     fetchUserInfo();
     fetchReservas();
-  }, [carId]);
+  }, [carId, user]);
 
   useEffect(() => {
     if (selectedRange.startDate && selectedRange.endDate && car) {
@@ -148,9 +152,9 @@ const [formInfo, setFormInfo] = useState({
 
   
 
-  console.log("carId:", carId); 
-
-
+  // console.log("carId:", carId); 
+  // console.log("Usuario:", user.uid); 
+  
   const handleImageUpload = async (imageUri, folder) => {
     try {
       const response = await fetch(imageUri);
@@ -216,19 +220,18 @@ const [formInfo, setFormInfo] = useState({
       try {
         await firebase.firestore().collection('reserva').add({
           id_auto: carId,
+          nombre_auto: car.modelo,
           metodo_pago: paymentMethod,
           cantidad_efectivo: paymentInfo.cashAmount,
-          // banco: paymentInfo.bankName,
+          id_usuario_queAlquila: user.uid,
+          id_firebase: userInfo,
+          id_propietario: car.arrendatarioRef,
           banco: bancos,
           ci_pago_movil: paymentInfo.ci_pago_movil,
           phoneNumber_pago_movil: paymentInfo.phoneNumber_pago_movil,
-          // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
-          numero_contacto: "https://w.app/atencionAlCliente",
-          //  paymentInfo.contactNumber,
-          // ID_user: userInfo,
+          numero_contacto: car.phoneNumber,
           precio_total: totalAmount,
           precio_por_dia: car.precio,
-          // ID_propietario: car.id_usuario,
           nombre_completo: formInfo.nombre_completo,
           ci: formInfo.ci,
           url_cedula: idImageUrl,
@@ -251,6 +254,10 @@ const [formInfo, setFormInfo] = useState({
       
       }
     };
+
+    // console.log("Id Usuario:", user);
+    // console.log("Id Usuario:", user.id);
+    console.log("Id USER INFO Usuario:", userInfo);
 
     const handleImagePick = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -297,6 +304,27 @@ const [formInfo, setFormInfo] = useState({
       let result = await handleImagePick();
       setLicenseImg(result);
     };
+    const openWhatsApp = (phoneNumber) => {
+      // Verificar la longitud correcta del número de teléfono
+      if (phoneNumber.length !== 10) {
+        alert('Por favor, inserte un número de WhatsApp correcto');
+        return;
+      }
+    
+      // Usando el código de país para Venezuela
+      let url =
+        'whatsapp://send?phone=58' + phoneNumber;
+    
+      Linking.openURL(url)
+        .then(() => {
+          console.log('WhatsApp abierto');
+        })
+        .catch(() => {
+          alert('Asegúrese de que WhatsApp esté instalado en su dispositivo');
+        });
+    };
+    
+
 
  
   return (
@@ -469,25 +497,17 @@ const [formInfo, setFormInfo] = useState({
         )}
 
           {paymentMethod === 'agree' && (
-
             <View>  
-            <Text style={styles.titleForms}>
-              Link al WhatsApp de atención al Cliente
-            </Text>
-            <View style={styles.input}>
-              <Text>{'https://w.app/atencionAlCliente'}</Text>
-              
-              {/* {car.id_usuario.phoneNumber} */}
+              <Text style={styles.titleForms}>
+                Presione el link para comunicarse directamnete con el propietario del auto {'\n'} {'\n'}
+                IMPORTANTE: para culminar la reserva debera regrsar a la App y culminarla para que quede registrada
+              </Text>
+              <Pressable onPress={() => openWhatsApp(car.phoneNumber)} >
+                <Text style={styles.whatsappLink}>{  'w.app/atencionAlCliente/+58' + car.phoneNumber}</Text>
+              </Pressable>
             </View>
-            </View>
-            
           )}
-           {/* {isLoading && (
-        <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -50 }, { translateY: -50 }] }}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
-   */}
+
             {loading && (
             <View style={styles.loaderContainer}>
               <ActivityIndicator size="large" color="#EBAD36" />
@@ -681,10 +701,9 @@ const styles = StyleSheet.create({
     },
 
     titleForms: {
-      fontSize: 12,
+      fontSize: 13,
       padding: 16,
-      fontWeight: 'bold',
-      fontFamily: 'Raleway_400Regular',
+      fontFamily: ' Raleway_700Bold',
     },
     totalAmountText: {
       fontSize: 20,
@@ -713,6 +732,13 @@ const styles = StyleSheet.create({
       
       selectedPickerText: {
         color: '#aaa',
+      },
+      whatsappLink: {
+        color: 'blue', 
+        textDecorationLine: 'underline', 
+        textDecorationColor: 'blue',
+        marginLeft: 10,
+        fontFamily: 'Raleway_400Regular',
       },
       
 

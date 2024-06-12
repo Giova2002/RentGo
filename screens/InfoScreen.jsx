@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Pressable,  } from 'react';
+import { Linking } from 'react-native';
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { UserContext } from '../context/UserContext';
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 
 const back = require("../assets/Img/arrow.png");
+const wa= require("../assets/Img/whatsapp.png");
 const corazongris = require("../assets/corazongris.png");
 const corazonrojo = require("../assets/corazonrojo.png");
 
@@ -94,6 +96,25 @@ export default function InfoScreen({ route, navigation }) {
     );
   }
 
+  const openWhatsApp = (phoneNumber) => {
+    // Verificar la longitud correcta del número de teléfono
+    if (phoneNumber.length !== 10) {
+      alert('Por favor, inserte un número de WhatsApp correcto');
+      return;
+    }
+  
+    // Usando el código de país para Venezuela
+    let url = 'whatsapp://send?phone=58' + phoneNumber;
+  
+    Linking.openURL(url)
+      .then(() => {
+        console.log('WhatsApp abierto');
+      })
+      .catch(() => {
+        alert('Asegúrese de que WhatsApp esté instalado en su dispositivo');
+      });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -148,9 +169,22 @@ export default function InfoScreen({ route, navigation }) {
               </View>
             </View>
           </View>
+          <View style={styles.contetReserva} >
+          <TouchableOpacity onPress={() => openWhatsApp(car.phoneNumber)} activeOpacity={0.9}>
+            <Image source={wa} resizeMode="contain" style={styles.what}  />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva', { carId })}>
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity>
+
+          </View>
+          {/* <TouchableOpacity>
+          <Image source={wa} resizeMode="contain" style={styles.what} />
+
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva', { carId })}>
+            <Text style={styles.rentButtonText}>Reservar</Text>
+          </TouchableOpacity> */}
         </View>
       </GestureHandlerRootView>
     </SafeAreaView>
@@ -273,7 +307,24 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: '15',
     fontFamily: 'Raleway_700Bold',
-  }
+  },
+  what: {
+    width: "25%",
+    height: 40,
+    width: 80,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    
+
+  },
+  contetReserva: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 2,
+    paddingVertical: 60,
+  },
 });
 
 
