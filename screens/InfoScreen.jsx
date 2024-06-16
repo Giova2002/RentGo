@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext,useCallback } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { UserContext } from '../context/UserContext';
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { useCarFiltersContext } from '../context/CarFiltersContext';
 
 const back = require("../assets/Img/arrow.png");
 const corazongris = require("../assets/corazongris.png");
@@ -12,6 +14,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function InfoScreen({ route, navigation }) {
+  const {data,setData}=useCarFiltersContext()
   const { user } = useContext(UserContext);
   const { carId } = route.params;
   const [loading, setLoading] = useState(true);
@@ -21,6 +24,31 @@ export default function InfoScreen({ route, navigation }) {
   const autoRef = firebase.firestore().collection('auto');
   const userRef = firebase.firestore().collection('usuario');
 
+  useFocusEffect(
+    useCallback(() => {
+      // Función que se ejecuta cuando la pantalla está enfocada
+      const timeout = setTimeout(() => {
+        // Establece los datos después de 2 segundos
+        setData({
+          seatCount: 2,
+          priceRange: [10, 500],
+          automaticSelected: false,
+          manualSelected: false,
+          selectedBrands: [],
+          selectedLocations: [],
+          search: "",
+          filter: false,
+          filterByBrand: false
+        });
+      }, 50);
+  
+      return () => {
+        // Función que se ejecuta cuando la pantalla pierde el foco
+        console.log('ROUTEEE', route); // Imprime información sobre la ruta (podría ser útil para depuración)
+        clearTimeout(timeout); // Limpia el temporizador cuando la pantalla pierde el foco
+      };
+    }, []) // La dependencia de la función es un arreglo vacío, lo que significa que se ejecutará solo una vez (cuando se monta el componente)
+  );
   useEffect(() => {
     const fetchCar = async () => {
       try {
