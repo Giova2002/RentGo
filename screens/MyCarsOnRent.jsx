@@ -198,7 +198,7 @@ export default function MyCarsOnRent() {
                 
               </View>
               <View style={styles.imageArea}>
-                <Image source={{uri: item.imagenURL}} resizeMode='fill' style={styles.vehicleImage}/>
+                <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
                 
                 <View style={styles.contacto}>
                 <View>
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   listSeccion: {
     flexDirection: "column",
     alignItems: "center",
-    height: windowHeight * 0.90,
+    // height: windowHeight * 0.90,
     paddingBottom: 90,
     // flexGrow: 1,
     

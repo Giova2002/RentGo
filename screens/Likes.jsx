@@ -102,7 +102,7 @@ export default function Likes() {
                 </Text>
               </View>
               <View style={styles.imageArea}>
-                <Image source={{uri: item.imagenURL}} resizeMode='fill' style={styles.vehicleImage}/>
+                <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
               </View>
             </TouchableOpacity>
           )}

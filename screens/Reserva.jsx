@@ -150,6 +150,8 @@ const [formInfo, setFormInfo] = useState({
     );
   }
 
+
+
   
 
   // console.log("carId:", carId); 
@@ -221,6 +223,7 @@ const [formInfo, setFormInfo] = useState({
       const idImageUrl = IdImg ? await handleImageUpload(IdImg, 'cedulas') : null;
       const licenseImageUrl = LicenseImg ? await handleImageUpload(LicenseImg, 'licencias') : null;
       // setIsLoading(true);
+      
   
       try {
         await firebase.firestore().collection('reserva').add({
@@ -243,14 +246,18 @@ const [formInfo, setFormInfo] = useState({
           url_licencia: licenseImageUrl,
           fecha_inicio: new Date(selectedRange.startDate),
           fecha_fin: new Date(selectedRange.endDate),
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          
           
         });
+
         alert("Reserva realizada con éxito");
         navigation.navigate('Home');
+        console.log("ID FOTO:",car.imagenURL[0]);
         // navigation.goBack();
       } catch (error) {
         console.error("Error al realizar la reserva: ", error);
+        console.log("ID FOTO:",car.imagenURL[0]);
         alert("Error al realizar la reserva");
       } 
       finally {
@@ -263,6 +270,7 @@ const [formInfo, setFormInfo] = useState({
     // console.log("Id Usuario:", user);
     // console.log("Id Usuario:", user.id);
     console.log("Id USER INFO Usuario:", userInfo);
+    console.log("ID FOTO:",car.imagenURL[0]);
 
     const handleImagePick = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -348,7 +356,7 @@ const [formInfo, setFormInfo] = useState({
       </View>
 
       <View style={styles.header}>        
-        <Image source={{uri: car.imagenURL}} style={styles.image} />
+        <Image source={{uri: car.imagenURL[0]}} style={styles.image} />
         {/* {uri: car.imagenURL} */}
       </View>
       
@@ -542,13 +550,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    // width: '65%',
-    // height: 200,
     marginTop: 70,
     marginBottom: 30,
-    objectFit: 60,
-    width: windowWidth * 0.60,
-    height: windowHeight * 0.15,
+    objectFit: 30,
+    width: windowWidth * 0.90,
+    height: windowHeight * 0.20,
   },
   title: {
     fontSize: 24,
@@ -745,11 +751,5 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: 'Raleway_400Regular',
       },
-      
-
-
     
 });
-
-
- 

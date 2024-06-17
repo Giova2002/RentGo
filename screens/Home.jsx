@@ -82,7 +82,7 @@ export default function Home() {
                 <View style={styles.carRecommendationContainer}>
                   <Image
                     style={styles.imageContainer}
-                    source={{uri: car.imagenURL}}
+                    source={{uri: car.imagenURL[0]}}
                   />
                   <Text style={styles.carName}>{car.modelo}</Text>
                   <Text style={styles.price}>{car.precio}$/día</Text>
@@ -165,6 +165,7 @@ height:'100%',
   },
   recommendationsContainer: {
     marginTop: 30,
+    paddingBottom: 150,
   },
   carRecommendationContainer: {
     backgroundColor: "#2F3942",

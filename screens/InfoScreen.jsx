@@ -1,12 +1,14 @@
 
 import { Linking } from 'react-native';
-import React, { useEffect, useState, useContext,useCallback } from 'react';
+import React, { useEffect, useState, useContext,useCallback, useRef } from 'react';
 import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { UserContext } from '../context/UserContext';
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
 import { useCarFiltersContext } from '../context/CarFiltersContext';
+import { AntDesign } from '@expo/vector-icons';
+
 
 const back = require("../assets/Img/arrow.png");
 const wa= require("../assets/Img/whatsapp.png");
@@ -15,6 +17,7 @@ const corazonrojo = require("../assets/corazonrojo.png");
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+const { width: screenWidth } = Dimensions.get('window');
 
 export default function InfoScreen({ route, navigation }) {
   const {data,setData}=useCarFiltersContext()
@@ -26,6 +29,22 @@ export default function InfoScreen({ route, navigation }) {
   const [favoriting, setFavoriting] = useState(false); 
   const autoRef = firebase.firestore().collection('auto');
   const userRef = firebase.firestore().collection('usuario');
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const carouselRef = useRef(null);
+
+
+  const handleImageChange = (index) => {
+    setCurrentIndex(index);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentIndex((currentIndex - 1 + car.imagenURL.length) % car.imagenURL.length);
+  };
+
+  const handleNextImage = () => {
+    setCurrentIndex((currentIndex + 1) % car.imagenURL.length);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -156,11 +175,41 @@ export default function InfoScreen({ route, navigation }) {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.imageSection}>
+          {/* <View style={styles.imageSection}>
             <View style={{ width: 350, height: 210 }}>
               <Image source={{ uri: car.imagenURL }} style={styles.image} />
             </View>
-          </View>
+          </View> */}
+        <FlatList
+          data={car.imagenURL}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        
+          onScroll={(event) => {
+            const { contentOffset, layoutMeasurement } = event.nativeEvent;
+            const currentIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
+            handleImageChange(currentIndex);
+          }}
+          scrollEventThrottle={16}
+          renderItem={({ item, index }) => (
+            <View style={[styles.imageContainer, { width: screenWidth }]}>
+              <Image source={{ uri: item }} style={[styles.image, { width: "100%", height:"100%",}]} />
+            </View>
+          )}
+        />
+        <View style={styles.dotsContainer}>
+          {car.imagenURL.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === currentIndex ? styles.activeDot : null,
+              ]}
+            />
+          ))}
+        </View>
+      </View>
           <View style={styles.headSection}>
             <View style={styles.topTextArea}>
               <View>
@@ -178,7 +227,7 @@ export default function InfoScreen({ route, navigation }) {
                   )}
                 </TouchableOpacity>
               </View>
-            </View>
+            </View >
             <Text style={styles.typetranText}>{car.tipo}</Text>
           </View>
           <View>
@@ -214,7 +263,7 @@ export default function InfoScreen({ route, navigation }) {
           <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva', { carId })}>
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity> */}
-        </View>
+      
       </GestureHandlerRootView>
     </SafeAreaView>
   );
@@ -223,12 +272,15 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "white",
+    paddingBottom: 100,
   },
   container: {
     flex: 1,
     paddingRight: 35,
     paddingLeft: 35,
     marginTop: -15,
+    flexDirection: "colum",
+   
   },
   headerSection: {
     height: 70,
@@ -236,21 +288,38 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  menuIconStyle: {
+    width: 25,
+  },
+
   HeaderText: {
     fontSize: 20,
     marginLeft: 130,
     top: 21,
     fontWeight: "500",
-    fontFamily: 'Raleway_700Bold',
+    fontFamily: 'Raleway_700Bold'
+  },
+  faceIconStyle: {
+    width: 30,
   },
   imageSection: {
     width: "100%",
+    objectFit: 10,
     height: 250,
     justifyContent: "center",
     alignItems: "center",
+    
   },
+
+  vehicleImage: {
+    width: 300,
+    height: 300,
+  },
+
   headSection: {},
   topTextArea: {
+    marginTop: 30,
+    marginHorizontal: 35,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -282,6 +351,8 @@ const styles = StyleSheet.create({
     color: "#696969",
     fontWeight: "600",
     fontSize: 12,
+    left: 35,
+
   },
   descriptionText: {
     marginTop: 30,
@@ -291,19 +362,24 @@ const styles = StyleSheet.create({
     color: "#696969",
     fontWeight: "500",
     fontFamily: 'Raleway_400Regular',
+    marginLeft: 40,
+    marginRight: 33,
   },
   propertiesArea: {
     marginTop: 20,
     flexDirection: "row",
     justifyContent: "flex-start",
+    
   },
   level: {
     marginRight: 30,
+    
   },
   propertyText: {
     fontSize: 12,
     color: "#696969",
     fontFamily: 'Raleway_400Regular',
+    marginLeft: 40,
   },
   rentButton: {
     marginTop: 5,
@@ -321,10 +397,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway_700Bold',
   },
   image: {
-    width: 300,
-    height: 150,
-    alignSelf: "center",
+    
+    alignSelf: 'center',
     marginTop: 15,
+    marginHorizontal: 'auto',
+    left:-34,
+    flex: 1,  
+    resizeMode: 'cover',
+    
   },
   arrow: {},
   loaderContainer: {
@@ -351,249 +431,58 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 2,
+    paddingHorizontal: 40,
     paddingVertical: 60,
   },
-});
+  
+    arrowContainer: {
+      position: 'absolute',
+      top: '50%',
+      transform: [{ translateY: -24 }],
+      padding: 3,
+      backgroundColor: 'white',
+      borderRadius: 999,
+   
+  
+    },
+    arrowLeft: {
+       marginTop:75,
+      left:0,
+    
+    },
+    arrowRight: {
+      marginTop:75,
+      right: 0,
+    },
+    dotsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 16,
+    },
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      marginHorizontal: 4,
+    },
+    activeDot: {
+      backgroundColor: 'black',
+    },
+    imageContainer:{
+      
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: screenWidth, 
+      flex: 1,
+      width: windowWidth * 0.30,
+      height: windowHeight * 0.25,
+      objectFit: '100%'
+    },
 
 
 
+  });
 
 
 
-
-// import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
-// import React ,{useEffect, useState } from 'react'
-// import { firebase } from "../firebase/firebaseConfig"
-// import { FlatList } from 'react-native-gesture-handler';
-// import { GestureHandlerRootView } from 'react-native-gesture-handler';
-// // import img1 from '../assets/Img/arrow.png'
-
-
-// const back = require("../assets/Img/arrow.png");
-
-
-// export default function InfoScreen({route, navigation}) {
-
-// const [loading, setLoading] = useState(true); // Set loading to true on component mount
-// const [auto, setAuto] = useState([]); // Initial empty array of users
-// const autoRef = firebase.firestore().collection('auto')
-
-// useEffect( () => {
-// // const subscriber = firestore()
-// autoRef
-// .onSnapshot(querySnapshot => {
-// const auto = [];
-// querySnapshot.forEach((documentSnapshot) => {
-// auto.push({
-// ...documentSnapshot.data(),
-// key: documentSnapshot.id
-
-// });
-// });
-// setAuto(auto);
-// // setLoading(false);
-// });
-// // Unsubscribe from events when no longer in use
-// // return () => subscriber();
-// }, []);
-
-// // if (loading) {
-// // return <ActivityIndicator />;
-// // }
-// return (
-
-// <SafeAreaView style={styles.safeArea}>
-// <GestureHandlerRootView style={{ flex: 1 }}>
-// <View style={styles.container}>
-// <View style={styles.headerSection}>
-// <View>
-// <Text style={styles.HeaderText}>Detalles</Text>
-// <TouchableOpacity
-// onPress={() => navigation.goBack()}
-// activeOpacity={0.9}>
-// <Image source={back} resizeMode="contain" style={styles.arrow} />
-// </TouchableOpacity>
-// </View>
-
-// </View>
-// <FlatList
-// data={auto}
-// renderItem={({ item }) => (
-// <View>
-// <View style={styles.imageSection}>
-// <View style={{ width: 350, height: 200 }}>
-// <Image
-// source={require('../assets/Img/carro1.png')} //falta cambiar
-// style={styles.image}
-// />
-// </View>
-// </View>
-// <View style={styles.headSection}>
-// <View style={styles.topTextArea}>
-// <View>
-// <Text style={styles.makemodelText}>{item.modelo}</Text>
-// </View>
-// <View>
-// <Text style={styles.price}>
-// <Text style={styles.amount}>{item.precio}</Text>
-// </Text>
-// </View>
-// </View>
-// <Text style={styles.typetranText}>
-// {item.tipo}
-// </Text>
-// </View>
-// <View>
-// <Text style={styles.descriptionText}>
-// {item.descripcion}
-// </Text>
-// <View style={styles.propertiesArea}>
-// <View style={styles.level}>
-// <Text style={styles.propertyText}>
-// Marca: {item.marca}{'\n'}
-// Litros Gasolina: {item.litros_gas} Litros{'\n'}
-// Nro. Asientos: {item.cant_asientos} {'\n'}
-// Nro. Puertas: {item.nro_puertas} {'\n'}
-// Bluetooth: {item.bluetooth} {'\n'}
-// Maleta: {item.maleta} {'\n'}
-// Ubicación: {item.ubicacion} {'\n'}
-// Detalles: {item.detalles}
-// </Text>
-// </View>
-// </View>
-// </View>
-// <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva')}>
-// <Text style={styles.rentButtonText}>Reservar</Text>
-// </TouchableOpacity>
-// </View>
-// )}
-// />
-
-
-
-// </View>
-// </GestureHandlerRootView>
-// </SafeAreaView> 
-// )
-// }
-
-// const styles = StyleSheet.create({
-// safeArea: {
-// flex: 1,
-// backgroundColor: "white",
-// },
-// container: {
-// flex: 1,
-// paddingRight: 35,
-// paddingLeft: 35,
-// marginTop:-15,
-// },
-// headerSection: {
-// height: 70,
-// flexDirection: "row",
-// justifyContent: "space-between",
-// alignItems: "center",
-// },
-// menuIconStyle: {
-// width: 25,
-// },
-// HeaderText: {
-// fontSize: 20,
-// marginLeft: 130,
-// top: 21,
-// // marginTop: 4,
-// fontWeight: "500",
-// },
-// faceIconStyle: {
-// width: 30,
-// },
-
-// imageSection: {
-// width: "100%",
-// height: 250,
-// justifyContent: "center",
-// alignItems: "center",
-// },
-// vehicleImage: {
-// width: 300,
-// height: 300,
-// },
-
-// headSection: {},
-// topTextArea: {
-// flexDirection: "row",
-// justifyContent: "space-between",
-// },
-// makemodelText: {
-// fontSize: 20,
-// fontWeight: "500",
-// },
-// price: {
-// fontWeight: "400",
-// },
-// amount: {
-// fontWeight: "bold",
-// color: "#EBAD36",
-// },
-// typetranText: {
-// marginTop: 1,
-// color: "#696969",
-// fontWeight: "600",
-// fontSize: 12,
-// },
-// descriptionText: {
-// marginTop: 30,
-// fontSize: 14,
-// letterSpacing: 0.1,
-// lineHeight: 18,
-// color: "#696969",
-// fontWeight: "500",
-// },
-// propertiesText: {
-// marginTop: 20,
-// fontSize: 19,
-// fontWeight: "500",
-// },
-// propertiesArea: {
-// marginTop: 20,
-// flexDirection: "row",
-// justifyContent: "flex-start",
-// },
-// level: {
-// marginRight: 30,
-// },
-// propertyText: {
-// fontSize: 12,
-// color: "#696969",
-// },
-// valueText: {
-// fontSize: 12,
-// color: "black",
-// },
-// rentButton: {
-// marginTop: 5,
-// height: 40,
-// // padding: 10,
-// alignSelf: "flex-end",
-// width: 150,
-// backgroundColor: "#EBAD36",
-// borderRadius: 8,
-// justifyContent: "center",
-// alignItems: "center",
-// },
-// rentButtonText: {
-// color: "black",
-// fontWeight: "500",
-// },
-// image: {
-// width: 300,
-// height: 150,
-// alignSelf: "center",
-// marginTop:15,
-// },
-
-// arrow:{
-
-// }
-// });

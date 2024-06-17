@@ -28,6 +28,8 @@ import info from "../screens/InfoScreen.jsx";
 import Card from "../components/Card.jsx";
 import { useCarFiltersContext } from '../context/CarFiltersContext';
 
+
+
 const img4 =
   "https://i.pinimg.com/originals/45/68/7a/45687a213158cccef7ecdc75005cfdd6.png ";
 // import navegation from '../screens/InfoScreen.jsx';
@@ -190,8 +192,8 @@ filter()
                       
                     </View>
                     <View style={styles.imageArea}>
-                      
-                      <Image source={{uri: item.imagenURL}} resizeMode='fill' style={styles.vehicleImage}/>
+                   
+                      <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
                     </View>
             </TouchableOpacity>
          )}/>
