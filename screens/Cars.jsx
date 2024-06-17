@@ -60,7 +60,7 @@ export default function Cars({ }) {
         //   filterByBrand: false
         // });
       }, 50);
-  
+
       return () => {
         // Función que se ejecuta cuando la pantalla pierde el foco
         console.log('ROUTEEE', route); // Imprime información sobre la ruta (podría ser útil para depuración)
@@ -68,10 +68,6 @@ export default function Cars({ }) {
       };
     }, []) // La dependencia de la función es un arreglo vacío, lo que significa que se ejecutará solo una vez (cuando se monta el componente)
   );
-
-  
-
-
 
 
   useEffect(() => {
