@@ -214,6 +214,7 @@ const [formInfo, setFormInfo] = useState({
           // numero_contacto: car.phoneNumber, //{/* {car.id_usuario.phoneNumber} */}
           //  paymentInfo.contactNumber,
           // ID_user: userInfo,
+          numero_contacto: "https://w.app/atencionAlCliente",
           precio_total: totalAmount,
           precio_por_dia: car.precio,
           // ID_propietario: car.id_usuario,
@@ -303,7 +304,7 @@ const [formInfo, setFormInfo] = useState({
       </View>
 
       <View style={styles.header}>        
-        <Image source={{uri: car.imagenURL}} style={styles.image} />
+      <Image source={{uri: car.imagenURL[0]}} style={styles.image} />
         {/* {uri: car.imagenURL} */}
       </View>
       
@@ -331,9 +332,9 @@ const [formInfo, setFormInfo] = useState({
             <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:'#748289'}}>Anexar Cédula</Text>        
 
             <View style={{flexDirection:'row'}}>
-              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
+              {/* <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeIdPhoto}>
                 <FontAwesomeIcon icon={faCamera} size={20} />
-              </Pressable>
+              </Pressable> */}
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickIdImg}>
                 <FontAwesomeIcon icon={faUpload} size={20} />
@@ -352,9 +353,9 @@ const [formInfo, setFormInfo] = useState({
             <Text style={{fontSize:16,fontFamily: 'Raleway_700Bold',color:"#748289"}}>Anexar Licencia</Text>        
 
             <View style={{flexDirection:'row'}}>
-              <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
+              {/* <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handleTakeLicenseImg}>
                 <FontAwesomeIcon icon={faCamera} size={20} />
-              </Pressable>
+              </Pressable> */}
 
               <Pressable style={({pressed}) => [{ backgroundColor: pressed ? '#D09932' : '#EBAD36',}, styles.anexar,]} onPress={handlePickLicenseImg}>
                 <FontAwesomeIcon icon={faUpload} size={20} />
@@ -456,20 +457,22 @@ const [formInfo, setFormInfo] = useState({
           </View>
         )}
 
-          {paymentMethod === 'agree' && (
+         
 
-            <View>  
-            <Text style={styles.titleForms}>
-              Este es el número de contacto del dueño del carro. Anote su número para cuadrar la metodología de pago directamente.
-            </Text>
-            <View style={styles.input}>
-              <Text>{car.phoneNumber}</Text>
-              
-              {/* {car.id_usuario.phoneNumber} */}
-            </View>
-            </View>
-            
-          )}
+{paymentMethod === 'agree' && (
+
+<View>  
+<Text style={styles.titleForms}>
+  Link al WhatsApp de atención al Cliente
+</Text>
+<View style={styles.input}>
+  <Text>{'https://w.app/atencionAlCliente'}</Text>
+  
+  {/* {car.id_usuario.phoneNumber} */}
+</View>
+</View>
+
+)}
            {/* {isLoading && (
         <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -50 }, { translateY: -50 }] }}>
           <ActivityIndicator size="large" color="#0000ff" />

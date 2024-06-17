@@ -165,6 +165,7 @@ height:'100%',
   },
   recommendationsContainer: {
     marginTop: 30,
+    paddingBottom: 150,
   },
   carRecommendationContainer: {
     backgroundColor: "#2F3942",
