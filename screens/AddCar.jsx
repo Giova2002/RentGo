@@ -426,16 +426,6 @@ return (
     underlineColorAndroid="transparent"
     autocapitalize="none"
 />
-<TextInput
-    style={style.input}
-    placeholder="Número de Teléfono (+58)"
-    placeholderTextColor="#aaaaaa"
-    onChangeText={handlePhoneNumberChange}
-    value={phoneNumber}
-    multiline={true}
-    underlineColorAndroid="transparent"
-    autocapitalize="none"
-/>
 
 <View style={{ marginRight: 20, marginLeft:20 , zIndex:9, }} >
 <DropDownPicker
