@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getAuth, createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
 
 const firebaseConfig = {
@@ -19,6 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 export default function SignIn() {
   const navigation = useNavigation();
@@ -54,7 +56,14 @@ export default function SignIn() {
       const res = await createUserWithEmailAndPassword(auth, values.email, values.pass);
       const user = res.user;
 
-      await updateProfile(user, { displayName: values.name });
+      // Subir la imagen a Firebase Storage
+      const imageRef = ref(storage, `profileImages/${user.uid}`);
+      const img = await fetch(values.img);
+      const bytes = await img.blob();
+      await uploadBytes(imageRef, bytes);
+      const imgUrl = await getDownloadURL(imageRef);
+
+      await updateProfile(user, { displayName: values.name, photoURL: imgUrl });
 
       const userRef = doc(collection(db, "usuario"), user.uid);
       await setDoc(userRef, {
@@ -62,7 +71,7 @@ export default function SignIn() {
         correo: values.email,
         id_arrendador: "",
         id_arrendatario: "",
-        img: values.img,
+        img: imgUrl,
         nombre: values.name,
         password: values.pass,
         uid: user.uid,
@@ -247,4 +256,3 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway_700Bold",
   },
 });
-
