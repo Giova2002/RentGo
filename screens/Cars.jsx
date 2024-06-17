@@ -48,17 +48,17 @@ export default function Cars({ }) {
       // Función que se ejecuta cuando la pantalla está enfocada
       const timeout = setTimeout(() => {
         // Establece los datos después de 2 segundos
-        setData({
-          seatCount: 2,
-          priceRange: [10, 500],
-          automaticSelected: false,
-          manualSelected: false,
-          selectedBrands: [],
-          selectedLocations: [],
-          search: "",
-          filter: false,
-          filterByBrand: false
-        });
+        // setData({
+        //   seatCount: 2,
+        //   priceRange: [10, 500],
+        //   automaticSelected: false,
+        //   manualSelected: false,
+        //   selectedBrands: [],
+        //   selectedLocations: [],
+        //   search: "",
+        //   filter: false,
+        //   filterByBrand: false
+        // });
       }, 50);
   
       return () => {

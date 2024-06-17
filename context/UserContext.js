@@ -1,53 +1,49 @@
 import React, { createContext, useState, useEffect } from 'react';
-// import auth from '@react-native-firebase/auth';
-import { firebase } from '../firebase/firebaseConfig';
+import { firebase } from '../firebase/firebaseConfig'; // Asegúrate de que la configuración de firebase esté correcta
 
 // Crear el contexto de usuario
 export const UserContext = createContext();
 
 // Crear el componente proveedor de contexto
 export const UserProvider = ({ children }) => {
-    // const userId = "iUPxvupTSPDK4czA7dmQ";
   const [user, setUser] = useState(null);
 
- // Función para obtener la información del usuario
-  const fetchUserData = async () => {
-    const currentUser = auth().currentUser;
+  // Función para obtener la información del usuario desde Firestore
+  const fetchUserById = async (userId) => {
+    try {
+      const doc = await firebase.firestore().collection('usuario').doc(userId).get();
+      if (doc.exists) {
+        setUser({ id: doc.id, ...doc.data() });
+      } else {
+        console.log('No such document!');
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  // Función para manejar los cambios de autenticación
+  const handleAuthStateChanged = async (currentUser) => {
     if (currentUser) {
-      // El usuario está autenticado, obtener su información
-      setUser(currentUser);
+      console.log('Usuario autenticado:', currentUser);
+      await fetchUserById(currentUser.uid); // Obtén la información del usuario desde Firestore usando el UID
     } else {
-      // El usuario no está autenticado
+      console.log('Usuario no autenticado');
       setUser(null);
     }
   };
 
-  //Obtener la información del usuario al cargar la aplicación
+  // Escuchar los cambios de autenticación al cargar la aplicación
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(fetchUserData);
+    const unsubscribe = firebase.auth().onAuthStateChanged(handleAuthStateChanged);
     return unsubscribe;
   }, []);
 
-// useEffect(() => {
-//     console.log('jjjiiii')
-//     const fetchUserById = async (userId) => {
-//       try {
-//         const doc = await firebase.firestore().collection('usuario').doc(userId).get();
-//         if (doc.exists) {
-//           setUser({ id: doc.id, ...doc.data() });
-//         } else {
-//           console.log('No such document!');
-//         }
-//       } catch (error) {
-//         console.error('Error fetching user:', error);
-//       } 
-//     };
-
-//     fetchUserById(userId);
-//   }, []);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );
 };
+
+export default UserProvider;
