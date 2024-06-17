@@ -175,6 +175,11 @@ const [formInfo, setFormInfo] = useState({
         alert("Por favor, complete todos los campos requeridos");
         return;
       }
+      const numericRegex = /^\d+$/;
+      if (!numericRegex.test(formInfo.ci)) {
+        alert("La cédula solo debe contener caracteres numéricos");
+        return;
+      }
 
       if(!selectedRange.startDate || !selectedRange.endDate){
         alert("Por favor, seleccione la fecha de inicio o de fin de su reserva");
