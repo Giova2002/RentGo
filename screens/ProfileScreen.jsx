@@ -241,6 +241,9 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
               <Text style={styles.saveButtonText}>Guardar Cambios</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.saveButton} onPress={() => navigation.navigate("MyCars")}>
+              <Text style={styles.saveButtonText}>Mis Carros Publicados</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
             </TouchableOpacity>

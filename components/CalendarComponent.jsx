@@ -35,7 +35,13 @@ const CalendarComponent = ({ reservas, onRangeSelected }) => {
         return;
     }
     if (!selectedRange.startDate || (selectedRange.startDate && selectedRange.endDate)) {
-        setSelectedRange({ startDate: day.dateString, endDate: '' });        
+
+      if (selectedRange.startDate === day.dateString) {
+        setSelectedRange({ startDate: '', endDate: '' });
+      } else {
+        setSelectedRange({ startDate: day.dateString, endDate: '' });
+      }
+                
     } else {
         if (new Date(day.dateString) < new Date(selectedRange.startDate)) {        
             Alert.alert('Fecha Invalida', 'La fecha de finalización debe ser posterior a la fecha de inicio.');
