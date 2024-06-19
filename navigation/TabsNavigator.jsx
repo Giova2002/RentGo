@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import InfoScreen from '../screens/InfoScreen';
 import Reserva from '../screens/Reserva';
 import ProfileScreen from '../screens/ProfileScreen';
+import MyCars from '../screens/MyCars';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
@@ -64,7 +65,7 @@ function TabsNavigator() {
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />      
       
     </Stack.Navigator>
 
@@ -157,6 +158,7 @@ function AppNavigator() {
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="MyCars" component={MyCars} />
       
     </Stack.Navigator>
   );
