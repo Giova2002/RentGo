@@ -44,16 +44,20 @@ const MyCars = () => {
     }
 
     const checkReservations = async (carId) => {
-        try {
+        try {                      
+
             const reservationsRef = firebase.firestore().collection("reserva");
             const today = new Date();
-            const snapshot = await reservationsRef.where("id_auto", "==", carId).get();
+            const snapshot = await reservationsRef.where("id_auto", "==", carId).get();                                
+
             const hasPendingReservations = snapshot.docs.some(doc => {
-                const reservation = doc.data();
-                const fechaFin = new Date(reservation.fecha_fin);
+                const reservation = doc.data();                
+
+                const fechaFin = reservation.fecha_fin.toDate();                                            
                 return fechaFin >= today;
             });
             return hasPendingReservations;
+
         } catch (error) {
             console.error("Error checking reservations: ", error);
             return false;
@@ -64,6 +68,7 @@ const MyCars = () => {
         if (selectedCarId) {
             const hasPendingReservations = await checkReservations(selectedCarId);
             if (hasPendingReservations) {
+                setModalVisible(false);
                 Alert.alert("Error", "No se puede eliminar el auto porque tiene reservas pendientes.");
             } else {
                 try {
