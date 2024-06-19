@@ -55,6 +55,7 @@ const [coverImage, setCoverImage] = useState(null);
     { label: 'Chevrolet', value: 'Chevrolet' },
     { label: 'Hyundai', value: 'Hyundai' },
     { label: 'Mitsubishi', value: 'Mitsubishi' },
+    { label: 'Nissan', value: 'Nissan' },
   ]);
 
   const [openC, setOpenC] = useState(false);
@@ -189,10 +190,13 @@ const [coverImage, setCoverImage] = useState(null);
       cedula.trim() === '' ||
       carnet.trim() === '' ||
       phoneNumber.trim() === '' ||
+      phoneNumber.length !== 10 ||
       !/^\d+$/.test(phoneNumber) 
+      
+      
 
     ) {
-      alert('Por favor rellenar todos los campos');
+      alert('Por favor rellenar todos los campos correctamente');
       setLoading(false);
       return;
     }
