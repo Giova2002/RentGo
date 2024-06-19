@@ -41,7 +41,21 @@ export default function Home() {
     fetchRecommendedCars();
   }, []);
 
-
+  useFocusEffect(
+    React.useCallback(() => {
+      setData({
+        seatCount: 2,
+        priceRange: [10, 500],
+        automaticSelected: false,
+        manualSelected: false,
+        selectedBrands: [],
+        selectedLocations: [],
+        search: "",
+        filter: false,
+        filterByBrand: false
+      });
+    }, [])
+  );
   const goToCarsByBrand=(brand)=>{
     setData({seatCount: 2,priceRange:[10, 500],automaticSelected:false, manualSelected:false, selectedBrands:[brand],selectedLocations:[], search:data.search,filter:false,filterByBrand:true})
     navigation.navigate("Cars")
