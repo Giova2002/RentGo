@@ -111,6 +111,7 @@ useEffect(() => {
             
           {/* <Text style={styles.detailText}><Text style={styles.detailLabel}>Nombre:</Text> {rentalData.nombre}</Text>
           <Text style={styles.detailText}><Text style={styles.detailLabel}>Apellido:</Text> {rentalData.apellido}</Text> */}
+          <Text style={styles.title}>Información</Text>
           <Text style={styles.detailText}><Text style={styles.detailLabel}>Teléfono: </Text> {rentalData.numero_contacto}</Text>
           <Text style={styles.detailText}><Text style={styles.detailLabel}>Auto:</Text> {rentalData.nombre_auto}</Text>
           <Text style={styles.detailText}><Text style={styles.detailLabel}>Precio Total:</Text> {rentalData.precio_total} $</Text>
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,

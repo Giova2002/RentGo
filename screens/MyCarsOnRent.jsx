@@ -147,7 +147,7 @@ export default function MyCarsOnRent() {
                   <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
                   <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
                   <Pressable onPress={() => goToRentalDetails(item.key) }>
-                  <Text style={styles.documneto}>Documnetos</Text>
+                  <Text style={styles.documneto}>Documentos</Text>
                   </Pressable>
                   
                   </View>
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
 
   documneto:{
-    color: "#FDFDFD",
+    color: "#4CAF50",
     fontSize: 12,
     fontFamily: "Raleway_400Regular",
     textDecorationLine: 'underline',
