@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     flexDirection: "column",
     padding: 15,
+    flexGrow: 1,
   },
   brandsCollection: {
     flexDirection: "row",

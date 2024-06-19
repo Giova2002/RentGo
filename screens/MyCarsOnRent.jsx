@@ -173,57 +173,118 @@ export default function MyCarsOnRent() {
         >
 
       <View style={styles.listSeccion}>
-        <FlatList 
-          data={rentals}
-          renderItem={({ item }) => (
-            <View 
-              style={styles.element}
-              // onPress={() => navigation.navigate('Info', { carData: item.id_auto } ) }
-              >
-              <View style={styles.infoArea}>
-                <Text style={styles.infoTittle}>{item.modelo}</Text>
-                <Text style={styles.infoSub}>{item.tipo}</Text>
-                <View style={styles.containerPrice}>
-                <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
-                <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
-                </View>
-                
-                <Text style={styles.infoPrice}>
-                  <Text style={styles.listAmount}>Fecha Inicio: {item.fecha_inicio}{'\n'}</Text>
-                  <Text style={styles.listAmount}>Fecha Fin: {item.fecha_fin}</Text>
-                </Text>
-                
-
-            
-                
-              </View>
-              <View style={styles.imageArea}>
-                <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
-                
-                <View style={styles.contacto}>
-                <View>
-                <Text style={styles.contactoC}>Contacto:</Text>
-                <Text style={styles.contactoNumber}>0{item.phoneNumber}</Text>
-                </View>
-                <TouchableOpacity onPress={() => openWhatsApp(item.phoneNumber)} activeOpacity={0.9}>
-                <Image source={wa} resizeMode="contain" style={styles.what}  />
-                </TouchableOpacity>
-                
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#EBAD36" />
+            <Text style={styles.cargando}>Cargando</Text>
+          </View>
+        ) : rentals.length === 0 ? (
+          <Text style={styles.noReservations}>No hay ninguna reserva</Text>
+        ) : (
+          <FlatList 
+            data={rentals}
+            renderItem={({ item }) => (
+              <View 
+                style={styles.element}
+                // onPress={() => navigation.navigate('Info', { carData: item.id_auto } ) }
+                >
+                <View style={styles.infoArea}>
+                  <Text style={styles.infoTittle}>{item.modelo}</Text>
+                  <Text style={styles.infoSub}>{item.tipo}</Text>
+                  <View style={styles.containerPrice}>
+                  <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
+                  <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
+                  </View>
                   
+                  <Text style={styles.infoPrice}>
+                    <Text style={styles.listAmount}>Fecha Inicio: {item.fecha_inicio}{'\n'}</Text>
+                    <Text style={styles.listAmount}>Fecha Fin: {item.fecha_fin}</Text>
+                  </Text>
                 </View>
-
-
+                <View style={styles.imageArea}>
+                  <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
+                  <View style={styles.contacto}>
+                    <View>
+                      <Text style={styles.contactoC}>Contacto:</Text>
+                      <Text style={styles.contactoNumber}>0{item.phoneNumber}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => openWhatsApp(item.phoneNumber)} activeOpacity={0.9}>
+                      <Image source={wa} resizeMode="contain" style={styles.what}  />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-            </View>
-          )}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.key}
-        />
+            )}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.key}
+          />
+        )}
       </View>
       </ScrollView>
     </GestureHandlerRootView>
   );
 }
+//     <GestureHandlerRootView>
+//       <Header />
+//       <Text style={styles.tittle}>Mis Reservas</Text>
+
+//       <ScrollView
+//           contentContainerStyle={styles.elementPallet}
+//           showsVerticalScrollIndicator={false}
+//         >
+
+//       <View style={styles.listSeccion}>
+//         <FlatList 
+//           data={rentals}
+//           renderItem={({ item }) => (
+//             <View 
+//               style={styles.element}
+//               // onPress={() => navigation.navigate('Info', { carData: item.id_auto } ) }
+//               >
+//               <View style={styles.infoArea}>
+//                 <Text style={styles.infoTittle}>{item.modelo}</Text>
+//                 <Text style={styles.infoSub}>{item.tipo}</Text>
+//                 <View style={styles.containerPrice}>
+//                 <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
+//                 <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
+//                 </View>
+                
+//                 <Text style={styles.infoPrice}>
+//                   <Text style={styles.listAmount}>Fecha Inicio: {item.fecha_inicio}{'\n'}</Text>
+//                   <Text style={styles.listAmount}>Fecha Fin: {item.fecha_fin}</Text>
+//                 </Text>
+                
+
+            
+                
+//               </View>
+//               <View style={styles.imageArea}>
+//                 <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
+                
+//                 <View style={styles.contacto}>
+//                 <View>
+//                 <Text style={styles.contactoC}>Contacto:</Text>
+//                 <Text style={styles.contactoNumber}>0{item.phoneNumber}</Text>
+//                 </View>
+//                 <TouchableOpacity onPress={() => openWhatsApp(item.phoneNumber)} activeOpacity={0.9}>
+//                 <Image source={wa} resizeMode="contain" style={styles.what}  />
+//                 </TouchableOpacity>
+                
+                  
+//                 </View>
+
+
+//               </View>
+//             </View>
+//           )}
+//           showsVerticalScrollIndicator={false}
+//           keyExtractor={item => item.key}
+//         />
+//       </View>
+//       </ScrollView>
+//     </GestureHandlerRootView>
+//   );
+// }
 
 const styles = StyleSheet.create({
   listSeccion: {
@@ -372,7 +433,16 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 30,
   },
-  
-  
+  noReservations: {
+    color: 'black',
+    fontSize: 20,
+    paddingTop: windowHeight * 0.30,
+    width: windowWidth * 0.80,
+    fontWeight: "bold",
+    fontFamily: "Raleway_400Regular",
+    textAlign: 'center', 
+    alignSelf: 'center', 
+  },
+
 });
 

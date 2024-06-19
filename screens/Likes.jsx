@@ -88,6 +88,16 @@ export default function Likes() {
       <Text style={styles.tittle}>Mis Favoritos</Text>
 
       <View style={styles.listSeccion}>
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#EBAD36" />
+            <Text style={styles.cargando}>Cargando</Text>
+          </View>
+        ) : favorites.length === 0 ? (
+          <Text style={styles.noReservations}>No hay ningún carro en favoritos</Text>
+        ) : (
+
+
         <FlatList 
           data={favorites.filter(item => item.disponible)}
           renderItem={({ item }) => (
@@ -108,7 +118,8 @@ export default function Likes() {
           )}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.key}
-        />
+          />
+        )}
       </View>
     </GestureHandlerRootView>
   );
@@ -188,4 +199,15 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 15,
   },
+  noReservations: {
+    color: 'black',
+    fontSize: 20,
+    paddingTop: windowHeight * 0.30,
+    width: windowWidth * 0.80,
+    fontWeight: "bold",
+    fontFamily: "Raleway_400Regular",
+    textAlign: 'center', 
+    alignSelf: 'center', 
+  },
+  
 });
