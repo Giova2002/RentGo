@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Home, Likes, Cars, MyCarsOnRent, AddCar, Login, Signin } from "../screens";
+import { Home, Likes, Cars, MyCarsOnRent, AddCar, Login, Signin,  } from "../screens";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //se importa desde terminal con npm install @react-navigation/bottom-tabs
 import { createStackNavigator } from '@react-navigation/stack';
 import { Dimensions } from 'react-native';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import InfoScreen from '../screens/InfoScreen';
 import Reserva from '../screens/Reserva';
 import ProfileScreen from '../screens/ProfileScreen';
+import RentalDetails from '../screens/RentalDetails';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
@@ -65,6 +66,7 @@ function TabsNavigator() {
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="RentalDetails" component={RentalDetails} />
       
     </Stack.Navigator>
 
@@ -152,11 +154,13 @@ function AppNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Tabs" component={TabsNavigator} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="RentalDetails" component={RentalDetails} />
       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Reserva" component={Reserva} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+     
       
     </Stack.Navigator>
   );

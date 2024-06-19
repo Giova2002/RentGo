@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator, ScrollView, Linking
+  ActivityIndicator, ScrollView, Linking, Pressable
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { FlatList } from "react-native-gesture-handler";
@@ -82,58 +82,6 @@ export default function MyCarsOnRent() {
     }, [user])
   );
 
-  // const fetchRentals = async () => {
-  //   try {
-  //     console.log('useeer', user);
-  //     const rentalsSnapshot = await firebase.firestore().collection("reserva")
-  //       .where("id_usuario_queAlquila", "==", user.uid)
-  //       .get();
-      
-  //     const rentalsData = [];
-
-  //     await Promise.all(rentalsSnapshot.docs.map(async doc => {
-  //       const rental = doc.data();
-  //       const carId = rental.id_auto;
-
-  //       // Obtener información del auto usando id_auto
-  //       const carDoc = await firebase.firestore().collection("auto").doc(carId).get();
-  //       const carData = carDoc.exists ? carDoc.data() : {};
-  //       console.log('Car data:', carData);
-
-  //       // Convertir el objeto Timestamp a una fecha legible
-  //       const fechaInicio = rental.fecha_inicio.toDate().toLocaleDateString();
-  //       const fechaFin = rental.fecha_fin.toDate().toLocaleDateString();
-
-  //       rentalsData.push({
-  //         key: doc.id,
-  //         ...rental,
-  //         fecha_inicio: fechaInicio,
-  //         fecha_fin: fechaFin,
-  //         ...carData, // Combinar datos del auto
-  //       });
-  //     }));
-
-  //     setRentals(rentalsData);
-  //   } catch (error) {
-  //     console.error("Error fetching rentals:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchRentals();
-  // }, []);
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     fetchRentals();
-  //     return () => {
-  //       // Función que se ejecuta cuando la pantalla pierde el foco
-  //     };
-  //   }, [user])
-  // );
-
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -161,6 +109,10 @@ export default function MyCarsOnRent() {
         alert('Asegúrese de que WhatsApp esté instalado en su dispositivo');
       });
   };
+  const goToRentalDetails = (rentalId) => {
+    navigation.navigate('RentalDetails', { rentalId });
+  };
+
   
   return (
     <GestureHandlerRootView>
@@ -186,7 +138,7 @@ export default function MyCarsOnRent() {
             renderItem={({ item }) => (
               <View 
                 style={styles.element}
-                // onPress={() => navigation.navigate('Info', { carData: item.id_auto } ) }
+
                 >
                 <View style={styles.infoArea}>
                   <Text style={styles.infoTittle}>{item.modelo}</Text>
@@ -194,6 +146,10 @@ export default function MyCarsOnRent() {
                   <View style={styles.containerPrice}>
                   <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
                   <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
+                  <Pressable onPress={() => goToRentalDetails(item.key) }>
+                  <Text style={styles.documneto}>Documnetos</Text>
+                  </Pressable>
+                  
                   </View>
                   
                   <Text style={styles.infoPrice}>
@@ -224,67 +180,6 @@ export default function MyCarsOnRent() {
     </GestureHandlerRootView>
   );
 }
-//     <GestureHandlerRootView>
-//       <Header />
-//       <Text style={styles.tittle}>Mis Reservas</Text>
-
-//       <ScrollView
-//           contentContainerStyle={styles.elementPallet}
-//           showsVerticalScrollIndicator={false}
-//         >
-
-//       <View style={styles.listSeccion}>
-//         <FlatList 
-//           data={rentals}
-//           renderItem={({ item }) => (
-//             <View 
-//               style={styles.element}
-//               // onPress={() => navigation.navigate('Info', { carData: item.id_auto } ) }
-//               >
-//               <View style={styles.infoArea}>
-//                 <Text style={styles.infoTittle}>{item.modelo}</Text>
-//                 <Text style={styles.infoSub}>{item.tipo}</Text>
-//                 <View style={styles.containerPrice}>
-//                 <Text style={styles.price}>Precio total: {item.precio_total}$</Text>
-//                 <Text style={styles.price}>Precio por día: {item.precio_por_dia}$</Text>
-//                 </View>
-                
-//                 <Text style={styles.infoPrice}>
-//                   <Text style={styles.listAmount}>Fecha Inicio: {item.fecha_inicio}{'\n'}</Text>
-//                   <Text style={styles.listAmount}>Fecha Fin: {item.fecha_fin}</Text>
-//                 </Text>
-                
-
-            
-                
-//               </View>
-//               <View style={styles.imageArea}>
-//                 <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
-                
-//                 <View style={styles.contacto}>
-//                 <View>
-//                 <Text style={styles.contactoC}>Contacto:</Text>
-//                 <Text style={styles.contactoNumber}>0{item.phoneNumber}</Text>
-//                 </View>
-//                 <TouchableOpacity onPress={() => openWhatsApp(item.phoneNumber)} activeOpacity={0.9}>
-//                 <Image source={wa} resizeMode="contain" style={styles.what}  />
-//                 </TouchableOpacity>
-                
-                  
-//                 </View>
-
-
-//               </View>
-//             </View>
-//           )}
-//           showsVerticalScrollIndicator={false}
-//           keyExtractor={item => item.key}
-//         />
-//       </View>
-//       </ScrollView>
-//     </GestureHandlerRootView>
-//   );
-// }
 
 const styles = StyleSheet.create({
   listSeccion: {
@@ -386,7 +281,7 @@ const styles = StyleSheet.create({
 
     flexDirection: "column",
     flex: 1,
-    marginTop: windowHeight * 0.09
+    marginTop: windowHeight * 0.07
 
 
   },
@@ -396,6 +291,15 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway_400Regular",
     // left:2,
   },
+
+  documneto:{
+    color: "#FDFDFD",
+    fontSize: 12,
+    fontFamily: "Raleway_400Regular",
+    textDecorationLine: 'underline',
+    paddingTop: windowHeight * 0.008,
+  },
+
   what: {
     width: "10%",
     height: 50,
