@@ -83,6 +83,7 @@ useEffect(() => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EBAD36" />
+        <Text style={styles.cargando}>Cargando</Text>
       </View>
     );
   }
@@ -187,5 +188,11 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway_400Regular",
     
 
+  },
+  cargando: {
+    alignSelf: "center",
+    color: 'black',
+    fontSize: '15',
+    fontFamily: 'Raleway_700Bold',
   },
 });
