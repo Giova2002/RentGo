@@ -194,7 +194,7 @@ export default function InfoScreen({ route, navigation }) {
           scrollEventThrottle={16}
           renderItem={({ item, index }) => (
             <View style={[styles.imageContainer, { width: screenWidth }]}>
-              <Image source={{ uri: item }} style={[styles.image, { width: "100%", height:"100%",}]} />
+              <Image source={{ uri: item }} style={[styles.image, { width: "100%", height:"100%",}]} resizeMode="contain" />
             </View>
           )}
         />
@@ -304,10 +304,11 @@ const styles = StyleSheet.create({
   },
   imageSection: {
     width: "100%",
-    objectFit: 10,
+    objectFit: "contain",
     height: 250,
     justifyContent: "center",
     alignItems: "center",
+    
     
   },
 
