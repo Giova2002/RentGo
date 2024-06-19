@@ -198,7 +198,13 @@ export default function MyCarsOnRent() {
                 
               </View>
               <View style={styles.imageArea}>
-                <Image source={{uri: item.imagenURL[0]}} resizeMode='fill' style={styles.vehicleImage}/>
+              {item?.imagenURL?.[0] && (
+  <Image 
+    source={{ uri: item.imagenURL[0] }} 
+    resizeMode='fill' 
+    style={styles.vehicleImage} 
+  />
+)}
                 
                 <View style={styles.contacto}>
                 <View>

@@ -189,10 +189,13 @@ const [coverImage, setCoverImage] = useState(null);
       cedula.trim() === '' ||
       carnet.trim() === '' ||
       phoneNumber.trim() === '' ||
+      phoneNumber.length !== 10 ||
       !/^\d+$/.test(phoneNumber) 
+      
+      
 
     ) {
-      alert('Por favor rellenar todos los campos');
+      alert('Por favor rellenar todos los campos correctamente');
       setLoading(false);
       return;
     }
