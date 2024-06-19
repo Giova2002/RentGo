@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   noReservations: {
-    color: 'black',
+    color: '#77828B',
     fontSize: 20,
     paddingTop: windowHeight * 0.30,
     width: windowWidth * 0.80,
