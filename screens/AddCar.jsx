@@ -56,6 +56,7 @@ const [coverImage, setCoverImage] = useState(null);
     { label: 'Hyundai', value: 'Hyundai' },
     { label: 'Mitsubishi', value: 'Mitsubishi' },
     { label: 'Nissan', value: 'Nissan' },
+    { label: 'BMW', value: 'BMW' },
   ]);
 
   const [openC, setOpenC] = useState(false);
