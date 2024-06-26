@@ -5,7 +5,7 @@ import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/nativ
 import { firebase } from "../firebase/firebaseConfig";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { UserContext } from '../context/UserContext';
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Dimensions, FlatList,ScrollView,Modal,TextInput} from 'react-native';
 import { useCarFiltersContext } from '../context/CarFiltersContext';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -30,6 +30,64 @@ export default function InfoScreen({ route, navigation }) {
   const autoRef = firebase.firestore().collection('auto');
   const userRef = firebase.firestore().collection('usuario');
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+
+  const fetchUserDetails = async (userRef) => {
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      return userDoc.data().correo;
+    } else {
+      return "Usuario desconocido";
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const comentariosSnapshot = await autoRef.doc(carId).collection('comentarios').get();
+      const comentariosData = await Promise.all(comentariosSnapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const userEmail = await fetchUserDetails(data.usuarioRef);
+        return { ...data, userEmail };
+      }));
+      console.log("COMENTARIOS", comentariosData);
+      setComments([...comentariosData]);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+  
+  const submitComment = async () => {
+    try {
+      if (newComment.trim() === "") {
+        alert("Por favor, escribe un comentario.");
+        return;
+      }
+  
+      const timestamp = new Date().toDateString()
+      await autoRef.doc(carId).collection('comentarios').add({
+        comentario: newComment,
+        timestamp,
+        usuarioRef: userRef.doc(user.uid),
+    
+      });
+      setNewComment(""); // Limpiar el campo de comentario después de enviar
+      fetchComments(); // Actualizar la lista de comentarios
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+  
+  const openModal = () => {
+    setModalVisible(true);
+  };
+  
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  
+
 
   const carouselRef = useRef(null);
 
@@ -106,10 +164,11 @@ export default function InfoScreen({ route, navigation }) {
 
     fetchCar();
     checkFavoriteStatus();
+    fetchComments();
   }, [carId]);
 
   const toggleFavorite = async () => {
-    setFavoriting(true); // Activar el indicador de carga
+    setFavoriting(true); 
     try {
       const userDoc = await userRef.doc(user.uid).get();
       if (userDoc.exists) {
@@ -131,7 +190,7 @@ export default function InfoScreen({ route, navigation }) {
     } catch (error) {
       console.error("Error updating favorite status:", error);
     } finally {
-      setFavoriting(false); // Desactivar el indicador de carga
+      setFavoriting(false); 
     }
   };
 
@@ -166,6 +225,7 @@ export default function InfoScreen({ route, navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <GestureHandlerRootView style={{ flex: 1 }}>
+      
         <View style={styles.container}>
           <View style={styles.headerSection}>
             <View>
@@ -180,6 +240,7 @@ export default function InfoScreen({ route, navigation }) {
               <Image source={{ uri: car.imagenURL }} style={styles.image} />
             </View>
           </View> */}
+          
         <FlatList
           data={car.imagenURL}
           keyExtractor={(item, index) => index.toString()}
@@ -198,6 +259,7 @@ export default function InfoScreen({ route, navigation }) {
             </View>
           )}
         />
+        
         <View style={styles.dotsContainer}>
           {car.imagenURL.map((_, index) => (
             <View
@@ -251,11 +313,57 @@ export default function InfoScreen({ route, navigation }) {
           <TouchableOpacity onPress={() => openWhatsApp(car.phoneNumber)} activeOpacity={0.9}>
             <Image source={wa} resizeMode="contain" style={styles.what}  />
           </TouchableOpacity>
+          <View style={styles.botones} >
           <TouchableOpacity style={styles.rentButton} onPress={() => navigation.navigate('Reserva', { carId })}>
             <Text style={styles.rentButtonText}>Reservar</Text>
           </TouchableOpacity>
-
+          <TouchableOpacity onPress={openModal} activeOpacity={0.9}>
+            <Text style={styles.verButtonText}>Ver Comentarios</Text>
+          </TouchableOpacity>
+          
           </View>
+          </View>
+          <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>X</Text>
+              </TouchableOpacity>
+              <Text style={styles.title}>Comentarios</Text>
+              <View style={styles.separator} />
+
+              {/* Mostrar comentarios existentes */}
+              <ScrollView style={styles.commentsContainer}>
+                {comments.map((comment, index) => (
+                  <View key={index} style={styles.commentItem}>
+                    <Text style={styles.commentUser}>{comment.userEmail}</Text>
+                    <Text style={styles.commentText}>{comment.comentario}</Text>
+    
+                    <Text style={styles.commentTimestamp}>{comment.timestamp}</Text>
+                  </View>
+                ))}
+              </ScrollView>
+
+              {/* Área para escribir un nuevo comentario */}
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Escribe tu comentario (máximo 200 caracteres)"
+                maxLength={200}
+                multiline
+                value={newComment}
+                onChangeText={setNewComment}
+              />
+              <TouchableOpacity style={styles.submitButton} onPress={submitComment}>
+                <Text style={styles.submitButtonText}>Enviar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
           {/* <TouchableOpacity>
           <Image source={wa} resizeMode="contain" style={styles.what} />
 
@@ -391,11 +499,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    
   },
   rentButtonText: {
     color: "black",
     fontWeight: "500",
     fontFamily: 'Raleway_700Bold',
+    
   },
   image: {
     
@@ -480,6 +590,111 @@ const styles = StyleSheet.create({
       height: windowHeight * 0.25,
       objectFit: '100%'
     },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      
+    },
+    modalContent: {
+      backgroundColor: "#F5F5F5",
+      padding: 20,
+      borderRadius: 10,
+      width: windowWidth,
+      height:windowHeight*0.8,
+      alignItems: 'center',
+      
+    },closeButton: {
+      position: 'absolute',
+      top: 20, 
+      left: 20, 
+      width: 50,
+      
+    },
+    closeButtonText: {
+      fontFamily: 'Raleway_700Bold',
+      fontSize: 18,
+      color: '#000000',
+      
+    },verButtonText:{
+      fontFamily: 'Raleway_700Bold',
+      paddingTop:10,
+      fontSize:12,
+      color:"#1C252E",
+      textDecorationLine: 'underline',
+      textDecorationColor: "#1C252E", 
+    
+      
+       
+      
+      
+
+    },botones:{
+      flexDirection:"column",
+      
+      justifyContent:"center",
+      alignItems:"center"
+      
+    },title: {
+      fontFamily: "Raleway_700Bold",
+      fontSize: 18,
+      marginBottom: 10,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: "#CCCCCC",
+      width: "100%",
+      marginVertical: 10,
+    },
+    commentsContainer: {
+      width: '100%',
+      marginBottom: 20,
+    },
+    commentItem: {
+      marginBottom: 10,
+      backgroundColor:"white",
+      padding:10,
+      borderRadius:10,
+    },
+    commentText: {
+      fontSize: 14,
+      fontFamily: 'Raleway_400Regular',
+      padding:5
+      
+    },
+    commentTimestamp: {
+      fontSize: 10,
+      color: '#888888',
+      fontFamily: 'Raleway_400Regular',
+      paddingTop:5
+    },
+    commentInput: {
+      width: '100%',
+      height: 80,
+      borderColor: '#CCCCCC',
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10,
+      fontFamily: 'Raleway_400Regular'
+      
+    },
+    submitButton: {
+      backgroundColor: '#EBAD36',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+    },
+    submitButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+    },
+    commentUser: {
+      fontSize: 12,
+      fontFamily: 'Raleway_700Bold',
+      color: '#EBAD36',
+    },
+    
 
 
 
