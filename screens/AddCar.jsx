@@ -43,6 +43,11 @@ export default function AddCar() {
   const [carnet, setCarnet] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  const [formInfo, setFormInfo] = useState({
+    ci_vencimiento: '',
+    licencia_vence: '',
+  });
+
  
 const [images, setImages] = useState([]);
 const [coverImage, setCoverImage] = useState(null);
@@ -192,15 +197,24 @@ const [coverImage, setCoverImage] = useState(null);
       carnet.trim() === '' ||
       phoneNumber.trim() === '' ||
       phoneNumber.length !== 10 ||
-      !/^\d+$/.test(phoneNumber) 
-      
-      
+      !/^\d+$/.test(phoneNumber)  
+      // formInfo.ci_vencimiento.trim == '' || 
+      // formInfo.licencia_vence.trim ==''
 
     ) {
       alert('Por favor rellenar todos los campos correctamente');
       setLoading(false);
       return;
     }
+
+
+    if (!isDateValid(formInfo.ci_vencimiento) || !isDateValid(formInfo.licencia_vence)) {
+      alert("Por favor, asegúrese de que las fechas de vencimiento de la cédula y la licencia sean vigentes");
+      setLoading(false);
+      return;
+    }
+    
+    
   
     const imageUrls = await handleImageUpload(images);
     const coverImageUrl = coverImage ? imageUrls[0] : null;
@@ -243,6 +257,9 @@ const [coverImage, setCoverImage] = useState(null);
         carnet: carnetUrl,
         arrendatarioRef: userRef,
         phoneNumber: phoneNumber,
+        vencimiento_cedula: formInfo.ci_vencimiento,
+        vencimiento_licencia: formInfo.licencia_vence,
+
             
       });
   
@@ -341,6 +358,84 @@ const [coverImage, setCoverImage] = useState(null);
       text = text.substring(1);
   }
   setPhoneNumber(text);
+};
+
+const isDateValid = (date) => {
+  const currentDate = new Date();
+  const inputDate = new Date(date);
+  return inputDate >= currentDate;
+};
+
+// const formatFecha = (input) => {
+//   // Remove all characters except digits
+//   let cleaned = ('' + input).replace(/\D/g, '');
+//   // Apply formatting: YYYY-MM-DD
+//   if (cleaned.length >= 4) {
+//     cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+//   }
+//   if (cleaned.length >= 7) {
+//     cleaned = cleaned.slice(0, 7) + '-' + cleaned.slice(7, 9);
+//   }
+//   return cleaned;
+// };
+
+// const formatFecha = (input) => {
+//   // Remove all characters except digits
+//   let cleaned = ('' + input).replace(/\D/g, '');
+
+//   // Apply formatting: YYYY-MM-DD
+//   if (cleaned.length >= 4) {
+//     cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+//   }
+  
+//   if (cleaned.length >= 6) {
+//     // Check if the month is greater than 12
+//     let month = cleaned.slice(5, 7);
+//     if (parseInt(month) > 12) {
+//       month = '12'; // Set to maximum valid month
+//     }
+//     cleaned = cleaned.slice(0, 5) + month + cleaned.slice(7);
+//   }
+
+//   if (cleaned.length >= 8) {
+//     cleaned = cleaned.slice(0, 7) + '-' + cleaned.slice(7, 9);
+//   }
+
+//   return cleaned;
+// };
+
+const formatFecha = (input) => {
+  // Remove all characters except digits
+  let cleaned = ('' + input).replace(/\D/g, '');
+
+  // Apply formatting: YYYY-MM-DD
+  if (cleaned.length >= 4) {
+    cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+  }
+
+  if (cleaned.length >= 6) {
+    // Check if the month is greater than 12
+    let month = cleaned.slice(5, 7);
+    if (parseInt(month) > 12) {
+      month = '12'; // Set to maximum valid month
+    }
+    cleaned = cleaned.slice(0, 5) + month + cleaned.slice(7);
+  }
+
+  if (cleaned.length >= 8) {
+    cleaned = cleaned.slice(0, 7) + '-' + cleaned.slice(7, 9);
+  }
+
+  if (cleaned.length >= 10) {
+    // Check if the day is greater than 31
+    let day = cleaned.slice(8, 10);
+    if (parseInt(day) > 31) {
+      day = '31'; // Set to maximum valid day
+    }
+    cleaned = cleaned.slice(0, 8) + day;
+  }
+
+  return cleaned;
 };
 
 
@@ -598,6 +693,23 @@ return (
   )}
 </View>
 
+<Text style={style.label1} >Ingresar fecha de vencimiento CI</Text>  
+
+<TextInput
+          style={style.input}
+          placeholder="YYYY-MM-DD"
+          value={formInfo.ci_vencimiento}
+          onChangeText={(text) => {
+            // Permitir la eliminación de caracteres
+            if (text.length < formInfo.ci_vencimiento.length) {
+              setFormInfo({ ...formInfo, ci_vencimiento: text });
+            } else {
+              // Formatear automáticamente la fecha mientras se escribe
+              setFormInfo({ ...formInfo, ci_vencimiento: formatFecha(text) });
+            }
+          }}
+        />
+
 <View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 390, marginTop: 10, }}>
   <View style={[style.anexarCont]}>
     <Text style={{ fontFamily: 'Raleway_700Bold', fontSize: 15, color: '#aaaaaa' }}>Anexar Carnet de Circulación:</Text>
@@ -610,7 +722,25 @@ return (
       <Image source={{ uri: carnet }} style={{ width: 300, height: 280 }} />
     </View>
   )}
+  
 </View> 
+
+<Text style={style.label1}>Ingresar fecha de vencimiento del carnet de circulación</Text>  
+
+<TextInput
+style={style.input}
+placeholder="YYYY-MM-DD"
+value={formInfo.licencia_vence}
+onChangeText={(text) => {
+  // Permitir la eliminación de caracteres
+  if (text.length < formInfo.licencia_vence.length) {
+    setFormInfo({ ...formInfo, licencia_vence: text });
+  } else {
+    // Formatear automáticamente la fecha mientras se escribe
+    setFormInfo({ ...formInfo, licencia_vence: formatFecha(text) });
+  }
+}}
+/>
 
 {/* <View style={{ borderWidth: 1, borderRadius: 10, marginLeft: 20, marginRight: 20, height: 270, marginBottom:10, }}>
   <View style={[style.anexarCont]}>
@@ -756,6 +886,16 @@ backgroundColor: "#F5F5F5",
 
 selectedPickerText: {
   color: 'black',
+},
+label1:{
+
+  fontSize: 15,
+  fontWeight: 'bold',
+  padding: 15,
+  fontFamily: 'Raleway_700Bold',
+  marginLeft: 15,
+ 
+
 },
 
 
