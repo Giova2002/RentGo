@@ -192,12 +192,14 @@ const styles = StyleSheet.create({
   makemodelText: {
     fontSize: 20,
     fontWeight: "500",
-    fontFamily: 'Raleway_700Bold'
+    fontFamily: 'Raleway_700Bold',
+    top: 20,
     
   },
   price: {
     fontWeight: "400",
-    fontFamily: 'Raleway_700Bold'
+    fontFamily: 'Raleway_700Bold',
+    top: 20,
   },
   amount: {
     fontWeight: "bold",
@@ -205,10 +207,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway_700Bold'
   },
   typetranText: {
-    marginTop: 1,
+    marginTop: 30,
     color: "#696969",
     fontWeight: "600",
     fontSize: 12,
+
   },
   descriptionText: {
     marginTop: 30,
@@ -303,6 +306,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
       marginTop: 16,
+      
     },
     dot: {
       width: 8,
