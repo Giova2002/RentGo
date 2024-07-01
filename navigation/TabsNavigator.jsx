@@ -10,6 +10,7 @@ import Reserva from '../screens/Reserva';
 import ProfileScreen from '../screens/ProfileScreen';
 import RentalDetails from '../screens/RentalDetails';
 import MyCars from '../screens/MyCars';
+import Ratings from '../screens/Rating'
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
@@ -156,6 +157,7 @@ function AppNavigator() {
       <Stack.Screen name="Tabs" component={TabsNavigator} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="RentalDetails" component={RentalDetails} />
+      <Stack.Screen name="Ratings" component={Ratings} />
       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Cars" component={Cars} />
       <Stack.Screen name="Info" component={InfoScreen} />
