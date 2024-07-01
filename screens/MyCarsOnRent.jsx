@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator, ScrollView, Linking, Pressable
+  ActivityIndicator, ScrollView, Linking, Pressable,  Modal, Alert
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { FlatList } from "react-native-gesture-handler";
@@ -24,6 +24,8 @@ export default function MyCarsOnRent() {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [rentals, setRentals] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRentalId, setSelectedRentalId] = useState(null);
 
   const fetchRentals = async () => {
     try {
@@ -81,6 +83,35 @@ export default function MyCarsOnRent() {
       };
     }, [user])
   );
+
+  const handleRentalDelete = async () => {
+    
+    const rental = rentals.find(rental => rental.key === selectedRentalId);
+    const startDate = rental.fecha_inicio.toDate();
+    const currentDate = new Date();
+
+    if (startDate <= currentDate) {
+      setModalVisible(false);
+      Alert.alert("No puedes cancelar una reserva que ya ha comenzado");      
+      return;
+    }
+    
+    try {
+      await firebase.firestore().collection("reserva").doc(selectedRentalId).delete();
+      setRentals((prevRentals) => prevRentals.filter(rental => rental.key !== selectedRentalId));
+      setModalVisible(false);
+      Alert.alert("Auto eliminado correctamente");
+      /*fetchRentals();*/
+    } catch (error) {
+      console.error("Error deleting rental:", error);
+    }  
+
+  }
+
+  const confirmDelete = (rentalId) => {
+    setSelectedRentalId(rentalId);
+    setModalVisible(true);
+  };
 
   if (loading) {
     return (
@@ -141,6 +172,9 @@ export default function MyCarsOnRent() {
 
                 >
                 <View style={styles.infoArea}>
+                  <TouchableOpacity onPress={() => confirmDelete(item.key)}>
+                    <Text>Cancelar Reserva</Text>
+                  </TouchableOpacity>
                   <Text style={styles.infoTittle}>{item.modelo}</Text>
                   <Text style={styles.infoSub}>{item.tipo}</Text>
                   <View style={styles.containerPrice}>
@@ -177,6 +211,33 @@ export default function MyCarsOnRent() {
         )}
       </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+                <Text style={styles.modalText}>¿Estás seguro de que deseas eliminar esta reserva?</Text>
+                <View style={styles.modalButtons}>
+                    <TouchableOpacity
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setModalVisible(!modalVisible)}>
+                        <Text style={styles.textStyle}>Cancelar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button, styles.buttonDelete]}
+                        onPress={handleRentalDelete}>
+                        <Text style={styles.textStyle}>Eliminar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+      </Modal>
+
     </GestureHandlerRootView>
   );
 }
@@ -347,6 +408,53 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     alignSelf: 'center', 
   },
-
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+  },
+  modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+      fontSize: 18,
+  },
+  modalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+  },
+  button: {
+      borderRadius: 10,
+      padding: 10,
+      elevation: 2,
+  },
+  buttonClose: {
+      backgroundColor: '#EBAD36',
+      marginRight: 10,
+  },
+  buttonDelete: {
+      backgroundColor: '#FF0000',
+  },
+  textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+  },
 });
 
