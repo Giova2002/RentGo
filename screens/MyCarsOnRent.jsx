@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "../header/Header";
 import { UserContext } from '../context/UserContext';
 import { firebase } from "../firebase/firebaseConfig";
+import { startAfter } from "firebase/firestore";
 const wa= require("../assets/Img/whatsapp.png");
 
 const windowWidth = Dimensions.get("window").width;
@@ -85,11 +86,13 @@ export default function MyCarsOnRent() {
   );
 
   const handleRentalDelete = async () => {
-    
-    const rental = rentals.find(rental => rental.key === selectedRentalId);
-    const startDate = rental.fecha_inicio.toDate();
-    const currentDate = new Date();
+        
+    const rentalDoc = await firebase.firestore().collection("reserva").doc(selectedRentalId).get();
+    const rental = rentalDoc.data();
 
+    const startDate = rental.fecha_inicio.toDate();
+    const currentDate = new Date();       
+   
     if (startDate <= currentDate) {
       setModalVisible(false);
       Alert.alert("No puedes cancelar una reserva que ya ha comenzado");      
@@ -101,7 +104,6 @@ export default function MyCarsOnRent() {
       setRentals((prevRentals) => prevRentals.filter(rental => rental.key !== selectedRentalId));
       setModalVisible(false);
       Alert.alert("Auto eliminado correctamente");
-      /*fetchRentals();*/
     } catch (error) {
       console.error("Error deleting rental:", error);
     }  
@@ -173,7 +175,7 @@ export default function MyCarsOnRent() {
                 >
                 <View style={styles.infoArea}>
                   <TouchableOpacity onPress={() => confirmDelete(item.key)}>
-                    <Text>Cancelar Reserva</Text>
+                    <Text style={styles.cancelText}>Cancelar Reserva</Text>
                   </TouchableOpacity>
                   <Text style={styles.infoTittle}>{item.modelo}</Text>
                   <Text style={styles.infoSub}>{item.tipo}</Text>
@@ -456,5 +458,9 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
   },
+  cancelText: {
+    color: 'red',
+    fontSize: 14.5,
+  }
 });
 
