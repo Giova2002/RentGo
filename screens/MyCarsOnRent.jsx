@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Raleway_400Regular",
     textDecorationLine: 'underline',
-    paddingTop: windowHeight * 0.008,
+    paddingTop: windowHeight * 0.0005,
   },
 
   what: {
