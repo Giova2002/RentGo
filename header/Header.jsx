@@ -1,62 +1,58 @@
-import { View, Text, StyleSheet, Image} from 'react-native'
-import React from 'react'
-import Profile from './Profile'; //header/Profile.jsx
+import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Profile from './Profile';
+import { firebase } from '../firebase/firebaseConfig';
 
 
 const Header = () => {
+const [userName, setUserName] = useState('');
+
+useEffect(() => {
+const getCurrentUserName = async () => {
+try {
+const user = firebase.auth().currentUser;
+if (user) {
+const userDoc = await firebase.firestore().collection('usuario').doc(user.uid).get();
+if (userDoc.exists) {
+setUserName(userDoc.data().nombre);
+}
+}
+} catch (error) {
+console.error('Error getting user name:', error);
+}
+};
+getCurrentUserName();
+}, []);
+
 return (
 <View style={styles.container}>
-<View style={styles.locationContainer}>
-<Image style={styles.imageContainer}
-source={require('../assets/gps.png')} 
-/>
-<View style={styles.locationDetails}>
-<Text style={styles.title}>Your Location</Text>
-<Text style={styles.location}>Caracas, Venezuela</Text>
+<View style={styles.headerContainer}>
+<Text style={styles.greeting}>Hello, {userName}! 👋</Text>
 </View>
-</View>
-{/* tiene que cambiar a la ubicacion personal del usuario */}
-<Profile/>
+<Profile />
 </View>
 );
-}
+};
+
 const styles = StyleSheet.create({
 container: {
 width: '100%',
 height: 110,
-flexDirection:"row",
+flexDirection: 'row',
 justifyContent: 'space-between',
 alignItems: 'center',
-paddingHorizontal:20,
-marginTop:25,
-
-
+paddingHorizontal: 25,
+marginTop: 25,
 },
-locationContainer:{
-flexDirection:"row",
-alignItems:"center",
-
-
+headerContainer: {
+flexDirection: 'row',
+alignItems: 'center',
 },
-title: {
+greeting: {
 color: '#000000',
-fontSize: 14,
-color:"#748289",
-fontFamily:"Raleway_700Bold"
-},
-location: {
-color: '#748289',
 fontSize: 19,
-color:"#000000",
-fontFamily:"Raleway_700Bold"
+fontFamily: 'Raleway_700Bold',
 },
-imageContainer: {
-width: 28,
-height: 29,
-marginRight:30,
-
-
-},
-
 });
+
 export default Header;
