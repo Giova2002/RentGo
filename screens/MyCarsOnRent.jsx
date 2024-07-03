@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
 
     flexDirection: "column",
     flex: 1,
-    marginTop: windowHeight * 0.07
+    marginTop: windowHeight * 0.0458
 
 
   },
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Raleway_400Regular",
     textDecorationLine: 'underline',
-    paddingTop: windowHeight * 0.0005,
+    paddingTop: windowHeight * 0.0075,
   },
 
   what: {
