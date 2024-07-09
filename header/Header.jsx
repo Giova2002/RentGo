@@ -32,7 +32,7 @@ const Header = () => {
         {loading ? (
           <ActivityIndicator size="small" color="#1C252E" />
         ) : (
-          <Text style={styles.greeting}>Hello, {userName}! 👋</Text>
+          <Text style={styles.greeting}>Hello {userName}! 👋</Text>
         )}
       </View>
       <Profile />
