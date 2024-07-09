@@ -58,7 +58,9 @@ const [formInfo, setFormInfo] = useState({
   nombre_completo: '',
   ci_foto: '',
   ci:'',
-  licencia: ''
+  ci_vencimiento: '',
+  licencia: '',
+  licencia_vence: '',
 });
 
   const { carId } = route.params;
@@ -141,6 +143,61 @@ const [formInfo, setFormInfo] = useState({
     }
   }, [selectedRange, car]);
 
+  const isDateValid = (date) => {
+    const currentDate = new Date();
+    const inputDate = new Date(date);
+    return inputDate >= currentDate;
+  };
+
+  // const formatFecha = (input) => {
+  //   // Remove all characters except digits
+  //   let cleaned = ('' + input).replace(/\D/g, '');
+  //   // Apply formatting: YYYY-MM-DD
+  //   if (cleaned.length >= 4) {
+  //     cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+  //   }
+  //   if (cleaned.length >= 7) {
+  //     cleaned = cleaned.slice(0, 7) + '-' + cleaned.slice(7, 9);
+  //   }
+  //   return cleaned;
+  // };
+
+  const formatFecha = (input) => {
+    // Remove all characters except digits
+    let cleaned = ('' + input).replace(/\D/g, '');
+  
+    // Apply formatting: YYYY-MM-DD
+    if (cleaned.length >= 4) {
+      cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+    }
+  
+    if (cleaned.length >= 6) {
+      // Check if the month is greater than 12
+      let month = cleaned.slice(5, 7);
+      if (parseInt(month) > 12) {
+        month = '12'; // Set to maximum valid month
+      }
+      cleaned = cleaned.slice(0, 5) + month + cleaned.slice(7);
+    }
+  
+    if (cleaned.length >= 8) {
+      cleaned = cleaned.slice(0, 7) + '-' + cleaned.slice(7, 9);
+    }
+  
+    if (cleaned.length >= 10) {
+      // Check if the day is greater than 31
+      let day = cleaned.slice(8, 10);
+      if (parseInt(day) > 31) {
+        day = '31'; // Set to maximum valid day
+      }
+      cleaned = cleaned.slice(0, 8) + day;
+    }
+  
+    return cleaned;
+  };
+  
+  
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -149,10 +206,6 @@ const [formInfo, setFormInfo] = useState({
       </View>
     );
   }
-
-
-
-  
 
   // console.log("carId:", carId); 
   // console.log("Usuario:", user.uid); 
@@ -173,13 +226,18 @@ const [formInfo, setFormInfo] = useState({
 
     const handleReserve = async () => {
 
-      if (!formInfo.nombre_completo || !formInfo.ci || !IdImg || !LicenseImg) {
+      if (!formInfo.nombre_completo || !formInfo.ci || !IdImg || !LicenseImg || !formInfo.ci_vencimiento || !formInfo.licencia_vence) {
         alert("Por favor, complete todos los campos requeridos");
         return;
       }
       const numericRegex = /^\d+$/;
       if (!numericRegex.test(formInfo.ci)) {
         alert("La cédula solo debe contener caracteres numéricos");
+        return;
+      }
+
+      if (!isDateValid(formInfo.ci_vencimiento) || !isDateValid(formInfo.licencia_vence)) {
+        alert("Por favor, asegúrese de que las fechas de vencimiento de la cédula y la licencia sean vigentes");
         return;
       }
 
@@ -247,8 +305,9 @@ const [formInfo, setFormInfo] = useState({
           fecha_inicio: new Date(selectedRange.startDate),
           fecha_fin: new Date(selectedRange.endDate),
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          
-          
+          vencimiento_cedula: formInfo.ci_vencimiento,
+          vencimiento_licencia: formInfo.licencia_vence,
+
         });
 
         alert("Reserva realizada con éxito");
@@ -397,7 +456,24 @@ const [formInfo, setFormInfo] = useState({
 
           {IdImg && <View style={styles.idContainer}><Image source={{ uri: IdImg }} style={styles.IdImage} /></View>} 
 
-        </View>               
+        </View>   
+
+        <Text style={styles.label1} >Ingresar fecha de vencimiento CI</Text>  
+
+        <TextInput
+          style={styles.input}
+          placeholder="YYYY-MM-DD"
+          value={formInfo.ci_vencimiento}
+          onChangeText={(text) => {
+            // Permitir la eliminación de caracteres
+            if (text.length < formInfo.ci_vencimiento.length) {
+              setFormInfo({ ...formInfo, ci_vencimiento: text });
+            } else {
+              // Formatear automáticamente la fecha mientras se escribe
+              setFormInfo({ ...formInfo, ci_vencimiento: formatFecha(text) });
+            }
+          }}
+        />
         
         <View style={{borderWidth: 1, borderRadius: 10, padding: 10, marginVertical: 10,borderColor:"#748289"}}>
           <View style={styles.anexarCont}>
@@ -418,8 +494,25 @@ const [formInfo, setFormInfo] = useState({
           
           {LicenseImg && <View style={styles.idContainer}><Image source={{ uri: LicenseImg }} style={styles.IdImage} /></View>}
 
-        </View>              
+        </View>  
         
+        <Text style={styles.label1}>Ingresar fecha de vencimiento licencia</Text>  
+
+          <TextInput
+          style={styles.input}
+          placeholder="YYYY-MM-DD"
+          value={formInfo.licencia_vence}
+          onChangeText={(text) => {
+            // Permitir la eliminación de caracteres
+            if (text.length < formInfo.licencia_vence.length) {
+              setFormInfo({ ...formInfo, licencia_vence: text });
+            } else {
+              // Formatear automáticamente la fecha mientras se escribe
+              setFormInfo({ ...formInfo, licencia_vence: formatFecha(text) });
+            }
+          }}
+        />  
+
         <Text style={[{marginTop: 10}, styles.label]}>Fecha de reserva</Text>
 
         <CalendarComponent reservas={reservedDates} onRangeSelected={setSelectedRange}/>
@@ -576,6 +669,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway_700Bold',
     paddingBottom:10,
     paddingTop:10
+  },
+  label1:{
+
+    fontSize: 15,
+    fontWeight: 'bold',
+    padding: 10,
+    fontFamily: 'Raleway_700Bold',
+   
+
   },
   input: {
     borderWidth: 1,
@@ -751,5 +853,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: 'Raleway_400Regular',
       },
+      
     
 });
