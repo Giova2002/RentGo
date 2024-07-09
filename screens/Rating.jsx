@@ -120,7 +120,7 @@ export default function Ratings({ route, navigation }) {
             isDisabled={!hasReserved}
           />
           <TouchableOpacity style={styles.saveButton} onPress={saveRating}>
-            <Text style={styles.saveButtonText}>Guardar</Text>
+            <Text style={styles.saveButtonText}>Enviar Rating</Text>
           </TouchableOpacity>
         </View>
       </View>
