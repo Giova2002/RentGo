@@ -707,23 +707,32 @@ const styles = StyleSheet.create({
       borderRadius: 5,
     },
     submitButtonText: {
-      color: '#FFFFFF',
-      fontSize: 16,
+      // color: '#FFFFFF',
+      // fontSize: 16,
+      color: "black",
+  fontWeight: "500",
+  fontFamily: 'Raleway_700Bold',
     },
     commentUser: {
       fontSize: 12,
       fontFamily: 'Raleway_700Bold',
+      padding: 5,
       color: '#EBAD36',
     },
 
     ratingcss: {
-      paddingTop:14,
-      marginLeft: 35,
-      marginRight: 33,
+      paddingVertical: 10,
+      // paddingTop:14,
+      // marginLeft: 35,
+      // marginRight: 33,
     },
 
     ratingcontainer:{
-      flexDirection:'row'
+      // flexDirection:'row'
+      marginTop: 15,
+      marginHorizontal: 35,
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
     ratingtext:{
       paddingTop: 7.5, 
